@@ -18,6 +18,8 @@ package ua.mibal.minervaTest.component;
 
 
 import ua.mibal.minervaTest.Application;
+import ua.mibal.minervaTest.component.console.ConsoleDataPrinter;
+import ua.mibal.minervaTest.component.console.ConsoleUserInputReader;
 
 /**
  * @author Mykhailo Balakhon
@@ -25,8 +27,27 @@ import ua.mibal.minervaTest.Application;
  */
 public class ApplicationConfigurator {
 
+    private final DataPrinter dataPrinter = new ConsoleDataPrinter();
+
+    private final UserInputReader inputReader = new ConsoleUserInputReader();
+
+    private final RequestConfigurator requestConfigurator =
+        new RequestConfigurator(dataPrinter, inputReader);
+
+    private final RequestProcessor requestProcessor;
+
+    private final DataOperator dataOperator;
+
+    public ApplicationConfigurator(final String path) {
+        dataOperator = new JsonDataOperator(path);
+        requestProcessor = new RequestProcessor(dataPrinter, dataOperator);
+    }
+
     public Application configure() {
-        // TODO
-        return null;
+        return new Application(
+            dataOperator,
+            requestConfigurator,
+            requestProcessor
+        );
     }
 }

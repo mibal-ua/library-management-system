@@ -24,6 +24,10 @@ import ua.mibal.minervaTest.model.Request;
  */
 public class RequestConfigurator {
 
+    public RequestConfigurator(final DataPrinter dataPrinter, final UserInputReader inputReader) {
+
+    }
+
     public Request configure() {
         // TODO
         return null;

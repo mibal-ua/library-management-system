@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package ua.mibal.minervaTest;
+package ua.mibal.minervaTest.component;
 
-
-import ua.mibal.minervaTest.component.ApplicationConfigurator;
+import ua.mibal.minervaTest.model.Library;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Launcher {
+public class JsonDataOperator implements DataOperator {
 
-    public static void main(String[] args) {
-        final Application application = new ApplicationConfigurator(
-            "src/main/resources/data.json"
-        ).configure();
-        application.start();
+    public JsonDataOperator(final String path) {
+
+    }
+
+    @Override
+    public Library getLibrary() {
+        return null;
     }
 }

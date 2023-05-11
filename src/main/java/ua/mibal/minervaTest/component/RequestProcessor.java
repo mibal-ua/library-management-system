@@ -25,6 +25,10 @@ import ua.mibal.minervaTest.model.Request;
  */
 public class RequestProcessor {
 
+    public RequestProcessor(final DataPrinter dataPrinter, final DataOperator dataOperator) {
+
+    }
+
     //TODO
 
     public boolean isExit() {
