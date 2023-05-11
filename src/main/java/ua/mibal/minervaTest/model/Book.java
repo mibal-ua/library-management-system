@@ -40,7 +40,7 @@ public class Book {
 
     private final String website;
 
-    private final boolean isFree;
+    private boolean isFree;
 
     public Book(final String id, final String title, final String subtitle, final String author,
                 final String publishedDate, final String publisher, final int pages,
@@ -95,5 +95,9 @@ public class Book {
 
     public boolean isFree() {
         return isFree;
+    }
+
+    public void setFree(final boolean free) {
+        isFree = free;
     }
 }
