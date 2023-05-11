@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
-package ua.mibal.minervaTest.component;
+package ua.mibal.minervaTest.component.request;
 
-import ua.mibal.minervaTest.model.Library;
+import ua.mibal.minervaTest.component.DataPrinter;
+import ua.mibal.minervaTest.component.UserInputReader;
 import ua.mibal.minervaTest.model.Request;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class RequestProcessor {
+public class RequestConfigurator {
 
-    public RequestProcessor(final DataPrinter dataPrinter, final DataOperator dataOperator) {
-
-    }
-
-    //TODO
-
-    public boolean isExit() {
-        return false;
-    }
-
-    public void process(final Library data, final Request request) {
+    public RequestConfigurator(final DataPrinter dataPrinter, final UserInputReader inputReader) {
 
     }
 
-    public boolean isUpdate() {
-        return false;
+    public Request configure() {
+        // TODO
+        return null;
     }
 }

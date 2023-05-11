@@ -20,6 +20,8 @@ package ua.mibal.minervaTest.component;
 import ua.mibal.minervaTest.Application;
 import ua.mibal.minervaTest.component.console.ConsoleDataPrinter;
 import ua.mibal.minervaTest.component.console.ConsoleUserInputReader;
+import ua.mibal.minervaTest.component.request.RequestConfigurator;
+import ua.mibal.minervaTest.component.request.RequestProcessor;
 
 /**
  * @author Mykhailo Balakhon

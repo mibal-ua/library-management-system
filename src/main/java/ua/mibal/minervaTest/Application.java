@@ -18,8 +18,8 @@ package ua.mibal.minervaTest;
 
 
 import ua.mibal.minervaTest.component.DataOperator;
-import ua.mibal.minervaTest.component.RequestConfigurator;
-import ua.mibal.minervaTest.component.RequestProcessor;
+import ua.mibal.minervaTest.component.request.RequestConfigurator;
+import ua.mibal.minervaTest.component.request.RequestProcessor;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Request;
 
