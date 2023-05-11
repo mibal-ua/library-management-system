@@ -28,7 +28,7 @@ public class Client {
 
     private final String name;
 
-    private final List<String> booksIds;
+    private List<String> booksIds;
 
     public Client(final String id, final String name, final List<String> booksIds) {
         this.id = id;
@@ -46,5 +46,9 @@ public class Client {
 
     public List<String> getBooksIds() {
         return booksIds;
+    }
+
+    public void setBooksIds(final List<String> booksIds) {
+        this.booksIds = booksIds;
     }
 }
