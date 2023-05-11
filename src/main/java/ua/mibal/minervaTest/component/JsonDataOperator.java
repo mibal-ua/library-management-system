@@ -19,6 +19,7 @@ package ua.mibal.minervaTest.component;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
+import ua.mibal.minervaTest.model.Operation;
 
 /**
  * @author Mykhailo Balakhon
@@ -27,7 +28,7 @@ import ua.mibal.minervaTest.model.Library;
 public class JsonDataOperator implements DataOperator {
 
     public JsonDataOperator(final String path) {
-
+        // TODO
     }
 
     @Override
@@ -42,6 +43,21 @@ public class JsonDataOperator implements DataOperator {
 
     @Override
     public boolean addClient(final Client client) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteBook(final Book book) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteClient(final Client client) {
+        return false;
+    }
+
+    @Override
+    public boolean addOperation(final Operation operation) {
         return false;
     }
 }
