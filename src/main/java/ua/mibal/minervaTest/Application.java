@@ -16,17 +16,13 @@
 
 package ua.mibal.minervaTest;
 
-
-import ua.mibal.minervaTest.component.ApplicationConfigurator;
-
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Launcher {
+public class Application {
 
-    public static void main(String[] args) {
-        final Application application = new ApplicationConfigurator().configure();
-        application.start();
+    public void start() {
+
     }
 }

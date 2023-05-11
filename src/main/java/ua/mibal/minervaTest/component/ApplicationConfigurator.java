@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package ua.mibal.minervaTest;
+package ua.mibal.minervaTest.component;
 
 
-import ua.mibal.minervaTest.component.ApplicationConfigurator;
+import ua.mibal.minervaTest.Application;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Launcher {
+public class ApplicationConfigurator {
 
-    public static void main(String[] args) {
-        final Application application = new ApplicationConfigurator().configure();
-        application.start();
+    public Application configure() {
+        // TODO
+        return null;
     }
 }
