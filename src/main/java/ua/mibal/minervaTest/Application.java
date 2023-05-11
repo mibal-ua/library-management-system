@@ -16,13 +16,43 @@
 
 package ua.mibal.minervaTest;
 
+
+import ua.mibal.minervaTest.component.DataOperator;
+import ua.mibal.minervaTest.component.RequestConfigurator;
+import ua.mibal.minervaTest.component.RequestProcessor;
+import ua.mibal.minervaTest.model.Library;
+import ua.mibal.minervaTest.model.Request;
+
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
 public class Application {
 
-    public void start() {
+    private final DataOperator dataOperator;
 
+    private final RequestConfigurator requestConfigurator;
+
+    private final RequestProcessor requestProcessor;
+
+    public Application(final DataOperator dataOperator,
+                       final RequestConfigurator requestConfigurator,
+                       final RequestProcessor requestProcessor) {
+        this.dataOperator = dataOperator;
+        this.requestConfigurator = requestConfigurator;
+        this.requestProcessor = requestProcessor;
+    }
+
+    public void start() {
+        Library data = dataOperator.getLibrary();
+
+        while (!requestProcessor.isExit()) {
+            final Request request = requestConfigurator.configure();
+            requestProcessor.process(data, request);
+
+            if (requestProcessor.isUpdate()) {
+                data = dataOperator.getLibrary();
+            }
+        }
     }
 }
