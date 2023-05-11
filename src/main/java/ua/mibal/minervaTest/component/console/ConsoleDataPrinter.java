@@ -20,6 +20,7 @@ package ua.mibal.minervaTest.component.console;
 import ua.mibal.minervaTest.component.DataPrinter;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
+import ua.mibal.minervaTest.model.Operation;
 import static java.lang.String.format;
 import java.util.List;
 
@@ -92,6 +93,25 @@ public class ConsoleDataPrinter implements DataPrinter {
 
     @Override
     public void printListOfOperations(final List<Operation> operations) {
-        // TODO
+        operations.stream().forEach(operation -> {
+            System.out.println((format("""
+                    {
+                      "date": "%s",
+                      "time": "%s",
+                      "clientId": "%s",
+                      "operation": "%s",
+                      "books": [""",
+                operation.getDate(),
+                operation.getTime(),
+                operation.getClientId(),
+                operation.getOperationType()
+            )));
+            operation.getBooksIds().stream().forEach((id) -> {
+                System.out.println(format("     \"%s\",", id));
+            });
+            System.out.println("""
+                      ]
+                    },""");
+        });
     }
 }
