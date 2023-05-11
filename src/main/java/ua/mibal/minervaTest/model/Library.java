@@ -57,4 +57,9 @@ public class Library {
         // TODO
         return null;
     }
+
+    public Book findBookById(final String id) {
+        // TODO
+        return null;
+    }
 }
