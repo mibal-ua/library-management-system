@@ -16,23 +16,13 @@
 
 package ua.mibal.minervaTest.component;
 
-import ua.mibal.minervaTest.model.Book;
-import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
-import ua.mibal.minervaTest.model.Operation;
-import java.util.List;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
 public interface DataOperator {
-
-    List<Book> getBooks();
-
-    List<Client> getClients();
-
-    List<Operation> getOperations();
 
     Library getLibrary();
 }
