@@ -22,39 +22,29 @@ import java.util.List;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Library {
+public class Client {
 
-    private final List<Book> books;
+    private final String id;
 
-    private final List<Client> clients;
+    private final String name;
 
-    private final List<Operation> operations;
+    private final List<String> booksIds;
 
-    public Library(final List<Book> books, final List<Client> clients, final List<Operation> operations) {
-        this.books = books;
-        this.clients = clients;
-        this.operations = operations;
+    public Client(final String id, final String name, final List<String> booksIds) {
+        this.id = id;
+        this.name = name;
+        this.booksIds = booksIds;
     }
 
-    public List<Book> getBooks() {
-        return books;
+    public String getId() {
+        return id;
     }
 
-    public List<Client> getClients() {
-        return clients;
+    public String getName() {
+        return name;
     }
 
-    public List<Operation> getOperations() {
-        return operations;
-    }
-
-    public List<Book> findBooks(final String input) {
-        // TODO
-        return null;
-    }
-
-    public List<Client> findClients(final String input) {
-        // TODO
-        return null;
+    public List<String> getBooksIds() {
+        return booksIds;
     }
 }
