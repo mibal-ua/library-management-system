@@ -16,6 +16,10 @@
 
 package ua.mibal.minervaTest.component;
 
+import ua.mibal.minervaTest.model.Book;
+import ua.mibal.minervaTest.model.Client;
+import java.util.List;
+
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
@@ -26,4 +30,7 @@ public interface DataPrinter {
 
     void printErrorMessage(String message);
 
+    void printListOfBooks(List<Book> books);
+
+    void printListOfClients(List<Client> clients);
 }

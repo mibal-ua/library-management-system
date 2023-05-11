@@ -18,6 +18,10 @@
 package ua.mibal.minervaTest.component.console;
 
 import ua.mibal.minervaTest.component.DataPrinter;
+import ua.mibal.minervaTest.model.Book;
+import ua.mibal.minervaTest.model.Client;
+import static java.lang.String.format;
+import java.util.List;
 
 
 /**
@@ -35,5 +39,56 @@ public class ConsoleDataPrinter implements DataPrinter {
     public void printErrorMessage(final String message) {
         System.err.println(message);
     }
+
+    @Override
+    public void printListOfBooks(final List<Book> books) {
+        books.stream().forEach(book -> {
+            System.out.println((format("""
+                    {
+                       "id": "%s",
+                       "title": "%s",
+                       "subtitle": "%s",
+                       "author": "%s",
+                       "published": "%s",
+                       "publisher": "%s",
+                       "pages": %s,
+                       "description": "%s",
+                       "website": "%s",
+                       "isFree": %s
+                     }""",
+                book.getId(),
+                book.getTitle(),
+                book.getSubtitle(),
+                book.getAuthor(),
+                book.getPublishedDate(),
+                book.getPublisher(),
+                book.getPages(),
+                book.getDescription(),
+                book.getWebsite(),
+                book.isFree()
+            )));
+        });
+    }
+
+    @Override
+    public void printListOfClients(final List<Client> clients) {
+        clients.stream().forEach(client -> {
+            System.out.println(format("""
+                    {
+                      "id": "%s",
+                      "name": "%s",
+                      "books": [""",
+                client.getId(),
+                client.getName()
+            ));
+            client.getBooksIds().stream().forEach((id) -> {
+                System.out.println(format("     \"%s\",", id));
+            });
+            System.out.println("""
+                  ]
+                },""");
+        });
+    }
+
 
 }

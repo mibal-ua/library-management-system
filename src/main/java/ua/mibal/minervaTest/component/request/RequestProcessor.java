@@ -75,7 +75,7 @@ public class RequestProcessor {
                 } else {
                     books = library.findBooks(input);
                 }
-                printListOfBooks(books);
+                dataPrinter.printListOfBooks(books);
             }
             if (dataType == CLIENT) {
                 dataPrinter.printInfoMessage("Enter clientID/name:");
@@ -87,7 +87,7 @@ public class RequestProcessor {
                 } else {
                     clients = library.findClients(input);
                 }
-                printListOfClients(clients);
+                dataPrinter.printListOfClients(clients);
             }
         }
 
@@ -162,7 +162,7 @@ public class RequestProcessor {
                 continue;
             }
             dataPrinter.printInfoMessage("OK, this is books we found:");
-            printListOfBooks(foundBooks);
+            dataPrinter.printListOfBooks(foundBooks);
             int index = -1;
             while (index == -1) {
                 dataPrinter.printInfoMessage(format(
@@ -187,14 +187,6 @@ public class RequestProcessor {
             name,
             clientBooks
         );
-    }
-
-    private void printListOfBooks(final List<Book> books) {
-        // TODO
-    }
-
-    private void printListOfClients(final List<Client> clients) {
-        // TODO
     }
 
     public boolean isExit() {
