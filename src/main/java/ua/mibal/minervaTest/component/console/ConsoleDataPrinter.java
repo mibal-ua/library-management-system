@@ -97,12 +97,10 @@ public class ConsoleDataPrinter implements DataPrinter {
             System.out.println((format("""
                     {
                       "date": "%s",
-                      "time": "%s",
                       "clientId": "%s",
                       "operation": "%s",
                       "books": [""",
                 operation.getDate(),
-                operation.getTime(),
                 operation.getClientId(),
                 operation.getOperationType()
             )));
