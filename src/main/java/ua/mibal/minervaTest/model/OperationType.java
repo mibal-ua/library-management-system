@@ -24,6 +24,15 @@ public enum OperationType {
 
     TAKE,
 
-    RETURN
+    RETURN;
+
+    public static boolean contains(final String value) {
+        for (OperationType type : values()) {
+            if (type.name().equalsIgnoreCase(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
