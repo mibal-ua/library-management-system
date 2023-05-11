@@ -16,10 +16,50 @@
 
 package ua.mibal.minervaTest.model;
 
+import java.util.List;
+
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
 public class Operation {
 
+    private final String date;
+
+    private final String time;
+
+    private final String clientId;
+
+    private final OperationType operationType;
+
+    private final List<String> booksIds;
+
+    public Operation(final String date, final String time, final String clientId, final OperationType operationType,
+                     final List<String> booksIds) {
+        this.date = date;
+        this.time = time;
+        this.clientId = clientId;
+        this.operationType = operationType;
+        this.booksIds = booksIds;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public OperationType getOperationType() {
+        return operationType;
+    }
+
+    public List<String> getBooksIds() {
+        return booksIds;
+    }
 }
