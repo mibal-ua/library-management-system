@@ -14,19 +14,28 @@
  * limitations under the License.
  */
 
-package ua.mibal.minervaTest.model;
-
-import ua.mibal.minervaTest.model.command.CommandType;
-import ua.mibal.minervaTest.model.command.DataType;
+package ua.mibal.minervaTest.model.command;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Request {
+public enum CommandType {
 
-    public Request(final CommandType commandType, final DataType dataType) {
+    GET,
 
+    POST,
+
+    PATCH,
+
+    EXIT;
+
+    public static boolean contains(final String value) {
+        for (CommandType type : values()) {
+            if (type.name().equalsIgnoreCase(value)) {
+                return true;
+            }
+        }
+        return false;
     }
-    // TODO
 }
