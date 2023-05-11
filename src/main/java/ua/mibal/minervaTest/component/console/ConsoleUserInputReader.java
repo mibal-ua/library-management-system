@@ -28,6 +28,6 @@ public class ConsoleUserInputReader implements UserInputReader {
 
     @Override
     public String getUserInput() {
-        return new Scanner(System.in).nextLine();
+        return new Scanner(System.in).nextLine().trim();
     }
 }
