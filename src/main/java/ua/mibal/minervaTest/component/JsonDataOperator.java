@@ -16,6 +16,8 @@
 
 package ua.mibal.minervaTest.component;
 
+import ua.mibal.minervaTest.model.Book;
+import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
 
 /**
@@ -31,5 +33,15 @@ public class JsonDataOperator implements DataOperator {
     @Override
     public Library getLibrary() {
         return null;
+    }
+
+    @Override
+    public boolean addBook(final Book book) {
+        return false;
+    }
+
+    @Override
+    public boolean addClient(final Client client) {
+        return false;
     }
 }

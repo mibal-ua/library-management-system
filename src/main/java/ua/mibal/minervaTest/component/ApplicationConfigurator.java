@@ -42,7 +42,7 @@ public class ApplicationConfigurator {
 
     public ApplicationConfigurator(final String path) {
         dataOperator = new JsonDataOperator(path);
-        requestProcessor = new RequestProcessor(dataPrinter, dataOperator);
+        requestProcessor = new RequestProcessor(dataPrinter, inputReader, dataOperator);
     }
 
     public Application configure() {

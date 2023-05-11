@@ -16,6 +16,8 @@
 
 package ua.mibal.minervaTest.component;
 
+import ua.mibal.minervaTest.model.Book;
+import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
 
 /**
@@ -25,4 +27,8 @@ import ua.mibal.minervaTest.model.Library;
 public interface DataOperator {
 
     Library getLibrary();
+
+    boolean addBook(Book book);
+
+    boolean addClient(Client client);
 }
