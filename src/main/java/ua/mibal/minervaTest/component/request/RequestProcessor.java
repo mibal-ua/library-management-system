@@ -22,18 +22,28 @@ import ua.mibal.minervaTest.component.UserInputReader;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
+import ua.mibal.minervaTest.model.Operation;
+import ua.mibal.minervaTest.model.OperationType;
 import ua.mibal.minervaTest.model.Request;
 import ua.mibal.minervaTest.model.command.CommandType;
 import ua.mibal.minervaTest.model.command.DataType;
 import static java.lang.String.format;
+import static ua.mibal.minervaTest.model.OperationType.RETURN;
+import static ua.mibal.minervaTest.model.OperationType.TAKE;
 import static ua.mibal.minervaTest.model.command.CommandType.GET;
 import static ua.mibal.minervaTest.model.command.CommandType.PATCH;
 import static ua.mibal.minervaTest.model.command.CommandType.POST;
 import static ua.mibal.minervaTest.model.command.DataType.BOOK;
 import static ua.mibal.minervaTest.model.command.DataType.CLIENT;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Mykhailo Balakhon
@@ -113,8 +123,124 @@ public class RequestProcessor {
         }
 
         if (commandType == PATCH) {
-            // TODO
+            if (dataType == BOOK) {
+                // TODO
+            }
+            if (dataType == CLIENT) {
+                Client client = null;
+                while (client == null) {
+                    dataPrinter.printInfoMessage("Enter client ID/name:");
+                    String input = inputReader.getUserInput();
+                    client = findConcretClient(input);
+                }
+
+                OperationType operationType = null;
+                while (operationType == null) {
+                    dataPrinter.printInfoMessage("""
+                        Enter what you need:
+                                            
+                        /TAKE
+                        /RETURN
+                        """);
+                    String input = inputReader.getUserInput();
+                    if (!OperationType.contains(input.substring(1))) {
+                        dataPrinter.printInfoMessage("Incorrect argument.");
+                        continue;
+                    }
+                    operationType = OperationType.valueOf(
+                        input.substring(1).toUpperCase());
+                }
+                dataPrinter.printInfoMessage("Enter book id you need to operate:");
+
+                List<String> booksIds = null;
+                List<String> booksToOperate = null;
+                if (operationType == TAKE) {
+                    booksToOperate = initBooksToTake();
+                    booksToOperate.forEach((id) -> {
+                        final Book book = library.findBookById(id);
+                        if (!book.isFree()) {
+                            throw new IllegalArgumentException(format(
+                                "Oops, book '%s' not free", book.getId()));
+                        }
+                        dataOperator.deleteBook(book);
+                        book.setFree(false);
+                        dataOperator.addBook(book);
+                    });
+                    booksIds = Stream
+                        .concat(client.getBooksIds().stream(), booksToOperate.stream())
+                        .collect(Collectors.toList());
+                }
+                if (operationType == RETURN) {
+                    booksToOperate = initBooksToReturn(client);
+                    booksToOperate.forEach((id) -> {
+                        final Book book = library.findBookById(id);
+                        if (book.isFree()) {
+                            throw new IllegalArgumentException(format(
+                                "Oops, book '%s' is already free", book.getId()));
+                        }
+                        dataOperator.deleteBook(book);
+                        book.setFree(true);
+                        dataOperator.addBook(book);
+                    });
+                    final List<String> finalBooksToOperate = booksToOperate;
+                    booksIds = client.getBooksIds().stream()
+                        .filter(id -> !finalBooksToOperate.contains(id))
+                        .collect(Collectors.toList());
+                }
+                dataOperator.deleteClient(client);
+                client.setBooksIds(booksIds);
+                dataOperator.addClient(client);
+
+                Date date = Calendar.getInstance().getTime();
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                String strDate = dateFormat.format(date);
+
+                dataOperator.addOperation(new Operation(
+                    strDate,
+                    client.getId(),
+                    operationType,
+                    booksToOperate));
+            }
         }
+    }
+
+    private List<String> initBooksToReturn(final Client client) {
+        List<String> books = new ArrayList<>();
+        while (true) {
+            dataPrinter.printInfoMessage("Enter book id/name that need to return:");
+            String input = inputReader.getUserInput();
+            if (client.getBooksIds().contains(input)) {
+                dataPrinter.printInfoMessage("OK, book added to return list!");
+                dataPrinter.printInfoMessage("Need any other book to return?");
+                books.add(input);
+                return books;
+                // TODO add multiple books
+            }
+        }
+    }
+
+    private Client findConcretClient(final String input) {
+        List<Client> clients = library.findClients(input);
+        dataPrinter.printInfoMessage("OK, this is clients we found by request:");
+        dataPrinter.printListOfClients(clients);
+        int index = -1;
+        while (index == -1) {
+            dataPrinter.printInfoMessage(format(
+                "Select one of this clients, enter it index ('1' to '%s') \n" +
+                "Or '0' if there are no books you are looking for.", clients.size()
+            ));
+            index = Integer.parseInt(inputReader.getUserInput());
+            if (index == 0) {
+                break;
+            }
+            if (!(1 <= index && index <= clients.size())) {
+                dataPrinter.printInfoMessage(format(
+                    "Index '%d' dont belong range [1, %s]", clients.size()));
+                continue;
+            }
+            return clients.get(index - 1);
+        }
+        return null;
     }
 
     private Book initNewBook() {
@@ -151,21 +277,30 @@ public class RequestProcessor {
     private Client initNewClient() {
         dataPrinter.printInfoMessage("Enter client name:");
         final String name = inputReader.getUserInput();
-        final List<String> clientBooks = new ArrayList<>();
+        final List<String> clientBooks = initBooksToTake();
+        return new Client(
+            String.valueOf(name.hashCode()),
+            name,
+            clientBooks
+        );
+    }
+
+    private List<String> initBooksToTake() {
+        List<String> books = new ArrayList<>();
         while (true) {
             dataPrinter.printInfoMessage("Enter book id/name that client took:");
             dataPrinter.printInfoMessage("If client dont took book, just click Enter");
 
             final String input = inputReader.getUserInput();
             if (input.equals("")) {
-                break;
+                return books;
             }
             final List<Book> foundBooks = library.findBooks(input);
             if (foundBooks.size() == 0) {
                 dataPrinter.printInfoMessage("There are no books in library with this data ((");
                 continue;
             }
-            dataPrinter.printInfoMessage("OK, this is books we found:");
+            dataPrinter.printInfoMessage("OK, this books we found:");
             dataPrinter.printListOfBooks(foundBooks);
             int index = -1;
             while (index == -1) {
@@ -175,22 +310,18 @@ public class RequestProcessor {
                 ));
                 index = Integer.parseInt(inputReader.getUserInput());
                 if (index == 0) {
-                    break;
+                    return books;
                 }
                 if (!(1 <= index && index <= foundBooks.size())) {
                     dataPrinter.printInfoMessage(format(
                         "Index '%d' dont belong range [1, %s]", foundBooks.size()));
+                    index = -1;
                     continue;
                 }
                 Book book = foundBooks.get(index - 1);
-                clientBooks.add(book.getId());
+                books.add(book.getId());
             }
         }
-        return new Client(
-            String.valueOf(name.hashCode()),
-            name,
-            clientBooks
-        );
     }
 
     public boolean isExit() {
