@@ -31,6 +31,7 @@ import static ua.mibal.minervaTest.model.command.CommandType.PATCH;
 import static ua.mibal.minervaTest.model.command.CommandType.POST;
 import static ua.mibal.minervaTest.model.command.DataType.BOOK;
 import static ua.mibal.minervaTest.model.command.DataType.CLIENT;
+import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,6 +89,9 @@ public class RequestProcessor {
                     clients = library.findClients(input);
                 }
                 dataPrinter.printListOfClients(clients);
+            }
+            if (dataType == HISTORY) {
+                dataPrinter.printListOfOperations(library.getOperations());
             }
         }
 

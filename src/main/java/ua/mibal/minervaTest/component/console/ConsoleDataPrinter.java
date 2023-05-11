@@ -90,5 +90,8 @@ public class ConsoleDataPrinter implements DataPrinter {
         });
     }
 
-
+    @Override
+    public void printListOfOperations(final List<Operation> operations) {
+        // TODO
+    }
 }

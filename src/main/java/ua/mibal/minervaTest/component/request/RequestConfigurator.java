@@ -53,6 +53,7 @@ public class RequestConfigurator {
             data-types:
             - BOOK
             - CLIENT
+            - HISTORY
               
             or /exit
             """);
