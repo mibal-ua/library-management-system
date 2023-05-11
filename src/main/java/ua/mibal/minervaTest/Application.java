@@ -44,14 +44,13 @@ public class Application {
     }
 
     public void start() {
-        Library data = dataOperator.getLibrary();
-
+        Library library = dataOperator.getLibrary();
         while (!requestProcessor.isExit()) {
             final Request request = requestConfigurator.configure();
-            requestProcessor.process(data, request);
+            requestProcessor.process(library, request);
 
             if (requestProcessor.isUpdate()) {
-                data = dataOperator.getLibrary();
+                library = dataOperator.getLibrary();
             }
         }
     }
