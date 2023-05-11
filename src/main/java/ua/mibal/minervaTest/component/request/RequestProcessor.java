@@ -67,7 +67,7 @@ public class RequestProcessor {
 
         if (commandType == GET) {
             if (dataType == BOOK) {
-                dataPrinter.printInfoMessage("Enter bookID/title/author:");
+                dataPrinter.printInfoMessage("Enter book ID/title/author:");
                 dataPrinter.printInfoMessage("Or enter '/all' to see all.");
                 String input = inputReader.getUserInput();
                 List<Book> books;
@@ -79,7 +79,7 @@ public class RequestProcessor {
                 dataPrinter.printListOfBooks(books);
             }
             if (dataType == CLIENT) {
-                dataPrinter.printInfoMessage("Enter clientID/name:");
+                dataPrinter.printInfoMessage("Enter client ID/name/ID of book they took:");
                 dataPrinter.printInfoMessage("Or enter '/all' to see all.");
                 String input = inputReader.getUserInput();
                 List<Client> clients;
