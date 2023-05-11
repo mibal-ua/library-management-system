@@ -25,8 +25,20 @@ import ua.mibal.minervaTest.model.command.DataType;
  */
 public class Request {
 
-    public Request(final CommandType commandType, final DataType dataType) {
+    private final CommandType commandType;
 
+    private final DataType dataType;
+
+    public Request(final CommandType commandType, final DataType dataType) {
+        this.commandType = commandType;
+        this.dataType = dataType;
     }
-    // TODO
+
+    public CommandType getCommandType() {
+        return commandType;
+    }
+
+    public DataType getDataType() {
+        return dataType;
+    }
 }
