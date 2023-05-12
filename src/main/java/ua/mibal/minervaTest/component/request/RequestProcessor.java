@@ -197,7 +197,6 @@ public class RequestProcessor {
             String input = inputReader.getUserInput();
             if (client.getBooksIds().contains(input)) {
                 dataPrinter.printInfoMessage("OK, book added to return list!");
-                dataPrinter.printInfoMessage("Need any other book to return?");
                 books.add(input);
                 return books;
                 // TODO add multiple books
@@ -316,9 +315,5 @@ public class RequestProcessor {
 
     public boolean isExit() {
         return exit;
-    }
-
-    public boolean isUpdate() {
-        return update;
     }
 }

@@ -48,10 +48,6 @@ public class Application {
         while (!requestProcessor.isExit()) {
             final Request request = requestConfigurator.configure();
             requestProcessor.process(library, request);
-
-            if (requestProcessor.isUpdate()) {
-                library = dataOperator.getLibrary();
-            }
         }
     }
 }
