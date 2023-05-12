@@ -61,8 +61,6 @@ public class RequestProcessor {
 
     private boolean exit = false;
 
-    private boolean update = false;
-
     public RequestProcessor(final DataPrinter dataPrinter, final UserInputReader inputReader,
                             final DataOperator dataOperator) {
         this.dataPrinter = dataPrinter;
@@ -108,18 +106,15 @@ public class RequestProcessor {
         if (commandType == POST) {
             if (dataType == BOOK) {
                 Book newBook = initNewBook();
-                if (dataOperator.addBook(newBook)) {
-                    dataPrinter.printInfoMessage("Book successfully added!");
-                }
-                update = true;
+                library.getBooks().add(newBook);
+                dataPrinter.printInfoMessage("Book successfully added!");
             }
             if (dataType == CLIENT) {
                 Client newClient = initNewClient();
-                if (dataOperator.addClient(newClient)) {
-                    dataPrinter.printInfoMessage("Client successfully added!");
-                }
-                update = true;
+                library.getClients().add(newClient);
+                dataPrinter.printInfoMessage("Client successfully added!");
             }
+            dataOperator.updateLibrary(library);
         }
 
         if (commandType == PATCH) {
@@ -158,13 +153,7 @@ public class RequestProcessor {
                     booksToOperate = initBooksToTake();
                     booksToOperate.forEach((id) -> {
                         final Book book = library.findBookById(id);
-                        if (!book.isFree()) {
-                            throw new IllegalArgumentException(format(
-                                "Oops, book '%s' not free", book.getId()));
-                        }
-                        dataOperator.deleteBook(book);
                         book.setFree(false);
-                        dataOperator.addBook(book);
                     });
                     booksIds = Stream
                         .concat(client.getBooksIds().stream(), booksToOperate.stream())
@@ -178,28 +167,25 @@ public class RequestProcessor {
                             throw new IllegalArgumentException(format(
                                 "Oops, book '%s' is already free", book.getId()));
                         }
-                        dataOperator.deleteBook(book);
                         book.setFree(true);
-                        dataOperator.addBook(book);
                     });
                     final List<String> finalBooksToOperate = booksToOperate;
                     booksIds = client.getBooksIds().stream()
                         .filter(id -> !finalBooksToOperate.contains(id))
                         .collect(Collectors.toList());
                 }
-                dataOperator.deleteClient(client);
                 client.setBooksIds(booksIds);
-                dataOperator.addClient(client);
 
                 Date date = Calendar.getInstance().getTime();
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
                 String strDate = dateFormat.format(date);
 
-                dataOperator.addOperation(new Operation(
+                library.getOperations().add(new Operation(
                     strDate,
                     client.getId(),
-                    operationType,
+                    operationType.name(),
                     booksToOperate));
+                dataOperator.updateLibrary(library);
             }
         }
     }
@@ -319,7 +305,11 @@ public class RequestProcessor {
                     continue;
                 }
                 Book book = foundBooks.get(index - 1);
-                books.add(book.getId());
+                if (book.isFree()) {
+                    books.add(book.getId());
+                } else {
+                    dataPrinter.printInfoMessage("Oops, book isnt free((");
+                }
             }
         }
     }
