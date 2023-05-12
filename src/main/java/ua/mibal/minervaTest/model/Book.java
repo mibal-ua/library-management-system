@@ -16,30 +16,34 @@
 
 package ua.mibal.minervaTest.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
 public class Book {
 
-    private final String id;
+    private String id;
 
-    private final String title;
+    private String title;
 
-    private final String subtitle;
+    private String subtitle;
 
-    private final String author;
+    private String author;
 
-    private final String publishedDate;
+    @JsonProperty("published")
+    private String publishedDate;
 
-    private final String publisher;
+    private String publisher;
 
-    private final int pages;
+    private int pages;
 
-    private final String description;
+    private String description;
 
-    private final String website;
+    private String website;
 
+    @JsonProperty("isFree")
     private boolean isFree;
 
     public Book(final String id, final String title, final String subtitle, final String author,
@@ -55,6 +59,9 @@ public class Book {
         this.description = description;
         this.website = website;
         this.isFree = isFree;
+    }
+
+    public Book() {
     }
 
     public String getId() {

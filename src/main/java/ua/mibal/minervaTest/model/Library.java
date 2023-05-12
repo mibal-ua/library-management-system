@@ -38,6 +38,9 @@ public class Library {
         this.operations = operations;
     }
 
+    public Library() {
+    }
+
     public List<Book> getBooks() {
         return books;
     }
@@ -51,6 +54,7 @@ public class Library {
     }
 
     public List<Book> findBooks(final String input) {
+        // TODO FIXME search algo
         List<Book> result = new ArrayList<>();
         books.forEach((book) -> {
             if (book.getId().contains(input) ||
@@ -79,6 +83,16 @@ public class Library {
     }
 
     public Book findBookById(final String id) {
+        final AtomicReference<Book> result = new AtomicReference<>();
+        books.forEach((book) -> {
+            if (book.getId().equals(id)) {
+                result.set(book);
+            }
+        });
+        return result.get();
+    }
+
+    public Book findClientById(final String id) {
         final AtomicReference<Book> result = new AtomicReference<>();
         books.forEach((book) -> {
             if (book.getId().equals(id)) {

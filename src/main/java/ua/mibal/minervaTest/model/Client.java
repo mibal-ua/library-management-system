@@ -16,6 +16,7 @@
 
 package ua.mibal.minervaTest.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 /**
@@ -24,16 +25,20 @@ import java.util.List;
  */
 public class Client {
 
-    private final String id;
+    private String id;
 
-    private final String name;
+    private String name;
 
+    @JsonProperty("books")
     private List<String> booksIds;
 
     public Client(final String id, final String name, final List<String> booksIds) {
         this.id = id;
         this.name = name;
         this.booksIds = booksIds;
+    }
+
+    public Client() {
     }
 
     public String getId() {
