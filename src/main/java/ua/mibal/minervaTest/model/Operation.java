@@ -28,11 +28,11 @@ public class Operation {
 
     private final String clientId;
 
-    private final OperationType operationType;
+    private String operationType;
 
     private final List<String> booksIds;
 
-    public Operation(final String date, final String clientId, final OperationType operationType,
+    public Operation(final String date, final String clientId, final String operationType,
                      final List<String> booksIds) {
         this.date = date;
         this.clientId = clientId;
@@ -48,7 +48,7 @@ public class Operation {
         return clientId;
     }
 
-    public OperationType getOperationType() {
+    public String getOperationType() {
         return operationType;
     }
 
