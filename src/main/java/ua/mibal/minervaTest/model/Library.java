@@ -16,7 +16,9 @@
 
 package ua.mibal.minervaTest.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Mykhailo Balakhon
@@ -24,11 +26,11 @@ import java.util.List;
  */
 public class Library {
 
-    private final List<Book> books;
+    private List<Book> books;
 
-    private final List<Client> clients;
+    private List<Client> clients;
 
-    private final List<Operation> operations;
+    private List<Operation> operations;
 
     public Library(final List<Book> books, final List<Client> clients, final List<Operation> operations) {
         this.books = books;
@@ -49,17 +51,40 @@ public class Library {
     }
 
     public List<Book> findBooks(final String input) {
-        // TODO
-        return null;
+        List<Book> result = new ArrayList<>();
+        books.forEach((book) -> {
+            if (book.getId().contains(input) ||
+                book.getTitle().contains(input) ||
+                book.getSubtitle().contains(input) ||
+                book.getAuthor().contains(input) ||
+                book.getPublishedDate().contains(input) ||
+                book.getPublisher().contains(input) ||
+                book.getDescription().contains(input) ||
+                book.getWebsite().contains(input)) {
+                result.add(book);
+            }
+        });
+        return result;
     }
 
     public List<Client> findClients(final String input) {
-        // TODO
-        return null;
+        List<Client> result = new ArrayList<>();
+        clients.forEach((client) -> {
+            if (client.getId().contains(input) ||
+                client.getName().contains(input)) {
+                result.add(client);
+            }
+        });
+        return result;
     }
 
     public Book findBookById(final String id) {
-        // TODO
-        return null;
+        final AtomicReference<Book> result = new AtomicReference<>();
+        books.forEach((book) -> {
+            if (book.getId().equals(id)) {
+                result.set(book);
+            }
+        });
+        return result.get();
     }
 }
