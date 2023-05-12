@@ -16,10 +16,15 @@
 
 package ua.mibal.minervaTest.component;
 
-import ua.mibal.minervaTest.model.Book;
-import ua.mibal.minervaTest.model.Client;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import ua.mibal.minervaTest.model.Library;
-import ua.mibal.minervaTest.model.Operation;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Scanner;
 
 /**
  * @author Mykhailo Balakhon
@@ -27,37 +32,48 @@ import ua.mibal.minervaTest.model.Operation;
  */
 public class JsonDataOperator implements DataOperator {
 
+    private final String sourcePath;
+
     public JsonDataOperator(final String path) {
-        // TODO
+        this.sourcePath = path;
     }
 
     @Override
     public Library getLibrary() {
-        return null;
+        final String data = readFile();
+        return stringToLibrary(data);
     }
 
     @Override
-    public boolean addBook(final Book book) {
-        return false;
+    public void updateLibrary(final Library library) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            ObjectWriter writer = mapper.writer(new DefaultPrettyPrinter());
+            writer.writeValue(new File(sourcePath), library);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @Override
-    public boolean addClient(final Client client) {
-        return false;
+    private String readFile() {
+        File source = new File(sourcePath);
+        StringBuilder stringBuilder = new StringBuilder();
+        try (Scanner reader = new Scanner(source)) {
+            while (reader.hasNextLine()) {
+                stringBuilder.append(reader.nextLine());
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return stringBuilder.toString();
     }
 
-    @Override
-    public boolean deleteBook(final Book book) {
-        return false;
-    }
-
-    @Override
-    public boolean deleteClient(final Client client) {
-        return false;
-    }
-
-    @Override
-    public boolean addOperation(final Operation operation) {
-        return false;
+    protected Library stringToLibrary(final String data) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(data, Library.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
