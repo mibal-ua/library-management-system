@@ -27,7 +27,7 @@ public class Launcher {
 
     public static void main(String[] args) {
         final Application application = new ApplicationConfigurator(
-            "src/main/resources/data.json"
+            "src/main/resources/data.ser"
         ).configure();
         application.start();
     }

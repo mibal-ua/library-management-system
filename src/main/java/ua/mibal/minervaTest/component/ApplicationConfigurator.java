@@ -41,7 +41,7 @@ public class ApplicationConfigurator {
     private final DataOperator dataOperator;
 
     public ApplicationConfigurator(final String path) {
-        dataOperator = new JsonDataOperator(path);
+        dataOperator = new JavaSerializationDataOperator(path);
         requestProcessor = new RequestProcessor(dataPrinter, inputReader, dataOperator);
     }
 
