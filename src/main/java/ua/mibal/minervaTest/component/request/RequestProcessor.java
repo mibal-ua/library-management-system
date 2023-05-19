@@ -246,7 +246,6 @@ public class RequestProcessor {
         dataPrinter.printInfoMessage("Enter linked website:");
         final String website = inputReader.getUserInput();
         return new Book(
-            String.valueOf(title.hashCode()),
             title,
             subtitle,
             author,
@@ -264,7 +263,6 @@ public class RequestProcessor {
         final String name = inputReader.getUserInput();
         final List<String> clientBooks = initBooksToTake();
         return new Client(
-            String.valueOf(name.hashCode()),
             name,
             clientBooks
         );

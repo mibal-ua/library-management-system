@@ -18,6 +18,7 @@ package ua.mibal.minervaTest.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * @author Mykhailo Balakhon
@@ -47,10 +48,10 @@ public class Book implements Serializable {
     @JsonProperty("isFree")
     private boolean isFree;
 
-    public Book(final String id, final String title, final String subtitle, final String author,
+    public Book(final String title, final String subtitle, final String author,
                 final String publishedDate, final String publisher, final int pages,
                 final String description, final String website, final boolean isFree) {
-        this.id = id;
+        this.id = UUID.randomUUID().toString();
         this.title = title;
         this.subtitle = subtitle;
         this.author = author;
@@ -87,10 +88,6 @@ public class Book implements Serializable {
 
     public String getPublisher() {
         return publisher;
-    }
-
-    public int getPages() {
-        return pages;
     }
 
     public String getDescription() {

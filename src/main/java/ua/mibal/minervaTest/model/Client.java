@@ -19,6 +19,7 @@ package ua.mibal.minervaTest.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Mykhailo Balakhon
@@ -33,8 +34,8 @@ public class Client implements Serializable {
     @JsonProperty("books")
     private List<String> booksIds;
 
-    public Client(final String id, final String name, final List<String> booksIds) {
-        this.id = id;
+    public Client(final String name, final List<String> booksIds) {
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.booksIds = booksIds;
     }
