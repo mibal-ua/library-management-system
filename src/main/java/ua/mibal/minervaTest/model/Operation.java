@@ -17,13 +17,14 @@
 package ua.mibal.minervaTest.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Operation {
+public class Operation implements Serializable {
 
     private String date;
 

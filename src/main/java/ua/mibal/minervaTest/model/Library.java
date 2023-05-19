@@ -16,6 +16,7 @@
 
 package ua.mibal.minervaTest.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,7 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Library {
+public class Library implements Serializable {
 
     private List<Book> books;
 
