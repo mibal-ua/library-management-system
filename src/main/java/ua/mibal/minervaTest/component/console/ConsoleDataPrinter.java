@@ -63,9 +63,6 @@ public class ConsoleDataPrinter implements DataPrinter {
                 book.getAuthor(),
                 book.getPublishedDate(),
                 book.getPublisher(),
-                book.getPages(),
-                book.getDescription(),
-                book.getWebsite(),
                 book.isFree()
             )));
         });

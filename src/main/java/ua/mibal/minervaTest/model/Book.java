@@ -39,27 +39,18 @@ public class Book implements Serializable {
 
     private String publisher;
 
-    private int pages;
-
-    private String description;
-
-    private String website;
-
     @JsonProperty("isFree")
     private boolean isFree;
 
     public Book(final String title, final String subtitle, final String author,
-                final String publishedDate, final String publisher, final int pages,
-                final String description, final String website, final boolean isFree) {
+                final String publishedDate, final String publisher,
+                final boolean isFree) {
         this.id = UUID.randomUUID().toString();
         this.title = title;
         this.subtitle = subtitle;
         this.author = author;
         this.publishedDate = publishedDate;
         this.publisher = publisher;
-        this.pages = pages;
-        this.description = description;
-        this.website = website;
         this.isFree = isFree;
     }
 
@@ -88,14 +79,6 @@ public class Book implements Serializable {
 
     public String getPublisher() {
         return publisher;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getWebsite() {
-        return website;
     }
 
     public boolean isFree() {

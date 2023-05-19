@@ -239,21 +239,12 @@ public class RequestProcessor {
         final String publishDate = inputReader.getUserInput();
         dataPrinter.printInfoMessage("Enter book publisher:");
         final String publisher = inputReader.getUserInput();
-        dataPrinter.printInfoMessage("Enter page count:");
-        final String pageCount = inputReader.getUserInput();
-        dataPrinter.printInfoMessage("Enter book description:");
-        final String description = inputReader.getUserInput();
-        dataPrinter.printInfoMessage("Enter linked website:");
-        final String website = inputReader.getUserInput();
         return new Book(
             title,
             subtitle,
             author,
             publishDate,
             publisher,
-            Integer.parseInt(pageCount),
-            description,
-            website,
             true
         );
     }
