@@ -40,24 +40,8 @@ public class RequestConfigurator {
     }
 
     public Request configure() {
-        dataPrinter.printInfoMessage("Enter command you need:");
-        dataPrinter.printInfoMessage("""
-            
-            /{command-type} {data-type}
-                        
-            command-types:
-            - GET
-            - POST
-            - PATCH
-                        
-            data-types:
-            - BOOK
-            - CLIENT
-            - HISTORY
-              
-            or /exit
-            """);
         while (true) {
+            dataPrinter.printInfoMessage("Enter command you need (or '/help'):");
             String input = inputReader.getUserInput();
             if (!input.startsWith("/")) {
                 dataPrinter.printInfoMessage("Command must starts with '/' symbol");
@@ -69,10 +53,32 @@ public class RequestConfigurator {
                 return new Request(EXIT, null);
             }
 
+            if (input.equalsIgnoreCase("/help")) {
+                dataPrinter.printInfoMessage("""
+                    /{command-type} {data-type} {args}
+                                
+                    command-types:
+                    - get
+                    - post
+                    - patch
+                                
+                    data-types:
+                    - book
+                    - client
+                    - history
+                                
+                    args:
+                    - ${id/name/title}
+                    - all
+                      
+                    or /exit
+                    """);
+                continue;
+            }
+
             String[] command = input.substring(1).split(" ");
             if (command.length < 2) {
                 dataPrinter.printInfoMessage("Command is too short");
-                dataPrinter.printInfoMessage("Enter command:");
                 continue;
             }
 
@@ -81,11 +87,9 @@ public class RequestConfigurator {
                 dataPrinter.printInfoMessage(format(
                     "Unrecognizable command type '%s'", commandTypeStr
                 ));
-                dataPrinter.printInfoMessage("Enter command:");
                 continue;
             }
             CommandType commandType = CommandType.valueOf(commandTypeStr.toUpperCase());
-
             String dataTypeStr = command[1];
             if (!DataType.contains(dataTypeStr)) {
                 dataPrinter.printInfoMessage(format(
@@ -95,7 +99,6 @@ public class RequestConfigurator {
                 continue;
             }
             DataType dataType = DataType.valueOf(dataTypeStr.toUpperCase());
-
             return new Request(commandType, dataType);
         }
     }
