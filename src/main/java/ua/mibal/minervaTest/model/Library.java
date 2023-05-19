@@ -55,17 +55,12 @@ public class Library implements Serializable {
     }
 
     public List<Book> findBooks(final String input) {
-        // TODO FIXME search algo
         List<Book> result = new ArrayList<>();
         books.forEach((book) -> {
             if (book.getId().contains(input) ||
                 book.getTitle().contains(input) ||
-                book.getSubtitle().contains(input) ||
                 book.getAuthor().contains(input) ||
-                book.getPublishedDate().contains(input) ||
-                book.getPublisher().contains(input) ||
-                book.getDescription().contains(input) ||
-                book.getWebsite().contains(input)) {
+                book.getPublisher().contains(input)) {
                 result.add(book);
             }
         });
@@ -76,7 +71,8 @@ public class Library implements Serializable {
         List<Client> result = new ArrayList<>();
         clients.forEach((client) -> {
             if (client.getId().contains(input) ||
-                client.getName().contains(input)) {
+                client.getName().contains(input) ||
+                client.getBooksIds().contains(input)) {
                 result.add(client);
             }
         });
