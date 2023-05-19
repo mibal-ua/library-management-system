@@ -45,7 +45,7 @@ public class Book implements Serializable {
     public Book(final String title, final String subtitle, final String author,
                 final String publishedDate, final String publisher,
                 final boolean isFree) {
-        this.id = UUID.randomUUID().toString();
+        this.id = UUID.randomUUID().toString().replace("-","").substring(0, 4);
         this.title = title;
         this.subtitle = subtitle;
         this.author = author;
