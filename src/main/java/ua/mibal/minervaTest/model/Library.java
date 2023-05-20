@@ -17,6 +17,7 @@
 package ua.mibal.minervaTest.model;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.List.of;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,26 +58,29 @@ public class Library implements Serializable {
 
     public List<Book> findBooks(final String input) {
         List<Book> result = new ArrayList<>();
-        books.forEach((book) -> {
-            if (book.getId().contains(input) ||
-                book.getTitle().contains(input) ||
+        for (Book book : books) {
+            if (book.getId().equals(input)) {
+                return of(book);
+            }
+            if (book.getTitle().contains(input) ||
                 book.getAuthor().contains(input) ||
                 book.getPublisher().contains(input)) {
                 result.add(book);
             }
-        });
+        }
         return result;
     }
 
     public List<Client> findClients(final String input) {
         List<Client> result = new ArrayList<>();
-        clients.forEach((client) -> {
-            if (client.getId().contains(input) ||
-                client.getName().contains(input) ||
-                client.getBooksIds().contains(input)) {
+        for (Client client : clients) {
+            if (client.getId().equals(input)) {
+                return of(client);
+            }
+            if (client.getName().contains(input)) {
                 result.add(client);
             }
-        });
+        }
         return result;
     }
 
