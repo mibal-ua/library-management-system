@@ -16,6 +16,7 @@
 
 package ua.mibal.minervaTest.model;
 
+import static java.util.Collections.unmodifiableList;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,15 +44,15 @@ public class Library implements Serializable {
     }
 
     public List<Book> getBooks() {
-        return books;
+        return unmodifiableList(books);
     }
 
     public List<Client> getClients() {
-        return clients;
+        return unmodifiableList(clients);
     }
 
     public List<Operation> getOperations() {
-        return operations;
+        return unmodifiableList(operations);
     }
 
     public List<Book> findBooks(final String input) {
@@ -95,5 +96,23 @@ public class Library implements Serializable {
             }
         }
         return Optional.empty();
+    }
+
+    public boolean addOperation(final Operation operation) {
+        // TODO implement validation
+        operations.add(operation);
+        return true;
+    }
+
+    public boolean addBook(final Book book) {
+        // TODO implement validation
+        books.add(book);
+        return true;
+    }
+
+    public boolean addClient(final Client client) {
+        // TODO implement validation
+        clients.add(client);
+        return true;
     }
 }

@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -106,13 +107,19 @@ public class RequestProcessor {
         if (commandType == POST) {
             if (dataType == BOOK) {
                 Book newBook = initNewBook();
-                library.getBooks().add(newBook);
-                dataPrinter.printInfoMessage("Book successfully added!");
+                if (library.addBook(newBook)) {
+                    dataPrinter.printInfoMessage("Book successfully added!");
+                } else {
+                    dataPrinter.printInfoMessage("An error occurred(");
+                }
             }
             if (dataType == CLIENT) {
                 Client newClient = initNewClient();
-                library.getClients().add(newClient);
-                dataPrinter.printInfoMessage("Client successfully added!");
+                if (library.addClient(newClient)) {
+                    dataPrinter.printInfoMessage("Client successfully added!");
+                } else {
+                    dataPrinter.printInfoMessage("An error occurred(");
+                }
             }
             dataOperator.updateLibrary(library);
         }
@@ -183,7 +190,7 @@ public class RequestProcessor {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
                 String strDate = dateFormat.format(date);
 
-                library.getOperations().add(new Operation(
+                library.addOperation(new Operation(
                     strDate,
                     client.getId(),
                     operationType.name(),
