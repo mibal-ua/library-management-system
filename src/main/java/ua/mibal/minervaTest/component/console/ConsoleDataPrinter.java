@@ -44,6 +44,14 @@ public class ConsoleDataPrinter implements DataPrinter {
     public void printListOfBooks(final List<Book> books) {
         System.out.format("+------------------------------------------------------------------------------+%n");
         System.out.format("|                                     Books                                    |%n");
+
+        if (books.size() == 0) {
+            System.out.format("+------------------------------------------------------------------------------+%n");
+            System.out.format("|                                 List is empty                                |%n");
+            System.out.format("+------------------------------------------------------------------------------+%n");
+            return;
+        }
+
         System.out.format("+------+--------------------------------------+-------------------------+------+%n");
         System.out.format("|  ID  | Title                                | Author                  | Free |%n");
         System.out.format("+------+--------------------------------------+-------------------------+------+%n");
@@ -70,6 +78,14 @@ public class ConsoleDataPrinter implements DataPrinter {
     public void printListOfClients(final List<Client> clients) {
         System.out.format("+------------------------------------------------------------------------------+%n");
         System.out.format("|                                   Clients                                    |%n");
+
+        if (clients.size() == 0) {
+            System.out.format("+------------------------------------------------------------------------------+%n");
+            System.out.format("|                                List is empty                                 |%n");
+            System.out.format("+------------------------------------------------------------------------------+%n");
+            return;
+        }
+
         System.out.format("+------+-------------------------------------+---------------------------------+%n");
         System.out.format("|  ID  | Name                                | Books                           |%n");
         System.out.format("+------+-------------------------------------+---------------------------------+%n");
@@ -96,6 +112,14 @@ public class ConsoleDataPrinter implements DataPrinter {
     public void printListOfOperations(final List<Operation> operations, final List<Client> clients) {
         System.out.format("+------------------------------------------------------------------------------+%n");
         System.out.format("|                              Operations history                              |%n");
+
+        if (operations.size() == 0) {
+            System.out.format("+------------------------------------------------------------------------------+%n");
+            System.out.format("|                                List is empty                                 |%n");
+            System.out.format("+------------------------------------------------------------------------------+%n");
+            return;
+        }
+
         System.out.format("+------------------+-----------------------------+-----------+-----------------+%n");
         System.out.format("|       Date       | Client name                 | Operation | Books           |%n");
         System.out.format("+------------------+-----------------------------+-----------+-----------------+%n");
