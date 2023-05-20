@@ -22,6 +22,7 @@ import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
 import java.util.List;
+import java.util.Scanner;
 
 
 /**
@@ -72,6 +73,8 @@ public class ConsoleDataPrinter implements DataPrinter {
             System.out.format(leftAlignFormat, book.getId(), title, author, book.isFree() ? "Yes" : "No");
         }
         System.out.format("+------+--------------------------------------+-------------------------+------+%n");
+        System.out.println("Enter any key to continue...");
+        new Scanner(System.in).nextLine();
     }
 
     @Override
@@ -106,6 +109,8 @@ public class ConsoleDataPrinter implements DataPrinter {
             System.out.format(leftAlignFormat, client.getId(), name, books);
         }
         System.out.format("+------+-------------------------------------+---------------------------------+%n");
+        System.out.println("Enter any key to continue...");
+        new Scanner(System.in).nextLine();
     }
 
     @Override
@@ -149,5 +154,13 @@ public class ConsoleDataPrinter implements DataPrinter {
             System.out.format(leftAlignFormat, operation.getDate(), name, operation.getOperationType(), books);
         }
         System.out.format("+------------------+-----------------------------+-----------+-----------------+%n");
+        System.out.println("Enter any key to continue...");
+        new Scanner(System.in).nextLine();
+    }
+
+    @Override
+    public void clear() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }
