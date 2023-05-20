@@ -84,6 +84,15 @@ public class Library implements Serializable {
         return result;
     }
 
+    public Optional<Client> findClientByBookId(final String bookId) {
+        for (Client client : clients) {
+            if (client.getBooksIds().contains(bookId)) {
+                return Optional.of(client);
+            }
+        }
+        return Optional.empty();
+    }
+
     public Optional<Book> findBookById(final String id) {
         for (Book book : books) {
             if (book.getId().equals(id)) {
