@@ -35,5 +35,5 @@ public interface DataPrinter {
 
     void printListOfClients(List<Client> clients);
 
-    void printListOfOperations(List<Operation> operations);
+    void printListOfOperations(List<Operation> operations, List<Client> clients);
 }

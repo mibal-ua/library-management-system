@@ -21,13 +21,12 @@ import ua.mibal.minervaTest.component.DataPrinter;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
-import static java.lang.String.format;
 import java.util.List;
 
 
 /**
  * @author Michael Balakhon
- * @link http://t.me/mibal_ua
+ * @link t.me/mibal_ua
  */
 public class ConsoleDataPrinter implements DataPrinter {
 
@@ -43,70 +42,88 @@ public class ConsoleDataPrinter implements DataPrinter {
 
     @Override
     public void printListOfBooks(final List<Book> books) {
-        books.stream().forEach(book -> {
-            System.out.println((format("""
-                    {
-                       "id": "%s",
-                       "title": "%s",
-                       "subtitle": "%s",
-                       "author": "%s",
-                       "published": "%s",
-                       "publisher": "%s",
-                       "pages": %s,
-                       "description": "%s",
-                       "website": "%s",
-                       "isFree": %s
-                     }""",
-                book.getId(),
-                book.getTitle(),
-                book.getSubtitle(),
-                book.getAuthor(),
-                book.getPublishedDate(),
-                book.getPublisher(),
-                book.isFree()
-            )));
-        });
+        System.out.format("+------------------------------------------------------------------------------+%n");
+        System.out.format("|                                     Books                                    |%n");
+        System.out.format("+------+--------------------------------------+-------------------------+------+%n");
+        System.out.format("|  ID  | Title                                | Author                  | Free |%n");
+        System.out.format("+------+--------------------------------------+-------------------------+------+%n");
+
+        final int titleLength = 36;
+        final int authorLength = 23;
+        final String leftAlignFormat = "| %-4s | %-" + titleLength + "s | %-" + authorLength + "s | %-4s |%n";
+
+        for (final Book book : books) {
+            String title = book.getTitle();
+            if (title.length() > titleLength) {
+                title = title.substring(0, titleLength - 3) + "...";
+            }
+            String author = book.getAuthor();
+            if (author.length() > authorLength) {
+                author = author.substring(0, authorLength - 3) + "...";
+            }
+            System.out.format(leftAlignFormat, book.getId(), title, author, book.isFree() ? "Yes" : "No");
+        }
+        System.out.format("+------+--------------------------------------+-------------------------+------+%n");
     }
 
     @Override
     public void printListOfClients(final List<Client> clients) {
-        clients.stream().forEach(client -> {
-            System.out.println(format("""
-                    {
-                      "id": "%s",
-                      "name": "%s",
-                      "books": [""",
-                client.getId(),
-                client.getName()
-            ));
-            client.getBooksIds().stream().forEach((id) -> {
-                System.out.println(format("     \"%s\",", id));
-            });
-            System.out.println("""
-                  ]
-                },""");
-        });
+        System.out.format("+------------------------------------------------------------------------------+%n");
+        System.out.format("|                                   Clients                                    |%n");
+        System.out.format("+------+-------------------------------------+---------------------------------+%n");
+        System.out.format("|  ID  | Name                                | Books                           |%n");
+        System.out.format("+------+-------------------------------------+---------------------------------+%n");
+
+        final int nameLength = 35;
+        final int booksLength = 31;
+        final String leftAlignFormat = "| %-4s | %-" + nameLength + "s | %-" + booksLength + "s |%n";
+
+        for (final Client client : clients) {
+            String name = client.getName();
+            if (name.length() > nameLength) {
+                name = name.substring(0, nameLength - 3) + "...";
+            }
+            String books = String.join(" ", client.getBooksIds());
+            if (books.length() > booksLength) {
+                books = books.substring(0, booksLength - 3) + "...";
+            }
+            System.out.format(leftAlignFormat, client.getId(), name, books);
+        }
+        System.out.format("+------+-------------------------------------+---------------------------------+%n");
     }
 
     @Override
-    public void printListOfOperations(final List<Operation> operations) {
-        operations.stream().forEach(operation -> {
-            System.out.println((format("""
-                    {
-                      "date": "%s",
-                      "clientId": "%s",
-                      "operation": "%s",
-                      "books": [""",
-                operation.getDate(),
-                operation.getClientId(),
-                operation.getOperationType()
-            )));
-            operation.getBooksIds().stream().forEach((id) -> {
-                System.out.println(format("     \"%s\",", id));
-            });
-            System.out.println("""
-                      ]
-                    },""");
-        });
+    public void printListOfOperations(final List<Operation> operations, final List<Client> clients) {
+        System.out.format("+------------------------------------------------------------------------------+%n");
+        System.out.format("|                              Operations history                              |%n");
+        System.out.format("+------------------+-----------------------------+-----------+-----------------+%n");
+        System.out.format("|       Date       | Client name                 | Operation | Books           |%n");
+        System.out.format("+------------------+-----------------------------+-----------+-----------------+%n");
+
+        final int booksLength = 15;
+        final int nameLength = 27;
+        final String leftAlignFormat = "| %-16s | %-" + nameLength + "s | %-9s | %-" + booksLength + "s |%n";
+
+        for (final Operation operation : operations) {
+            Client client = null;
+            for (final Client cl : clients) {
+                if (cl.getId().equals(operation.getClientId())) {
+                    client = cl;
+                    break;
+                }
+            }
+            String name = client == null
+                ? "NONE"
+                : client.getName();
+            if (name.length() > nameLength) {
+                name = name.substring(0, nameLength - 3) + "...";
+            }
+            String books = String.join(" ", operation.getBooksIds());
+            if (books.length() > booksLength) {
+                books = books.substring(0, booksLength - 3) + "...";
+            }
+            System.out.format(leftAlignFormat, operation.getDate(), name, operation.getOperationType(), books);
+        }
+        System.out.format("+------------------+-----------------------------+-----------+-----------------+%n");
     }
 }

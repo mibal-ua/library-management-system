@@ -99,7 +99,7 @@ public class RequestProcessor {
                 dataPrinter.printListOfClients(clients);
             }
             if (dataType == HISTORY) {
-                dataPrinter.printListOfOperations(library.getOperations());
+                dataPrinter.printListOfOperations(library.getOperations(), library.getClients());
             }
         }
 
