@@ -152,8 +152,8 @@ public class RequestProcessor {
                 if (operationType == TAKE) {
                     booksToOperate = initBooksToTake();
                     booksToOperate.forEach((id) -> {
-                        final Book book = library.findBookById(id);
-                        book.setFree(false);
+                        final Optional<Book> optionalBook = library.findBookById(id);
+                        optionalBook.ifPresent(book -> book.setFree(false));
                     });
                     booksIds = Stream
                         .concat(client.getBooksIds().stream(), booksToOperate.stream())
@@ -162,12 +162,15 @@ public class RequestProcessor {
                 if (operationType == RETURN) {
                     booksToOperate = initBooksToReturn(client);
                     booksToOperate.forEach((id) -> {
-                        final Book book = library.findBookById(id);
-                        if (book.isFree()) {
-                            throw new IllegalArgumentException(format(
-                                "Oops, book '%s' is already free", book.getId()));
-                        }
-                        book.setFree(true);
+                        final Optional<Book> optionalBook = library.findBookById(id);
+                        optionalBook.ifPresent(book -> {
+                            if (book.isFree()) {
+                                throw new IllegalArgumentException(format(
+                                    "Oops, book '%s' is already free", book.getId()));
+                            } else {
+                                book.setFree(true);
+                            }
+                        });
                     });
                     final List<String> finalBooksToOperate = booksToOperate;
                     booksIds = client.getBooksIds().stream()

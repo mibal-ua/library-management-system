@@ -19,7 +19,7 @@ package ua.mibal.minervaTest.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Optional;
 
 /**
  * @author Mykhailo Balakhon
@@ -79,23 +79,21 @@ public class Library implements Serializable {
         return result;
     }
 
-    public Book findBookById(final String id) {
-        final AtomicReference<Book> result = new AtomicReference<>();
-        books.forEach((book) -> {
+    public Optional<Book> findBookById(final String id) {
+        for (Book book : books) {
             if (book.getId().equals(id)) {
-                result.set(book);
+                return Optional.of(book);
             }
-        });
-        return result.get();
+        }
+        return Optional.empty();
     }
 
-    public Book findClientById(final String id) {
-        final AtomicReference<Book> result = new AtomicReference<>();
-        books.forEach((book) -> {
-            if (book.getId().equals(id)) {
-                result.set(book);
+    public Optional<Client> findClientById(final String id) {
+        for (Client client : clients) {
+            if (client.getId().equals(id)) {
+                return Optional.of(client);
             }
-        });
-        return result.get();
+        }
+        return Optional.empty();
     }
 }
