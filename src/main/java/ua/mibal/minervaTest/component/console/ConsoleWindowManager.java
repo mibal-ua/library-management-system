@@ -23,6 +23,7 @@ import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.BOLD;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.RESET;
+import java.util.List;
 
 /**
  * @author Mykhailo Balakhon
@@ -36,16 +37,18 @@ public class ConsoleWindowManager implements WindowManager {
 
     private final DataPrinter dataPrinter;
 
-    private Library library;
+    private Library library = new Library(List.of(), List.of(), List.of());
 
     private State state;
+
+    private int linesCount = 0;
 
     public ConsoleWindowManager(final DataPrinter dataPrinter) {
         this.dataPrinter = dataPrinter;
     }
 
     private void redraw() {
-        dataPrinter.clear();
+        linesCount = 0;
         if (library == null) {
             throw new IllegalArgumentException("Variable library not set");
         }
@@ -55,26 +58,31 @@ public class ConsoleWindowManager implements WindowManager {
             case WINDOW_3 -> drawWindow3();
             default -> throw new IllegalArgumentException(format("Illegal state '%s'", state));
         }
+        for (int i = 0; i < WINDOW_HEIGHT - linesCount - 1; i++) {
+            dataPrinter.printlnInfoMessage("");
+        }
     }
 
     private void drawWindow1() {
-        dataPrinter.clear();
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printlnInfoMessage(format(
             "                %sBOOKS%s               CLIENTS               HISTORY               ",
             BOLD, RESET));
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printListOfBooks(library.getBooks());
+        final int elCount = library.getBooks().size();
+        linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
     }
 
     private void drawWindow2() {
-        dataPrinter.clear();
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printlnInfoMessage(format(
             "                BOOKS               %sCLIENTS%s               HISTORY               ",
             BOLD, RESET));
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printListOfClients(library.getClients());
+        final int elCount = library.getClients().size();
+        linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
     }
 
     private void drawWindow3() {
@@ -84,6 +92,8 @@ public class ConsoleWindowManager implements WindowManager {
             BOLD, RESET));
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printListOfOperations(library.getOperations(), library.getClients());
+        final int elCount = library.getOperations().size();
+        linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
     }
 
     @Override
