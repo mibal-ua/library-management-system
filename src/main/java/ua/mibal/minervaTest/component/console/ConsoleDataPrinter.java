@@ -33,6 +33,11 @@ public class ConsoleDataPrinter implements DataPrinter {
 
     @Override
     public void printInfoMessage(final String message) {
+        System.out.print(message);
+    }
+
+    @Override
+    public void printlnInfoMessage(final String message) {
         System.out.println(message);
     }
 

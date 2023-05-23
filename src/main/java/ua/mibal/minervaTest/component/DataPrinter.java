@@ -29,6 +29,8 @@ public interface DataPrinter {
 
     void printInfoMessage(String message);
 
+    void printlnInfoMessage(String message);
+
     void printErrorMessage(String message);
 
     void printListOfBooks(List<Book> books);
