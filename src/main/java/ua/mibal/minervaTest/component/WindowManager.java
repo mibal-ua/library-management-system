@@ -16,6 +16,7 @@
 
 package ua.mibal.minervaTest.component;
 
+import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.window.State;
 
 /**
@@ -25,5 +26,7 @@ import ua.mibal.minervaTest.model.window.State;
 public interface WindowManager {
 
     WindowManager setState(State state);
+
+    void setLibrary(Library library);
 
 }

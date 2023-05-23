@@ -93,6 +93,7 @@ public class ConsoleWindowManager implements WindowManager {
         return this;
     }
 
+    @Override
     public void setLibrary(final Library library) {
         this.library = library;
     }
