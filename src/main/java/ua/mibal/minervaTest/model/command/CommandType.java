@@ -22,11 +22,9 @@ package ua.mibal.minervaTest.model.command;
  */
 public enum CommandType {
 
-    GET,
+    ADD,
 
-    POST,
-
-    PATCH,
+    DEL,
 
     EXIT;
 

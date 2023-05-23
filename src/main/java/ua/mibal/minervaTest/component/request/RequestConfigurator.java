@@ -24,9 +24,9 @@ import ua.mibal.minervaTest.model.Request;
 import ua.mibal.minervaTest.model.command.DataType;
 import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
+import static ua.mibal.minervaTest.model.command.CommandType.ADD;
+import static ua.mibal.minervaTest.model.command.CommandType.DEL;
 import static ua.mibal.minervaTest.model.command.CommandType.EXIT;
-import static ua.mibal.minervaTest.model.command.CommandType.PATCH;
-import static ua.mibal.minervaTest.model.command.CommandType.POST;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
 import static ua.mibal.minervaTest.model.window.State.WINDOW_1;
 import static ua.mibal.minervaTest.model.window.State.WINDOW_2;
@@ -75,7 +75,7 @@ public class RequestConfigurator {
                         dataPrinter.printErrorMessage("You cannot change history manually");
                     } else {
                         // TODO
-                        return new Request(POST, currentDataType);
+                        return new Request(ADD, currentDataType);
                     }
                 }
                 case "delete", "del" -> {
@@ -83,7 +83,7 @@ public class RequestConfigurator {
                         dataPrinter.printErrorMessage("You cannot change history manually");
                     } else {
                         // TODO
-                        return new Request(PATCH, currentDataType);
+                        return new Request(DEL, currentDataType);
                     }
                 }
                 case "exit" -> {

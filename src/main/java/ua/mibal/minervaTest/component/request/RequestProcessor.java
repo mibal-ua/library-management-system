@@ -30,9 +30,9 @@ import ua.mibal.minervaTest.model.command.DataType;
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.OperationType.RETURN;
 import static ua.mibal.minervaTest.model.OperationType.TAKE;
-import static ua.mibal.minervaTest.model.command.CommandType.GET;
-import static ua.mibal.minervaTest.model.command.CommandType.PATCH;
-import static ua.mibal.minervaTest.model.command.CommandType.POST;
+import static ua.mibal.minervaTest.model.command.CommandType.ADD;
+import static ua.mibal.minervaTest.model.command.CommandType.DEL;
+import static ua.mibal.minervaTest.model.command.CommandType.EXIT;
 import static ua.mibal.minervaTest.model.command.DataType.BOOK;
 import static ua.mibal.minervaTest.model.command.DataType.CLIENT;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
@@ -74,7 +74,7 @@ public class RequestProcessor {
         final DataType dataType = request.getDataType();
         this.library = library;
 
-        if (commandType == GET) {
+        if (commandType == ADD) {
             if (dataType == BOOK) {
                 dataPrinter.printInfoMessage("Enter book ID/title/author:");
                 dataPrinter.printInfoMessage("Or enter '/all' to see all.");
@@ -104,27 +104,8 @@ public class RequestProcessor {
             }
         }
 
-        if (commandType == POST) {
-            if (dataType == BOOK) {
-                Book newBook = initNewBook();
-                if (library.addBook(newBook)) {
-                    dataPrinter.printInfoMessage("Book successfully added!");
-                } else {
-                    dataPrinter.printInfoMessage("An error occurred(");
-                }
-            }
-            if (dataType == CLIENT) {
-                Client newClient = initNewClient();
-                if (library.addClient(newClient)) {
-                    dataPrinter.printInfoMessage("Client successfully added!");
-                } else {
-                    dataPrinter.printInfoMessage("An error occurred(");
-                }
-            }
-            dataOperator.updateLibrary(library);
-        }
 
-        if (commandType == PATCH) {
+        if (commandType == DEL) {
             if (dataType == BOOK) {
                 // TODO
             }
