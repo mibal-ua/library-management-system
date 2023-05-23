@@ -31,6 +31,10 @@ import java.util.Scanner;
  */
 public class ConsoleDataPrinter implements DataPrinter {
 
+    public static String BOLD = "\033[1m";
+
+    public static String RESET = "\033[0m";
+
     @Override
     public void printInfoMessage(final String message) {
         System.out.print(message);
