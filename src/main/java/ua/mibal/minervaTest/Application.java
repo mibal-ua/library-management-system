@@ -46,7 +46,7 @@ public class Application {
     public void start() {
         Library library = dataOperator.getLibrary();
         while (!requestProcessor.isExit()) {
-            final Request request = requestConfigurator.configure();
+            final Request request = requestConfigurator.configure(library);
             requestProcessor.process(library, request);
         }
     }

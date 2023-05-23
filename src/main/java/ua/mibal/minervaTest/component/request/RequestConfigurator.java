@@ -18,11 +18,19 @@ package ua.mibal.minervaTest.component.request;
 
 import ua.mibal.minervaTest.component.DataPrinter;
 import ua.mibal.minervaTest.component.UserInputReader;
+import ua.mibal.minervaTest.component.WindowManager;
+import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Request;
-import ua.mibal.minervaTest.model.command.CommandType;
 import ua.mibal.minervaTest.model.command.DataType;
+import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.command.CommandType.EXIT;
+import static ua.mibal.minervaTest.model.command.CommandType.PATCH;
+import static ua.mibal.minervaTest.model.command.CommandType.POST;
+import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
+import static ua.mibal.minervaTest.model.window.State.WINDOW_1;
+import static ua.mibal.minervaTest.model.window.State.WINDOW_2;
+import static ua.mibal.minervaTest.model.window.State.WINDOW_3;
 
 /**
  * @author Mykhailo Balakhon
@@ -34,72 +42,57 @@ public class RequestConfigurator {
 
     private final UserInputReader inputReader;
 
-    public RequestConfigurator(final DataPrinter dataPrinter, final UserInputReader inputReader) {
+    private final WindowManager windowManager;
+
+    private State state = WINDOW_1;
+
+    private DataType currentDataType = state.getDataType();
+
+    public RequestConfigurator(final DataPrinter dataPrinter,
+                               final UserInputReader inputReader,
+                               final WindowManager consoleWindowManager) {
         this.dataPrinter = dataPrinter;
         this.inputReader = inputReader;
+        this.windowManager = consoleWindowManager;
     }
 
-    public Request configure() {
+    public Request configure(final Library library) {
+        windowManager.setLibrary(library);
+        windowManager.setState(state);
+
         while (true) {
-            dataPrinter.printInfoMessage("Enter command you need (or '/help'):");
-            String input = inputReader.getUserInput();
-            if (!input.startsWith("/")) {
-                dataPrinter.printInfoMessage("Command must starts with '/' symbol");
-                dataPrinter.printInfoMessage("Enter command:");
-                continue;
+            dataPrinter.printInfoMessage("> ");
+            final String input = inputReader.getUserInput();
+            switch (input) {
+                case "1" -> state = WINDOW_1;
+                case "2" -> state = WINDOW_2;
+                case "3" -> state = WINDOW_3;
+                case "search", "s" -> {
+                    // TODO
+                }
+                case "add" -> {
+                    if (currentDataType == HISTORY) {
+                        dataPrinter.printErrorMessage("You cannot change history manually");
+                    } else {
+                        // TODO
+                        return new Request(POST, currentDataType);
+                    }
+                }
+                case "delete", "del" -> {
+                    if (currentDataType == HISTORY) {
+                        dataPrinter.printErrorMessage("You cannot change history manually");
+                    } else {
+                        // TODO
+                        return new Request(PATCH, currentDataType);
+                    }
+                }
+                case "exit" -> {
+                    return new Request(EXIT, null);
+                }
+                default -> dataPrinter.printErrorMessage(format("Unrecognizable arg '%s'", input));
             }
-
-            if (input.equalsIgnoreCase("/exit")) {
-                return new Request(EXIT, null);
-            }
-
-            if (input.equalsIgnoreCase("/help")) {
-                dataPrinter.printInfoMessage("""
-                    /{command-type} {data-type} {args}
-                                
-                    command-types:
-                    - get
-                    - post
-                    - patch
-                                
-                    data-types:
-                    - book
-                    - client
-                    - history
-                                
-                    args:
-                    - ${id/name/title}
-                    - all
-                      
-                    or /exit
-                    """);
-                continue;
-            }
-
-            String[] command = input.substring(1).split(" ");
-            if (command.length < 2) {
-                dataPrinter.printInfoMessage("Command is too short");
-                continue;
-            }
-
-            String commandTypeStr = command[0];
-            if (!CommandType.contains(commandTypeStr)) {
-                dataPrinter.printInfoMessage(format(
-                    "Unrecognizable command type '%s'", commandTypeStr
-                ));
-                continue;
-            }
-            CommandType commandType = CommandType.valueOf(commandTypeStr.toUpperCase());
-            String dataTypeStr = command[1];
-            if (!DataType.contains(dataTypeStr)) {
-                dataPrinter.printInfoMessage(format(
-                    "Unrecognizable data type '%s'", dataTypeStr
-                ));
-                dataPrinter.printInfoMessage("Enter command:");
-                continue;
-            }
-            DataType dataType = DataType.valueOf(dataTypeStr.toUpperCase());
-            return new Request(commandType, dataType);
+            windowManager.setState(state);
+            currentDataType = state.getDataType();
         }
     }
 }
