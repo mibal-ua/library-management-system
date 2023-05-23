@@ -22,7 +22,6 @@ import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
 import java.util.List;
-import java.util.Scanner;
 
 
 /**
@@ -52,9 +51,6 @@ public class ConsoleDataPrinter implements DataPrinter {
 
     @Override
     public void printListOfBooks(final List<Book> books) {
-        System.out.format("+------------------------------------------------------------------------------+%n");
-        System.out.format("|                                     Books                                    |%n");
-
         if (books.size() == 0) {
             System.out.format("+------------------------------------------------------------------------------+%n");
             System.out.format("|                                 List is empty                                |%n");
@@ -82,22 +78,16 @@ public class ConsoleDataPrinter implements DataPrinter {
             System.out.format(leftAlignFormat, book.getId(), title, author, book.isFree() ? "Yes" : "No");
         }
         System.out.format("+------+--------------------------------------+-------------------------+------+%n");
-        System.out.println("Enter any key to continue...");
-        new Scanner(System.in).nextLine();
     }
 
     @Override
     public void printListOfClients(final List<Client> clients) {
-        System.out.format("+------------------------------------------------------------------------------+%n");
-        System.out.format("|                                   Clients                                    |%n");
-
         if (clients.size() == 0) {
             System.out.format("+------------------------------------------------------------------------------+%n");
             System.out.format("|                                List is empty                                 |%n");
             System.out.format("+------------------------------------------------------------------------------+%n");
             return;
         }
-
         System.out.format("+------+-------------------------------------+---------------------------------+%n");
         System.out.format("|  ID  | Name                                | Books                           |%n");
         System.out.format("+------+-------------------------------------+---------------------------------+%n");
@@ -118,15 +108,10 @@ public class ConsoleDataPrinter implements DataPrinter {
             System.out.format(leftAlignFormat, client.getId(), name, books);
         }
         System.out.format("+------+-------------------------------------+---------------------------------+%n");
-        System.out.println("Enter any key to continue...");
-        new Scanner(System.in).nextLine();
     }
 
     @Override
     public void printListOfOperations(final List<Operation> operations, final List<Client> clients) {
-        System.out.format("+------------------------------------------------------------------------------+%n");
-        System.out.format("|                              Operations history                              |%n");
-
         if (operations.size() == 0) {
             System.out.format("+------------------------------------------------------------------------------+%n");
             System.out.format("|                                List is empty                                 |%n");
@@ -163,8 +148,6 @@ public class ConsoleDataPrinter implements DataPrinter {
             System.out.format(leftAlignFormat, operation.getDate(), name, operation.getOperationType(), books);
         }
         System.out.format("+------------------+-----------------------------+-----------+-----------------+%n");
-        System.out.println("Enter any key to continue...");
-        new Scanner(System.in).nextLine();
     }
 
     @Override
