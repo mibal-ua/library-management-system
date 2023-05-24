@@ -22,7 +22,6 @@ import ua.mibal.minervaTest.component.UserInputReader;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
-import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.OperationType;
 import ua.mibal.minervaTest.model.Request;
 import ua.mibal.minervaTest.model.command.CommandType;
@@ -38,9 +37,6 @@ import static ua.mibal.minervaTest.model.command.DataType.CLIENT;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author Mykhailo Balakhon
@@ -130,42 +126,32 @@ public class RequestProcessor {
                 }
                 dataPrinter.printInfoMessage("Enter book id you need to operate:");
 
-                List<String> booksIds = null;
-                List<String> booksToOperate = null;
+                List<String> booksToOperate;
                 if (operationType == TAKE) {
                     booksToOperate = initBooksToTake();
-                    booksToOperate.forEach((id) -> {
-                        final Optional<Book> optionalBook = library.findBookById(id);
-                        optionalBook.ifPresent(book -> book.setFree(false));
-                    });
-                    booksIds = Stream
-                        .concat(client.getBooksIds().stream(), booksToOperate.stream())
-                        .collect(Collectors.toList());
+                    library.takeBooks(client, booksToOperate,
+                        (bookId) -> {
+                            throw new IllegalArgumentException(
+                                "Oops, book '" + bookId + "' isn't  free");
+                        }, (bookId) -> {
+                            throw new IllegalArgumentException(
+                                "Oops, book '" + bookId + "' doesn't  exists");
+                        });
                 }
                 if (operationType == RETURN) {
                     booksToOperate = initBooksToReturn(client);
-                    booksToOperate.forEach((id) -> {
-                        final Optional<Book> optionalBook = library.findBookById(id);
-                        optionalBook.ifPresent(book -> {
-                            if (book.isFree()) {
-                                throw new IllegalArgumentException(format(
-                                    "Oops, book '%s' is already free", book.getId()));
-                            } else {
-                                book.setFree(true);
-                            }
+                    library.returnBooks(client, booksToOperate,
+                        (bookId) -> {
+                            throw new IllegalArgumentException(
+                                "Oops, book '" + bookId + "' is  free");
+                        }, (bookId) -> {
+                            throw new IllegalArgumentException(
+                                "Oops, book '" + bookId + "' doesn't  exists");
+                        }, (clientt, book) -> {
+                            throw new IllegalArgumentException(
+                                "Oops, client '" + clientt.getName() + "' dont took book '" + book.getTitle() + "'");
                         });
-                    });
-                    final List<String> finalBooksToOperate = booksToOperate;
-                    booksIds = client.getBooksIds().stream()
-                        .filter(id -> !finalBooksToOperate.contains(id))
-                        .collect(Collectors.toList());
                 }
-                client.setBooksIds(booksIds);
-
-                library.addOperation(new Operation(
-                    client.getId(),
-                    operationType.name(),
-                    booksToOperate));
                 dataOperator.updateLibrary(library);
             }
         }
@@ -274,11 +260,7 @@ public class RequestProcessor {
                     continue;
                 }
                 Book book = foundBooks.get(index - 1);
-                if (book.isFree()) {
-                    books.add(book.getId());
-                } else {
-                    dataPrinter.printInfoMessage("Oops, book isnt free((");
-                }
+                books.add(book.getId());
             }
         }
     }

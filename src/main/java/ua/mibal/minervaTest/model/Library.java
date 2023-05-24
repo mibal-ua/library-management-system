@@ -18,6 +18,8 @@ package ua.mibal.minervaTest.model;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.List.of;
+import static ua.mibal.minervaTest.model.OperationType.RETURN;
+import static ua.mibal.minervaTest.model.OperationType.TAKE;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +113,7 @@ public class Library implements Serializable {
         return Optional.empty();
     }
 
-    public boolean addOperation(final Operation operation) {
+    private boolean addOperation(final Operation operation) {
         // TODO implement validation
         operations.add(operation);
         return true;
@@ -127,5 +129,76 @@ public class Library implements Serializable {
         // TODO implement validation
         clients.add(client);
         return true;
+    }
+
+    public void takeBooks(final Client client, final List<String> bookIds,
+                          final Lambda ifNotFree, final Lambda ifNotExists) {
+        List<String> filteredList = bookIds.stream().filter((bookId) -> {
+            Optional<Book> optionalBook = findBookById(bookId);
+            if (optionalBook.isEmpty()) {
+                ifNotExists.apply(bookId);
+                return false;
+            }
+            Book book = optionalBook.get();
+            if (!book.isFree()) {
+                ifNotFree.apply(bookId);
+                return false;
+            }
+            book.setFree(false);
+            return true;
+        }).toList();
+        if (filteredList.size() == 0) {
+            return;
+        }
+        Operation operation = new Operation(
+            client.getId(),
+            TAKE.toString(),
+            filteredList
+        );
+        addOperation(operation);
+    }
+
+    public void returnBooks(final Client client, final List<String> bookIds,
+                            final Lambda ifFree, final Lambda ifNotExists,
+                            final UserDontHaveBookLambda ifUserDontHaveBook) {
+        List<String> filteredList = bookIds.stream().filter((bookId) -> {
+            Optional<Book> optionalBook = findBookById(bookId);
+            if (optionalBook.isEmpty()) {
+                ifNotExists.apply(bookId);
+                return false;
+            }
+            Book book = optionalBook.get();
+            if (book.isFree()) {
+                ifFree.apply(bookId);
+                return false;
+            }
+            if (!client.getBooksIds().contains(bookId)) {
+                ifUserDontHaveBook.apply(client, book);
+                return false;
+            }
+            book.setFree(true);
+            return true;
+        }).toList();
+        if (filteredList.size() == 0) {
+            return;
+        }
+        Operation operation = new Operation(
+            client.getId(),
+            RETURN.toString(),
+            filteredList
+        );
+        addOperation(operation);
+    }
+
+    @FunctionalInterface
+    public interface Lambda {
+
+        void apply(String id);
+    }
+
+    @FunctionalInterface
+    public interface UserDontHaveBookLambda {
+
+        void apply(Client client, Book book);
     }
 }
