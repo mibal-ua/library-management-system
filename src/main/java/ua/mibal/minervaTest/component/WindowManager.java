@@ -17,7 +17,6 @@
 package ua.mibal.minervaTest.component;
 
 import ua.mibal.minervaTest.model.Library;
-import ua.mibal.minervaTest.model.window.State;
 
 /**
  * @author Mykhailo Balakhon
@@ -25,8 +24,11 @@ import ua.mibal.minervaTest.model.window.State;
  */
 public interface WindowManager {
 
-    WindowManager setState(State state);
+    void tab1(Library library);
 
-    void setLibrary(Library library);
+    void tab2(Library library);
 
+    void tab3(Library library);
+
+    void help();
 }

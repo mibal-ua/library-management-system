@@ -23,7 +23,6 @@ import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.BOLD;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.RESET;
-import java.util.List;
 
 /**
  * @author Mykhailo Balakhon
@@ -37,8 +36,6 @@ public class ConsoleWindowManager implements WindowManager {
 
     private final DataPrinter dataPrinter;
 
-    private Library library = new Library(List.of(), List.of(), List.of());
-
     private State state;
 
     private int linesCount = 0;
@@ -47,24 +44,9 @@ public class ConsoleWindowManager implements WindowManager {
         this.dataPrinter = dataPrinter;
     }
 
-    private void redraw() {
-        linesCount = 0;
-        if (library == null) {
-            throw new IllegalArgumentException("Variable library not set");
-        }
-        switch (state) {
-            case WINDOW_1 -> drawWindow1();
-            case WINDOW_2 -> drawWindow2();
-            case WINDOW_3 -> drawWindow3();
-            case HELP_WINDOW -> drawHelpWindow();
-            default -> throw new IllegalArgumentException(format("Illegal state '%s'", state));
-        }
-        for (int i = 0; i < WINDOW_HEIGHT - linesCount - 1; i++) {
-            dataPrinter.printlnInfoMessage("");
-        }
-    }
-
-    private void drawWindow1() {
+    @Override
+    public void tab1(final Library library) {
+        beforeAll();
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printlnInfoMessage(format(
             "                %sBOOKS%s               CLIENTS               HISTORY               ",
@@ -73,9 +55,12 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printListOfBooks(library.getBooks());
         final int elCount = library.getBooks().size();
         linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
+        afterAll();
     }
 
-    private void drawWindow2() {
+    @Override
+    public void tab2(final Library library) {
+        beforeAll();
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printlnInfoMessage(format(
             "                BOOKS               %sCLIENTS%s               HISTORY               ",
@@ -84,9 +69,12 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printListOfClients(library.getClients());
         final int elCount = library.getClients().size();
         linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
+        afterAll();
     }
 
-    private void drawWindow3() {
+    @Override
+    public void tab3(final Library library) {
+        beforeAll();
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printlnInfoMessage(format(
             "                BOOKS               CLIENTS               %sHISTORY%s               ",
@@ -95,9 +83,12 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printListOfOperations(library.getOperations(), library.getClients());
         final int elCount = library.getOperations().size();
         linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
+        afterAll();
     }
 
-    private void drawHelpWindow() {
+    @Override
+    public void help() {
+        beforeAll();
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printlnInfoMessage(format(
             "                                      %sHELP%s                                      ",
@@ -145,17 +136,18 @@ public class ConsoleWindowManager implements WindowManager {
              """);
 
         linesCount = 3 + 36;
+        afterAll();
     }
 
-    @Override
-    public WindowManager setState(final State state) {
-        this.state = state;
-        redraw();
-        return this;
+    private void beforeAll() {
+        linesCount = 0;
+        dataPrinter.clear();
     }
 
-    @Override
-    public void setLibrary(final Library library) {
-        this.library = library;
+    private void afterAll() {
+        for (int i = 0; i < WINDOW_HEIGHT - linesCount - 1; i++) {
+            dataPrinter.printlnInfoMessage("");
+        }
+        linesCount = 0;
     }
 }

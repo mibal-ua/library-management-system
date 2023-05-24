@@ -25,15 +25,12 @@ import ua.mibal.minervaTest.component.request.RequestProcessor;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Request;
 import ua.mibal.minervaTest.model.command.DataType;
-import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.command.CommandType.ADD;
 import static ua.mibal.minervaTest.model.command.CommandType.DEL;
 import static ua.mibal.minervaTest.model.command.CommandType.EXIT;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
 import static ua.mibal.minervaTest.model.window.State.WINDOW_1;
-import static ua.mibal.minervaTest.model.window.State.WINDOW_2;
-import static ua.mibal.minervaTest.model.window.State.WINDOW_3;
 
 /**
  * @author Mykhailo Balakhon
@@ -51,9 +48,8 @@ public class Application {
 
     private final RequestProcessor requestProcessor;
 
-    private State state = WINDOW_1;
-
-    private DataType currentDataType = state.getDataType();
+    // FIXME delete var
+    private DataType currentDataType = WINDOW_1.getDataType();
 
     public Application(final DataOperator dataOperator,
                        final DataPrinter dataPrinter,
@@ -69,17 +65,16 @@ public class Application {
 
     public void start() {
         Library library = dataOperator.getLibrary();
-
-        windowManager.setLibrary(library);
-        windowManager.setState(state);
+        windowManager.tab1(library);
 
         while (true) {
             dataPrinter.printInfoMessage("> ");
             final String input = inputReader.getUserInput();
             switch (input) {
-                case "1" -> state = WINDOW_1;
-                case "2" -> state = WINDOW_2;
-                case "3" -> state = WINDOW_3;
+                case "1" -> windowManager.tab1(library);
+                case "2" -> windowManager.tab2(library);
+                case "3" -> windowManager.tab3(library);
+                case "help" -> windowManager.help();
                 case "search", "s" -> {
                     // TODO
                 }
@@ -104,8 +99,6 @@ public class Application {
                 }
                 default -> dataPrinter.printErrorMessage(format("Unrecognizable arg '%s'", input));
             }
-            windowManager.setState(state);
-            currentDataType = state.getDataType();
         }
     }
 }
