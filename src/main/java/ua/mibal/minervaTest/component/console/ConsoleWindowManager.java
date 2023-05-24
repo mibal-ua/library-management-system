@@ -17,6 +17,7 @@
 package ua.mibal.minervaTest.component.console;
 
 import ua.mibal.minervaTest.component.DataPrinter;
+import ua.mibal.minervaTest.component.UserInputReader;
 import ua.mibal.minervaTest.component.WindowManager;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.window.State;
@@ -36,12 +37,16 @@ public class ConsoleWindowManager implements WindowManager {
 
     private final DataPrinter dataPrinter;
 
+    private final UserInputReader inputReader;
+
     private State state;
 
     private int linesCount = 0;
 
-    public ConsoleWindowManager(final DataPrinter dataPrinter) {
+    public ConsoleWindowManager(final DataPrinter dataPrinter,
+                                final UserInputReader inputReader) {
         this.dataPrinter = dataPrinter;
+        this.inputReader = inputReader;
     }
 
     @Override
@@ -137,6 +142,13 @@ public class ConsoleWindowManager implements WindowManager {
 
         linesCount = 3 + 36;
         afterAll();
+    }
+
+    @Override
+    public String[] readCommandLine() {
+        dataPrinter.printInfoMessage("> ");
+        String input = inputReader.getUserInput();
+        return input.split(" ");
     }
 
     private void beforeAll() {

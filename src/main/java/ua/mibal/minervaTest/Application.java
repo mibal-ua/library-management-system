@@ -18,19 +18,17 @@ package ua.mibal.minervaTest;
 
 
 import ua.mibal.minervaTest.component.DataOperator;
-import ua.mibal.minervaTest.component.DataPrinter;
-import ua.mibal.minervaTest.component.UserInputReader;
 import ua.mibal.minervaTest.component.WindowManager;
 import ua.mibal.minervaTest.component.request.RequestProcessor;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Request;
 import ua.mibal.minervaTest.model.command.DataType;
-import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.command.CommandType.ADD;
 import static ua.mibal.minervaTest.model.command.CommandType.DEL;
 import static ua.mibal.minervaTest.model.command.CommandType.EXIT;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
 import static ua.mibal.minervaTest.model.window.State.WINDOW_1;
+import java.util.Arrays;
 
 /**
  * @author Mykhailo Balakhon
@@ -40,10 +38,6 @@ public class Application {
 
     private final DataOperator dataOperator;
 
-    private final DataPrinter dataPrinter;
-
-    private final UserInputReader inputReader;
-
     private final WindowManager windowManager;
 
     private final RequestProcessor requestProcessor;
@@ -52,14 +46,10 @@ public class Application {
     private DataType currentDataType = WINDOW_1.getDataType();
 
     public Application(final DataOperator dataOperator,
-                       final DataPrinter dataPrinter,
-                       final UserInputReader inputReader,
-                       final WindowManager consoleWindowManager,
+                       final WindowManager windowManager,
                        final RequestProcessor requestProcessor) {
         this.dataOperator = dataOperator;
-        this.dataPrinter = dataPrinter;
-        this.inputReader = inputReader;
-        this.windowManager = consoleWindowManager;
+        this.windowManager = windowManager;
         this.requestProcessor = requestProcessor;
     }
 
@@ -67,10 +57,14 @@ public class Application {
         Library library = dataOperator.getLibrary();
         windowManager.tab1(library);
 
+        String[] input = windowManager.readCommandLine();
         while (true) {
-            dataPrinter.printInfoMessage("> ");
-            final String input = inputReader.getUserInput();
-            switch (input) {
+            final String command = input[0];
+            String[] args;
+            if (input.length > 1) {
+                args = Arrays.copyOfRange(input, 0, input.length - 2);
+            }
+            switch (command) {
                 case "1" -> windowManager.tab1(library);
                 case "2" -> windowManager.tab2(library);
                 case "3" -> windowManager.tab3(library);
@@ -80,7 +74,7 @@ public class Application {
                 }
                 case "add" -> {
                     if (currentDataType == HISTORY) {
-                        dataPrinter.printErrorMessage("You cannot change history manually");
+//                        dataPrinter.printErrorMessage("You cannot change history manually");
                     } else {
                         // TODO
                         requestProcessor.process(library, new Request(ADD, currentDataType));
@@ -88,7 +82,7 @@ public class Application {
                 }
                 case "delete", "del" -> {
                     if (currentDataType == HISTORY) {
-                        dataPrinter.printErrorMessage("You cannot change history manually");
+//                        dataPrinter.printErrorMessage("You cannot change history manually");
                     } else {
                         // TODO
                         requestProcessor.process(library, new Request(DEL, currentDataType));
@@ -97,8 +91,9 @@ public class Application {
                 case "exit" -> {
                     requestProcessor.process(library, new Request(EXIT, null));
                 }
-                default -> dataPrinter.printErrorMessage(format("Unrecognizable arg '%s'", input));
+//                default -> dataPrinter.printErrorMessage(format("Unrecognizable command '%s'", command));
             }
+            input = windowManager.readCommandLine();
         }
     }
 }

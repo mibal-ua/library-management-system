@@ -33,7 +33,7 @@ public class ApplicationConfigurator {
 
     private final UserInputReader inputReader = new ConsoleUserInputReader();
 
-    private final WindowManager windowManager = new ConsoleWindowManager(dataPrinter);
+    private final WindowManager windowManager = new ConsoleWindowManager(dataPrinter, inputReader);
 
     private final RequestProcessor requestProcessor;
 
@@ -47,8 +47,6 @@ public class ApplicationConfigurator {
     public Application configure() {
         return new Application(
             dataOperator,
-            dataPrinter,
-            inputReader,
             windowManager,
             requestProcessor
         );

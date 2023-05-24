@@ -31,4 +31,6 @@ public interface WindowManager {
     void tab3(Library library);
 
     void help();
+
+    String[] readCommandLine();
 }
