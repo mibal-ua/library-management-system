@@ -21,7 +21,6 @@ import ua.mibal.minervaTest.Application;
 import ua.mibal.minervaTest.component.console.ConsoleDataPrinter;
 import ua.mibal.minervaTest.component.console.ConsoleUserInputReader;
 import ua.mibal.minervaTest.component.console.ConsoleWindowManager;
-import ua.mibal.minervaTest.component.request.RequestConfigurator;
 import ua.mibal.minervaTest.component.request.RequestProcessor;
 
 /**
@@ -36,9 +35,6 @@ public class ApplicationConfigurator {
 
     private final WindowManager windowManager = new ConsoleWindowManager(dataPrinter);
 
-    private final RequestConfigurator requestConfigurator =
-        new RequestConfigurator(dataPrinter, inputReader, windowManager);
-
     private final RequestProcessor requestProcessor;
 
     private final DataOperator dataOperator;
@@ -51,7 +47,9 @@ public class ApplicationConfigurator {
     public Application configure() {
         return new Application(
             dataOperator,
-            requestConfigurator,
+            dataPrinter,
+            inputReader,
+            windowManager,
             requestProcessor
         );
     }
