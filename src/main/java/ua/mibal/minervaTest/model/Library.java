@@ -86,6 +86,19 @@ public class Library implements Serializable {
         return result;
     }
 
+    public List<Operation> findOperations(final String input) {
+        List<Operation> result = new ArrayList<>();
+        for (Operation operation : operations) {
+            if (operation.getClientId().equals(input)) {
+                return of(operation);
+            }
+            if (operation.getDate().contains(input)) {
+                result.add(operation);
+            }
+        }
+        return result;
+    }
+
     public Optional<Client> findClientByBookId(final String bookId) {
         for (Client client : clients) {
             if (client.getBooksIds().contains(bookId)) {
