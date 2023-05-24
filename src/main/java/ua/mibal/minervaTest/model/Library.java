@@ -70,7 +70,7 @@ public class Library implements Serializable {
                 result.add(book);
             }
         }
-        return result;
+        return unmodifiableList(result);
     }
 
     public List<Client> findClients(final String input) {
@@ -83,7 +83,7 @@ public class Library implements Serializable {
                 result.add(client);
             }
         }
-        return result;
+        return unmodifiableList(result);
     }
 
     public List<Operation> findOperations(final String input) {
@@ -96,7 +96,7 @@ public class Library implements Serializable {
                 result.add(operation);
             }
         }
-        return result;
+        return unmodifiableList(result);
     }
 
     public Optional<Client> findClientByBookId(final String bookId) {
