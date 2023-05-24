@@ -18,6 +18,10 @@ package ua.mibal.minervaTest.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,9 +40,11 @@ public class Operation implements Serializable {
     @JsonProperty("books")
     private List<String> booksIds;
 
-    public Operation(final String date, final String clientId, final String operationType,
+    public Operation(final String clientId, final String operationType,
                      final List<String> booksIds) {
-        this.date = date;
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        this.date = dateFormat.format(date);
         this.clientId = clientId;
         this.operationType = operationType;
         this.booksIds = booksIds;

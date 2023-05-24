@@ -36,11 +36,7 @@ import static ua.mibal.minervaTest.model.command.CommandType.EXIT;
 import static ua.mibal.minervaTest.model.command.DataType.BOOK;
 import static ua.mibal.minervaTest.model.command.DataType.CLIENT;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -104,7 +100,6 @@ public class RequestProcessor {
             }
         }
 
-
         if (commandType == DEL) {
             if (dataType == BOOK) {
                 // TODO
@@ -167,12 +162,7 @@ public class RequestProcessor {
                 }
                 client.setBooksIds(booksIds);
 
-                Date date = Calendar.getInstance().getTime();
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-                String strDate = dateFormat.format(date);
-
                 library.addOperation(new Operation(
-                    strDate,
                     client.getId(),
                     operationType.name(),
                     booksToOperate));
