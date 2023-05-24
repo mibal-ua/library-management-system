@@ -1,6 +1,6 @@
 {
   "books" : [ {
-    "id" : "1",
+    "id" : "0620",
     "title" : "Eloquent JavaScript, Third Edition",
     "subtitle" : "A Modern Introduction to Programming",
     "author" : "Marijn Haverbeke",
@@ -8,31 +8,31 @@
     "published" : "2018-12-04",
     "isFree" : true
   }, {
-    "id" : "2",
+    "id" : "9d28",
     "title" : "Practical Modern JavaScript",
     "subtitle" : "Dive into ES6 and the Future of JavaScript",
     "author" : "Nicolás Bevacqua",
     "publisher" : "O'Reilly Media",
     "published" : "2017-07-16",
-    "isFree" : false
+    "isFree" : true
   }, {
-    "id" : "3",
+    "id" : "5214",
     "title" : "Understanding ECMAScript 6",
     "subtitle" : "The Definitive Guide for JavaScript Developers",
     "author" : "Nicholas C. Zakas",
     "publisher" : "No Starch Press",
     "published" : "2016-09-03",
-    "isFree" : false
+    "isFree" : true
   }, {
-    "id" : "4",
+    "id" : "b969",
     "title" : "Speaking JavaScript",
     "subtitle" : "An In-Depth Guide for Programmers",
     "author" : "Axel Rauschmayer",
     "publisher" : "O'Reilly Media",
     "published" : "2014-04-08",
-    "isFree" : false
+    "isFree" : true
   }, {
-    "id" : "5",
+    "id" : "152c",
     "title" : "Learning JavaScript Design Patterns",
     "subtitle" : "A JavaScript and jQuery Developer's Guide",
     "author" : "Addy Osmani",
@@ -40,7 +40,7 @@
     "published" : "2012-08-30",
     "isFree" : true
   }, {
-    "id" : "6",
+    "id" : "f20a",
     "title" : "You Don't Know JS Yet",
     "subtitle" : "Get Started",
     "author" : "Kyle Simpson",
@@ -48,85 +48,53 @@
     "published" : "2020-01-28",
     "isFree" : true
   }, {
-    "id" : "7",
+    "id" : "68f6",
     "title" : "Pro Git",
     "subtitle" : "Everything you neeed to know about Git",
     "author" : "Scott Chacon and Ben Straub",
     "publisher" : "Apress; 2nd edition",
     "published" : "2014-11-18",
-    "isFree" : true
+    "isFree" : false
   }, {
-    "id" : "8",
+    "id" : "71dc",
     "title" : "Rethinking Productivity in Software Engineering",
     "subtitle" : "",
     "author" : "Caitlin Sadowski, Thomas Zimmermann",
     "publisher" : "Apress",
     "published" : "2019-05-11",
-    "isFree" : true
+    "isFree" : false
   }, {
-    "id" : "3556498",
+    "id" : "a136",
     "title" : "test",
     "subtitle" : "test",
     "author" : "test",
     "publisher" : "test",
     "published" : "test",
-    "isFree" : true
+    "isFree" : false
   } ],
   "clients" : [ {
     "id" : "1",
     "name" : "Mykhailo Balakhon",
-    "books" : [ "2" ]
+    "books" : [ "a136" ]
   }, {
     "id" : "2",
-    "name" : "Mykhailo Balakhon2",
-    "books" : [ "3", "4" ]
-  }, {
-    "id" : "635217797",
     "name" : "Alex Bond",
-    "books" : [ ]
-  }, {
-    "id" : "3373707",
-    "name" : "name",
-    "books" : [ ]
-  }, {
-    "id" : "-2098824597",
-    "name" : "New client",
-    "books" : [ ]
-  } ],
+    "books" : [ "71dc", "68f6" ]
+  }],
   "operations" : [ {
-    "date" : "2019-05-11 18:30",
-    "clientId" : "1",
-    "operation" : "RETURN",
-    "books" : [ "8" ]
-  }, {
-    "date" : "2019-05-11 18:30",
+    "date" : "2023-05-11 03:48",
     "clientId" : "2",
     "operation" : "TAKE",
-    "books" : [ "4" ]
-  }, {
-    "date" : "2023-05-11 03:33",
-    "clientId" : "1",
-    "operation" : "TAKE",
-    "books" : [ "8" ]
-  }, {
-    "date" : "2023-05-11 03:47",
-    "clientId" : "1",
-    "operation" : "RETURN",
-    "books" : [ "8" ]
-  }, {
-    "date" : "2023-05-11 03:48",
-    "clientId" : "1",
-    "operation" : "TAKE",
-    "books" : [ "5" ]
+    "books" : [ "71dc", "68f6" ]
   }, {
     "date" : "2023-05-11 03:49",
-    "clientId" : "1",
+    "clientId" : "2",
     "operation" : "RETURN",
-    "books" : [ "5" ]
+    "books" : [ "a136" ]
   }, {
     "date" : "2023-05-12 09:40",
     "clientId" : "1",
-    "operation" : "RETURN",
-    "books" : [ "1" ]
+    "operation" : "TAKE",
+    "books" : [ "a136" ]
   } ]
 }
