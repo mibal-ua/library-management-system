@@ -56,6 +56,7 @@ public class ConsoleWindowManager implements WindowManager {
             case WINDOW_1 -> drawWindow1();
             case WINDOW_2 -> drawWindow2();
             case WINDOW_3 -> drawWindow3();
+            case HELP_WINDOW -> drawHelpWindow();
             default -> throw new IllegalArgumentException(format("Illegal state '%s'", state));
         }
         for (int i = 0; i < WINDOW_HEIGHT - linesCount - 1; i++) {
@@ -94,6 +95,56 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printListOfOperations(library.getOperations(), library.getClients());
         final int elCount = library.getOperations().size();
         linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
+    }
+
+    private void drawHelpWindow() {
+        dataPrinter.printlnInfoMessage("");
+        dataPrinter.printlnInfoMessage(format(
+            "                                      %sHELP%s                                      ",
+            BOLD, RESET));
+        dataPrinter.printlnInfoMessage("");
+        dataPrinter.printlnInfoMessage("""
+                                             
+                                             MAIN CONTROL
+           --------------------------------------------------------------------------------
+           
+                                           1, 2, 3 - open tab
+                                        
+                                              exit - to exit
+                                               
+                                               
+                                               IN TABS
+           --------------------------------------------------------------------------------
+                              
+                     search(s) ${query} - search element in current tab
+                                
+                             look ${id} - look at concrete item in list in current tab
+                                    
+                                    add - to add element into list in current tab
+                                    
+                      delete(del) ${id} - to delete element in list in current tab
+                          
+                          
+                                        IN CONCRETE BOOK/CLIENT
+           --------------------------------------------------------------------------------
+                                        
+                                      edit - to edit this book/client
+                                     
+                               delete(del) - to delete this book/client
+                              
+                                       esc - go to previous window
+                            
+                          
+                                          IN CONCRETE CLIENT
+           --------------------------------------------------------------------------------
+                        
+                                         take - to take book
+                               
+                                       return - to return book
+                
+            """);
+
+        linesCount = 3 + 36;
     }
 
     @Override
