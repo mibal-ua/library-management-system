@@ -31,8 +31,9 @@ public enum State {
 
     WINDOW_2(CLIENT),
 
-    WINDOW_3(HISTORY);
+    WINDOW_3(HISTORY),
 
+    HELP_WINDOW(null);
 
     private final DataType dataType;
 
