@@ -58,42 +58,48 @@ public class Library implements Serializable {
         return unmodifiableList(operations);
     }
 
-    public List<Book> findBooks(final String input) {
+    public List<Book> findBooks(final String[] input) {
         List<Book> result = new ArrayList<>();
-        for (Book book : books) {
-            if (book.getId().equals(input)) {
-                return of(book);
-            }
-            if (book.getTitle().contains(input) ||
-                book.getAuthor().contains(input) ||
-                book.getPublisher().contains(input)) {
-                result.add(book);
+        for (final String arg : input) {
+            for (Book book : books) {
+                if (book.getId().equals(arg)) {
+                    return of(book);
+                }
+                if (book.getTitle().contains(arg) ||
+                    book.getAuthor().contains(arg) ||
+                    book.getPublisher().contains(arg)) {
+                    result.add(book);
+                }
             }
         }
         return unmodifiableList(result);
     }
 
-    public List<Client> findClients(final String input) {
+    public List<Client> findClients(final String[] input) {
         List<Client> result = new ArrayList<>();
-        for (Client client : clients) {
-            if (client.getId().equals(input)) {
-                return of(client);
-            }
-            if (client.getName().contains(input)) {
-                result.add(client);
+        for (final String arg : input) {
+            for (Client client : clients) {
+                if (client.getId().equals(arg)) {
+                    return of(client);
+                }
+                if (client.getName().contains(arg)) {
+                    result.add(client);
+                }
             }
         }
         return unmodifiableList(result);
     }
 
-    public List<Operation> findOperations(final String input) {
+    public List<Operation> findOperations(final String[] input) {
         List<Operation> result = new ArrayList<>();
-        for (Operation operation : operations) {
-            if (operation.getClientId().equals(input)) {
-                return of(operation);
-            }
-            if (operation.getDate().contains(input)) {
-                result.add(operation);
+        for (final String arg : input) {
+            for (Operation operation : operations) {
+                if (operation.getClientId().equals(arg)) {
+                    return of(operation);
+                }
+                if (operation.getDate().contains(arg)) {
+                    result.add(operation);
+                }
             }
         }
         return unmodifiableList(result);

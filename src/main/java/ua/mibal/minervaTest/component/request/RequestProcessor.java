@@ -75,7 +75,7 @@ public class RequestProcessor {
                 if (input.equalsIgnoreCase("/all")) {
                     books = library.getBooks();
                 } else {
-                    books = library.findBooks(input);
+                    books = library.findBooks(input.split(" "));
                 }
                 dataPrinter.printListOfBooks(books);
             }
@@ -87,7 +87,7 @@ public class RequestProcessor {
                 if (input.equalsIgnoreCase("/all")) {
                     clients = library.getClients();
                 } else {
-                    clients = library.findClients(input);
+                    clients = library.findClients(input.split(" "));
                 }
                 dataPrinter.printListOfClients(clients);
             }
@@ -172,7 +172,7 @@ public class RequestProcessor {
     }
 
     private Client findConcretClient(final String input) {
-        List<Client> clients = library.findClients(input);
+        List<Client> clients = library.findClients(input.split(" "));
         dataPrinter.printInfoMessage("OK, this is clients we found by request:");
         dataPrinter.printListOfClients(clients);
         int index = -1;
@@ -236,7 +236,7 @@ public class RequestProcessor {
             if (input.equals("")) {
                 return books;
             }
-            final List<Book> foundBooks = library.findBooks(input);
+            final List<Book> foundBooks = library.findBooks(input.split(" "));
             if (foundBooks.size() == 0) {
                 dataPrinter.printInfoMessage("There are no books in library with this data ((");
                 continue;
