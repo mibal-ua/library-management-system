@@ -33,4 +33,8 @@ public interface WindowManager {
     void help();
 
     String[] readCommandLine();
+
+    void showToast(final String message);
+
+    boolean showDialogueToast(String question, String answer1, String answer2);
 }

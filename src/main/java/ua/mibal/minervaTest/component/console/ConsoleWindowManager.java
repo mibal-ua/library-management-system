@@ -151,6 +151,17 @@ public class ConsoleWindowManager implements WindowManager {
         return input.split(" ");
     }
 
+    @Override
+    public void showToast(final String message) {
+        // TODO
+    }
+
+    @Override
+    public boolean showDialogueToast(final String question, final String answer1, final String answer2) {
+        // TODO
+        return false;
+    }
+
     private void beforeAll() {
         linesCount = 0;
         dataPrinter.clear();

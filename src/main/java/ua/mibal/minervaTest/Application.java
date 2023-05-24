@@ -23,9 +23,9 @@ import ua.mibal.minervaTest.component.request.RequestProcessor;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Request;
 import ua.mibal.minervaTest.model.command.DataType;
+import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.command.CommandType.ADD;
 import static ua.mibal.minervaTest.model.command.CommandType.DEL;
-import static ua.mibal.minervaTest.model.command.CommandType.EXIT;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
 import static ua.mibal.minervaTest.model.window.State.WINDOW_1;
 import java.util.Arrays;
@@ -74,7 +74,7 @@ public class Application {
                 }
                 case "add" -> {
                     if (currentDataType == HISTORY) {
-//                        dataPrinter.printErrorMessage("You cannot change history manually");
+                        windowManager.showToast("You cannot change history manually");
                     } else {
                         // TODO
                         requestProcessor.process(library, new Request(ADD, currentDataType));
@@ -82,16 +82,20 @@ public class Application {
                 }
                 case "delete", "del" -> {
                     if (currentDataType == HISTORY) {
-//                        dataPrinter.printErrorMessage("You cannot change history manually");
+                        windowManager.showToast("You cannot change history manually");
                     } else {
                         // TODO
                         requestProcessor.process(library, new Request(DEL, currentDataType));
                     }
                 }
                 case "exit" -> {
-                    requestProcessor.process(library, new Request(EXIT, null));
+                    final boolean isExit = windowManager.showDialogueToast(
+                        "You really need to exit?", "YES", "NO");
+                    if (isExit) {
+                        return;
+                    }
                 }
-//                default -> dataPrinter.printErrorMessage(format("Unrecognizable command '%s'", command));
+                default -> windowManager.showToast(format("Unrecognizable command '%s'", command));
             }
             input = windowManager.readCommandLine();
         }
