@@ -31,7 +31,13 @@ public enum State {
 
     TAB_2(CLIENT),
 
-    TAB_3(HISTORY);
+    TAB_3(HISTORY),
+
+    SEARCH_BOOK(BOOK),
+
+    SEARCH_CLIENT(CLIENT),
+
+    SEARCH_HISTORY(HISTORY);
 
     private final DataType dataType;
 
