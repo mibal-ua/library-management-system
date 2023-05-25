@@ -27,13 +27,11 @@ import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
  */
 public enum State {
 
-    WINDOW_1(BOOK),
+    TAB_1(BOOK),
 
-    WINDOW_2(CLIENT),
+    TAB_2(CLIENT),
 
-    WINDOW_3(HISTORY),
-
-    HELP_WINDOW(null);
+    TAB_3(HISTORY);
 
     private final DataType dataType;
 

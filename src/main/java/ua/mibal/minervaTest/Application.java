@@ -27,7 +27,7 @@ import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.command.CommandType.ADD;
 import static ua.mibal.minervaTest.model.command.CommandType.DEL;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
-import static ua.mibal.minervaTest.model.window.State.WINDOW_1;
+import static ua.mibal.minervaTest.model.window.State.TAB_1;
 import java.util.Arrays;
 
 /**
@@ -43,7 +43,7 @@ public class Application {
     private final RequestProcessor requestProcessor;
 
     // FIXME delete var
-    private DataType currentDataType = WINDOW_1.getDataType();
+    private DataType currentDataType = TAB_1.getDataType();
 
     public Application(final DataOperator dataOperator,
                        final WindowManager windowManager,
