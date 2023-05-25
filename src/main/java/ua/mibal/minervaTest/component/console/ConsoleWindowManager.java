@@ -19,11 +19,15 @@ package ua.mibal.minervaTest.component.console;
 import ua.mibal.minervaTest.component.DataPrinter;
 import ua.mibal.minervaTest.component.UserInputReader;
 import ua.mibal.minervaTest.component.WindowManager;
+import ua.mibal.minervaTest.model.Book;
+import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
+import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.BOLD;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.RESET;
+import java.util.List;
 
 /**
  * @author Mykhailo Balakhon
@@ -160,6 +164,21 @@ public class ConsoleWindowManager implements WindowManager {
     public boolean showDialogueToast(final String question, final String answer1, final String answer2) {
         // TODO
         return false;
+    }
+
+    @Override
+    public void searchBookTab(final List<Book> books, final String[] args) {
+        // TODO
+    }
+
+    @Override
+    public void searchClientTab(final List<Client> clients, final String[] args) {
+        // TODO
+    }
+
+    @Override
+    public void searchOperationTab(final List<Operation> operations, final String[] args) {
+        // TODO
     }
 
     private void beforeAll() {

@@ -16,7 +16,11 @@
 
 package ua.mibal.minervaTest.component;
 
+import ua.mibal.minervaTest.model.Book;
+import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
+import ua.mibal.minervaTest.model.Operation;
+import java.util.List;
 
 /**
  * @author Mykhailo Balakhon
@@ -37,4 +41,11 @@ public interface WindowManager {
     void showToast(final String message);
 
     boolean showDialogueToast(String question, String answer1, String answer2);
+
+    void searchBookTab(List<Book> books, String[] args);
+
+    void searchClientTab(List<Client> clients, String[] args);
+
+    void searchOperationTab(List<Operation> operations, String[] args);
+
 }
