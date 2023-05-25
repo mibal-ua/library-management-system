@@ -26,6 +26,9 @@ import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.command.CommandType.ADD;
 import static ua.mibal.minervaTest.model.command.CommandType.DEL;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
+import static ua.mibal.minervaTest.model.window.State.SEARCH_BOOK;
+import static ua.mibal.minervaTest.model.window.State.SEARCH_CLIENT;
+import static ua.mibal.minervaTest.model.window.State.SEARCH_HISTORY;
 import static ua.mibal.minervaTest.model.window.State.TAB_1;
 import static ua.mibal.minervaTest.model.window.State.TAB_2;
 import static ua.mibal.minervaTest.model.window.State.TAB_3;
@@ -61,7 +64,7 @@ public class Application {
         String[] input = windowManager.readCommandLine();
         while (true) {
             final String command = input[0];
-            String[] args;
+            String[] args = null;
             if (input.length > 1) {
                 args = Arrays.copyOfRange(input, 0, input.length - 2);
             }
@@ -80,7 +83,24 @@ public class Application {
                 }
                 case "help" -> windowManager.help();
                 case "search", "s" -> {
-                    // TODO
+                    if (args == null) {
+                        windowManager.showToast("You need to enter 'search' with ${query}");
+                        break;
+                    }
+                    switch (currentTab.getDataType()) {
+                        case BOOK -> {
+                            windowManager.searchBookTab(library.findBooks(args), args);
+                            currentTab = SEARCH_BOOK;
+                        }
+                        case CLIENT -> {
+                            windowManager.searchClientTab(library.findClients(args), args);
+                            currentTab = SEARCH_CLIENT;
+                        }
+                        case HISTORY -> {
+                            windowManager.searchOperationTab(library.findOperations(args), args);
+                            currentTab = SEARCH_HISTORY;
+                        }
+                    }
                 }
                 case "add" -> {
                     if (currentTab.getDataType() == HISTORY) {
