@@ -21,13 +21,14 @@ import ua.mibal.minervaTest.component.DataOperator;
 import ua.mibal.minervaTest.component.WindowManager;
 import ua.mibal.minervaTest.component.request.RequestProcessor;
 import ua.mibal.minervaTest.model.Library;
-import ua.mibal.minervaTest.model.Request;
-import ua.mibal.minervaTest.model.command.DataType;
+import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.command.CommandType.ADD;
 import static ua.mibal.minervaTest.model.command.CommandType.DEL;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
 import static ua.mibal.minervaTest.model.window.State.TAB_1;
+import static ua.mibal.minervaTest.model.window.State.TAB_2;
+import static ua.mibal.minervaTest.model.window.State.TAB_3;
 import java.util.Arrays;
 
 /**
@@ -43,7 +44,7 @@ public class Application {
     private final RequestProcessor requestProcessor;
 
     // FIXME delete var
-    private DataType currentDataType = TAB_1.getDataType();
+    private State currentTab = TAB_1;
 
     public Application(final DataOperator dataOperator,
                        final WindowManager windowManager,
@@ -65,15 +66,24 @@ public class Application {
                 args = Arrays.copyOfRange(input, 0, input.length - 2);
             }
             switch (command) {
-                case "1" -> windowManager.tab1(library);
-                case "2" -> windowManager.tab2(library);
-                case "3" -> windowManager.tab3(library);
+                case "1" -> {
+                    windowManager.tab1(library);
+                    currentTab = TAB_1;
+                }
+                case "2" -> {
+                    windowManager.tab2(library);
+                    currentTab = TAB_2;
+                }
+                case "3" -> {
+                    windowManager.tab3(library);
+                    currentTab = TAB_3;
+                }
                 case "help" -> windowManager.help();
                 case "search", "s" -> {
                     // TODO
                 }
                 case "add" -> {
-                    if (currentDataType == HISTORY) {
+                    if (currentTab.getDataType() == HISTORY) {
                         windowManager.showToast("You cannot change history manually");
                     } else {
                         // TODO
@@ -81,7 +91,7 @@ public class Application {
                     }
                 }
                 case "delete", "del" -> {
-                    if (currentDataType == HISTORY) {
+                    if (currentTab.getDataType() == HISTORY) {
                         windowManager.showToast("You cannot change history manually");
                     } else {
                         // TODO
