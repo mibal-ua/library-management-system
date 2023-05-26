@@ -20,6 +20,7 @@ import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
+import ua.mibal.minervaTest.model.window.State;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public interface WindowManager {
 
     String[] readCommandLine();
 
-    void showToast(final String message);
+    void showToast(final String message, final State state);
 
     boolean showDialogueToast(String question, String answer1, String answer2);
 

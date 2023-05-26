@@ -44,7 +44,13 @@ public class ConsoleWindowManager implements WindowManager {
 
     private final UserInputReader inputReader;
 
-    private State state;
+    private CachedSearchArgs<Book> cachedSearchBookArgs;
+
+    private CachedSearchArgs<Client> cachedSearchClientArgs;
+
+    private CachedSearchArgs<Operation> cachedSearchOperationArgs;
+
+    private Library cachedLibrary;
 
     private int linesCount = 0;
 
@@ -65,6 +71,7 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printListOfBooks(library.getBooks());
         final int elCount = library.getBooks().size();
         linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
+        cachedLibrary = library;
         afterAll();
     }
 
@@ -79,6 +86,7 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printListOfClients(library.getClients());
         final int elCount = library.getClients().size();
         linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
+        cachedLibrary = library;
         afterAll();
     }
 
@@ -93,6 +101,7 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printListOfOperations(library.getOperations(), library.getClients());
         final int elCount = library.getOperations().size();
         linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
+        cachedLibrary = library;
         afterAll();
     }
 
@@ -157,8 +166,37 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public void showToast(final String message) {
-        // TODO
+    public void showToast(final String message, final State currentTab) {
+        int padding = 10;
+
+        // print background of window
+        goTo(8, padding);
+        dataPrinter.printInfoMessage("+----------------------------------------------------------+");
+        for (int i = 0; i < 10; i++) {
+            goTo(i + 9, padding);
+            dataPrinter.printInfoMessage("|                                                          |");
+        }
+        goTo(19, padding);
+        dataPrinter.printInfoMessage("+----------------------------------------------------------+");
+
+        // print message
+        goTo(12, (WINDOW_WIDTH - message.length()) / 2);
+        dataPrinter.printInfoMessage(message);
+
+        // print click to continue
+        String enter = "Click enter to continue...";
+        goTo(14, (WINDOW_WIDTH - enter.length()) / 2);
+        dataPrinter.printInfoMessage(enter);
+        goTo(15, WINDOW_WIDTH / 2);
+        inputReader.getUserInput();
+
+        //refresh last screen
+        printPrevState(currentTab);
+    }
+
+    private void goTo(final int row, final int column) {
+        char escCode = 0x1B;
+        dataPrinter.printInfoMessage(String.format("%c[%d;%df", escCode, row, column));
     }
 
     @Override
@@ -204,5 +242,26 @@ public class ConsoleWindowManager implements WindowManager {
             dataPrinter.printlnInfoMessage("");
         }
         linesCount = 0;
+    }
+
+    private void printPrevState(final State state) {
+        switch (state) {
+            case TAB_1 -> tab1(cachedLibrary);
+            case TAB_2 -> tab2(cachedLibrary);
+            case TAB_3 -> tab3(cachedLibrary);
+            case SEARCH_BOOK -> searchBookTab(
+                cachedSearchBookArgs.data,
+                cachedSearchClientArgs.args);
+            case SEARCH_CLIENT -> searchClientTab(
+                cachedSearchClientArgs.data,
+                cachedSearchClientArgs.args);
+            case SEARCH_HISTORY -> searchOperationTab(
+                cachedSearchOperationArgs.data,
+                cachedSearchOperationArgs.args);
+        }
+    }
+
+    private record CachedSearchArgs<T>(List<T> data, String[] args) {
+
     }
 }

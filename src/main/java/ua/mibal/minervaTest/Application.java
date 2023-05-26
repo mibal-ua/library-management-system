@@ -82,7 +82,7 @@ public class Application {
                 case "help" -> windowManager.help();
                 case "search", "s" -> {
                     if (args.length == 0) {
-                        windowManager.showToast("You need to enter 'search' with ${query}");
+                        windowManager.showToast("You need to enter 'search' with ${query}", currentTab);
                         break;
                     }
                     switch (currentTab.getDataType()) {
@@ -102,7 +102,7 @@ public class Application {
                 }
                 case "add" -> {
                     if (currentTab.getDataType() == HISTORY) {
-                        windowManager.showToast("You cannot change history manually");
+                        windowManager.showToast("You cannot change history manually", currentTab);
                         break;
                     }
                     switch (currentTab.getDataType()) {
@@ -118,11 +118,11 @@ public class Application {
                 }
                 case "delete", "del" -> {
                     if (currentTab.getDataType() == HISTORY) {
-                        windowManager.showToast("You cannot change history manually");
+                        windowManager.showToast("You cannot change history manually", currentTab);
                         break;
                     }
                     if (args.length == 0) {
-                        windowManager.showToast("You need to enter 'delete' with ${id}");
+                        windowManager.showToast("You need to enter 'delete' with ${id}", currentTab);
                         break;
                     }
                     switch (currentTab.getDataType()) {
@@ -131,7 +131,7 @@ public class Application {
                             Optional<Book> optionalBookToDelete = library.findBookById(id);
                             if (optionalBookToDelete.isEmpty()) {
                                 windowManager.showToast(format(
-                                    "Oops, there are no books with this id '%s'", id));
+                                    "Oops, there are no books with this id '%s'", id), currentTab);
                                 break;
                             }
                             Book bookToDelete = optionalBookToDelete.get();
@@ -140,7 +140,7 @@ public class Application {
                                 Client client = optionalClient.get();
                                 String name = client.getName().substring(0, 8) + "...";
                                 windowManager.showToast(format(
-                                    "Oops, but client '%s' holds this book '%s'", name, id));
+                                    "Oops, but client '%s' holds this book '%s'", name, id), currentTab);
                                 break;
                             }
                             String title = bookToDelete.getTitle().substring(0, 12) + "...";
@@ -148,7 +148,7 @@ public class Application {
                                 format("You really need to delete book '%s'?", title), "YES", "NO");
                             if (isConfirmed) {
                                 library.deleteBook(bookToDelete);
-                                windowManager.showToast("Book successfully deleted.");
+                                windowManager.showToast("Book successfully deleted.", currentTab);
                             }
                         }
                         case CLIENT -> {
@@ -156,21 +156,21 @@ public class Application {
                             Optional<Client> optionalClientToDelete = library.findClientById(id);
                             if (optionalClientToDelete.isEmpty()) {
                                 windowManager.showToast(format(
-                                    "Oops, there are no clients with this id '%s'", id));
+                                    "Oops, there are no clients with this id '%s'", id), currentTab);
                                 break;
                             }
                             Client clientToDelete = optionalClientToDelete.get();
                             String name = clientToDelete.getName().substring(0, 8) + "...";
                             if (clientToDelete.getBooksIds().size() != 0) {
                                 windowManager.showToast(format(
-                                    "Oops, client '%s' is holding books, we can't delete him", id));
+                                    "Oops, client '%s' is holding books, we can't delete him", id), currentTab);
                                 break;
                             }
                             final boolean isConfirmed = windowManager.showDialogueToast(
                                 format("You really need to delete client '%s'?", name), "YES", "NO");
                             if (isConfirmed) {
                                 library.deleteClient(clientToDelete);
-                                windowManager.showToast("Client successfully deleted.");
+                                windowManager.showToast("Client successfully deleted.", currentTab);
                             }
                         }
                     }
@@ -182,7 +182,7 @@ public class Application {
                         return;
                     }
                 }
-                default -> windowManager.showToast(format("Unrecognizable command '%s'", command));
+                default -> windowManager.showToast(format("Unrecognizable command '%s'", command), currentTab);
             }
             input = windowManager.readCommandLine();
         }
