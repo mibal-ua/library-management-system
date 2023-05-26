@@ -209,6 +209,14 @@ public class Library implements Serializable {
         addOperation(operation);
     }
 
+    public void deleteBook(final Book bookToDelete) {
+        // TODO
+    }
+
+    public void deleteClient(final Client clientToDelete) {
+        // TODO
+    }
+
     @FunctionalInterface
     public interface Lambda {
 

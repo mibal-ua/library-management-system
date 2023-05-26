@@ -25,8 +25,6 @@ import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
-import static ua.mibal.minervaTest.model.command.CommandType.ADD;
-import static ua.mibal.minervaTest.model.command.CommandType.DEL;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
 import static ua.mibal.minervaTest.model.window.State.SEARCH_BOOK;
 import static ua.mibal.minervaTest.model.window.State.SEARCH_CLIENT;
@@ -121,9 +119,60 @@ public class Application {
                 case "delete", "del" -> {
                     if (currentTab.getDataType() == HISTORY) {
                         windowManager.showToast("You cannot change history manually");
-                    } else {
-                        // TODO
-                        requestProcessor.process(library, new Request(DEL, currentDataType));
+                        break;
+                    }
+                    if (args.length == 0) {
+                        windowManager.showToast("You need to enter 'delete' with ${id}");
+                        break;
+                    }
+                    switch (currentTab.getDataType()) {
+                        case BOOK -> {
+                            final String id = args[0];
+                            Optional<Book> optionalBookToDelete = library.findBookById(id);
+                            if (optionalBookToDelete.isEmpty()) {
+                                windowManager.showToast(format(
+                                    "Oops, there are no books with this id '%s'", id));
+                                break;
+                            }
+                            Book bookToDelete = optionalBookToDelete.get();
+                            Optional<Client> optionalClient = library.findClientByBookId(id);
+                            if (optionalClient.isPresent()) {
+                                Client client = optionalClient.get();
+                                String name = client.getName().substring(0, 8) + "...";
+                                windowManager.showToast(format(
+                                    "Oops, but client '%s' holds this book '%s'", name, id));
+                                break;
+                            }
+                            String title = bookToDelete.getTitle().substring(0, 12) + "...";
+                            final boolean isConfirmed = windowManager.showDialogueToast(
+                                format("You really need to delete book '%s'?", title), "YES", "NO");
+                            if (isConfirmed) {
+                                library.deleteBook(bookToDelete);
+                                windowManager.showToast("Book successfully deleted.");
+                            }
+                        }
+                        case CLIENT -> {
+                            final String id = args[0];
+                            Optional<Client> optionalClientToDelete = library.findClientById(id);
+                            if (optionalClientToDelete.isEmpty()) {
+                                windowManager.showToast(format(
+                                    "Oops, there are no clients with this id '%s'", id));
+                                break;
+                            }
+                            Client clientToDelete = optionalClientToDelete.get();
+                            String name = clientToDelete.getName().substring(0, 8) + "...";
+                            if (clientToDelete.getBooksIds().size() != 0) {
+                                windowManager.showToast(format(
+                                    "Oops, client '%s' is holding books, we can't delete him", id));
+                                break;
+                            }
+                            final boolean isConfirmed = windowManager.showDialogueToast(
+                                format("You really need to delete client '%s'?", name), "YES", "NO");
+                            if (isConfirmed) {
+                                library.deleteClient(clientToDelete);
+                                windowManager.showToast("Client successfully deleted.");
+                            }
+                        }
                     }
                 }
                 case "exit" -> {
