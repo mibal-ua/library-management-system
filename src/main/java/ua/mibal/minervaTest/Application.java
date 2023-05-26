@@ -64,10 +64,7 @@ public class Application {
         String[] input = windowManager.readCommandLine();
         while (true) {
             final String command = input[0];
-            String[] args = null;
-            if (input.length > 1) {
-                args = Arrays.copyOfRange(input, 0, input.length - 2);
-            }
+            final String[] args = Arrays.copyOfRange(input, 1, input.length);
             switch (command) {
                 case "1" -> {
                     windowManager.tab1(library);
@@ -83,7 +80,7 @@ public class Application {
                 }
                 case "help" -> windowManager.help();
                 case "search", "s" -> {
-                    if (args == null) {
+                    if (args.length == 0) {
                         windowManager.showToast("You need to enter 'search' with ${query}");
                         break;
                     }
