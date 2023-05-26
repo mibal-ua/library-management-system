@@ -20,6 +20,8 @@ package ua.mibal.minervaTest;
 import ua.mibal.minervaTest.component.DataOperator;
 import ua.mibal.minervaTest.component.WindowManager;
 import ua.mibal.minervaTest.component.request.RequestProcessor;
+import ua.mibal.minervaTest.model.Book;
+import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
@@ -33,6 +35,7 @@ import static ua.mibal.minervaTest.model.window.State.TAB_1;
 import static ua.mibal.minervaTest.model.window.State.TAB_2;
 import static ua.mibal.minervaTest.model.window.State.TAB_3;
 import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * @author Mykhailo Balakhon
@@ -102,9 +105,17 @@ public class Application {
                 case "add" -> {
                     if (currentTab.getDataType() == HISTORY) {
                         windowManager.showToast("You cannot change history manually");
-                    } else {
-                        // TODO
-                        requestProcessor.process(library, new Request(ADD, currentDataType));
+                        break;
+                    }
+                    switch (currentTab.getDataType()) {
+                        case BOOK -> {
+                            Optional<Book> optionalBookToAdd = windowManager.initBookToAdd(library);
+                            optionalBookToAdd.ifPresent(library::addBook);
+                        }
+                        case CLIENT -> {
+                            Optional<Client> optionalClientToAdd = windowManager.initClientToAdd(library);
+                            optionalClientToAdd.ifPresent(library::addClient);
+                        }
                     }
                 }
                 case "delete", "del" -> {

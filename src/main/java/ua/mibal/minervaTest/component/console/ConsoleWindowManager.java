@@ -28,6 +28,7 @@ import static java.lang.String.format;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.BOLD;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.RESET;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Mykhailo Balakhon
@@ -179,6 +180,18 @@ public class ConsoleWindowManager implements WindowManager {
     @Override
     public void searchOperationTab(final List<Operation> operations, final String[] args) {
         // TODO
+    }
+
+    @Override
+    public Optional<Book> initBookToAdd(final Library library) {
+        // TODO
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Client> initClientToAdd(final Library library) {
+        // TODO
+        return Optional.empty();
     }
 
     private void beforeAll() {

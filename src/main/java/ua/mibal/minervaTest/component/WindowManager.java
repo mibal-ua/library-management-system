@@ -21,6 +21,7 @@ import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Mykhailo Balakhon
@@ -48,4 +49,7 @@ public interface WindowManager {
 
     void searchOperationTab(List<Operation> operations, String[] args);
 
+    Optional<Book> initBookToAdd(Library library);
+
+    Optional<Client> initClientToAdd(Library library);
 }
