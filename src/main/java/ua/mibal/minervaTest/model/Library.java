@@ -237,6 +237,10 @@ public class Library implements Serializable {
         return client.getBooksIds().size() != 0;
     }
 
+    public boolean isContainBookId(final String id) {
+        return findBookById(id).isPresent();
+    }
+
     @FunctionalInterface
     public interface Lambda {
 
