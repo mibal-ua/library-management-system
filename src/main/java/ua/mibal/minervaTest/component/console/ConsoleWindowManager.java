@@ -28,6 +28,7 @@ import static java.lang.String.format;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.BOLD;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.RESET;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -167,6 +168,20 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public void showToast(final String message, final State currentTab) {
+        printBackgroundAndMessage(message);
+
+        // print click to continue
+        String enter = "Click enter to continue...";
+        goTo(14, (WINDOW_WIDTH - enter.length()) / 2);
+        dataPrinter.printInfoMessage(enter);
+        goTo(15, WINDOW_WIDTH / 2);
+        inputReader.getUserInput();
+
+        //refresh last screen
+        printPrevState(currentTab);
+    }
+
+    private void printBackgroundAndMessage(final String message) {
         int padding = 10;
 
         // print background of window
@@ -182,16 +197,6 @@ public class ConsoleWindowManager implements WindowManager {
         // print message
         goTo(12, (WINDOW_WIDTH - message.length()) / 2);
         dataPrinter.printInfoMessage(message);
-
-        // print click to continue
-        String enter = "Click enter to continue...";
-        goTo(14, (WINDOW_WIDTH - enter.length()) / 2);
-        dataPrinter.printInfoMessage(enter);
-        goTo(15, WINDOW_WIDTH / 2);
-        inputReader.getUserInput();
-
-        //refresh last screen
-        printPrevState(currentTab);
     }
 
     private void goTo(final int row, final int column) {
