@@ -104,11 +104,15 @@ public class Application {
                         case BOOK -> {
                             Optional<Book> optionalBookToAdd = windowManager.initBookToAdd(library);
                             optionalBookToAdd.ifPresent(library::addBook);
+                            optionalBookToAdd.ifPresent(
+                                book -> windowManager.showToast("Book successfully added!", currentTab));
                             dataOperator.updateLibrary(library);
                         }
                         case CLIENT -> {
                             Optional<Client> optionalClientToAdd = windowManager.initClientToAdd(library);
                             optionalClientToAdd.ifPresent(library::addClient);
+                            optionalClientToAdd.ifPresent(
+                                client -> windowManager.showToast("Client successfully added!", currentTab));
                             dataOperator.updateLibrary(library);
                         }
                     }
