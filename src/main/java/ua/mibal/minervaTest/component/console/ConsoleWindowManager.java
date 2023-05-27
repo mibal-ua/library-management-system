@@ -25,8 +25,11 @@ import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
+import static java.util.List.of;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.BOLD;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.RESET;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -294,15 +297,71 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public Optional<Book> initBookToAdd(final Library library) {
-        // TODO
-        return Optional.empty();
+    public Optional<Book> initBookToAdd(final Library library, final State currentTab) {
+        List<String> messages = of(
+            "Enter book title",
+            "Enter subtitle",
+            "Enter author",
+            "Enter publish date (in format '2018-12-04')",
+            "Enter book publisher"
+        );
+
+        showToast("Lets create book! You can stop everywhere by entering '/stop'", currentTab);
+        Optional<List<String>> answers = form(messages, "/stop");
+
+        if (answers.isEmpty()) {
+            printPrevState(currentTab);
+            return Optional.empty();
+        }
+
+        Iterator<String> iterator = answers.get().listIterator();
+        return Optional.of(new Book(
+            iterator.next(),
+            iterator.next(),
+            iterator.next(),
+            iterator.next(),
+            iterator.next(),
+            true
+        ));
     }
 
     @Override
-    public Optional<Client> initClientToAdd(final Library library) {
-        // TODO
-        return Optional.empty();
+    public Optional<Client> initClientToAdd(final Library library, final State currentTab) {
+        List<String> messages = of(
+            "Enter client name"
+        );
+
+        showToast("Lets add client! You can stop everywhere by entering '/stop'", currentTab);
+        Optional<List<String>> answers = form(messages, "/stop");
+
+        if (answers.isEmpty()) {
+            printPrevState(currentTab);
+            return Optional.empty();
+        }
+
+        Iterator<String> iterator = answers.get().listIterator();
+        return Optional.of(new Client(
+            iterator.next(),
+            List.of()
+        ));
+    }
+
+    private Optional<List<String>> form(final List<String> messages, final String stopCommand) {
+        List<String> answers = new ArrayList<>();
+        for (final String message : messages) {
+
+            // print question
+            printBackgroundAndMessage(message);
+
+            // Receive input
+            goTo(14, WINDOW_WIDTH / 2 - 5);
+            final String input = inputReader.getUserInput();
+            if (Objects.equals(input, stopCommand)) {
+                return Optional.empty();
+            }
+            answers.add(input);
+        }
+        return Optional.of(answers);
     }
 
     private void beforeAll() {

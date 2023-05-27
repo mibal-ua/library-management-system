@@ -50,7 +50,7 @@ public interface WindowManager {
 
     void searchOperationTab(List<Operation> operations, List<Client> clients, String[] args);
 
-    Optional<Book> initBookToAdd(Library library);
+    Optional<Book> initBookToAdd(Library library, State currentTab);
 
-    Optional<Client> initClientToAdd(Library library);
+    Optional<Client> initClientToAdd(Library library, State currentTab);
 }

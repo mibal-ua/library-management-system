@@ -102,14 +102,14 @@ public class Application {
                     }
                     switch (currentTab.getDataType()) {
                         case BOOK -> {
-                            Optional<Book> optionalBookToAdd = windowManager.initBookToAdd(library);
+                            Optional<Book> optionalBookToAdd = windowManager.initBookToAdd(library, currentTab);
                             optionalBookToAdd.ifPresent(library::addBook);
                             optionalBookToAdd.ifPresent(
                                 book -> windowManager.showToast("Book successfully added!", currentTab));
                             dataOperator.updateLibrary(library);
                         }
                         case CLIENT -> {
-                            Optional<Client> optionalClientToAdd = windowManager.initClientToAdd(library);
+                            Optional<Client> optionalClientToAdd = windowManager.initClientToAdd(library, currentTab);
                             optionalClientToAdd.ifPresent(library::addClient);
                             optionalClientToAdd.ifPresent(
                                 client -> windowManager.showToast("Client successfully added!", currentTab));
