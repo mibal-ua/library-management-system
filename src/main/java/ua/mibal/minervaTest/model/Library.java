@@ -18,6 +18,7 @@ package ua.mibal.minervaTest.model;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.List.of;
+import static java.util.Objects.requireNonNull;
 import static ua.mibal.minervaTest.model.OperationType.RETURN;
 import static ua.mibal.minervaTest.model.OperationType.TAKE;
 import java.io.Serializable;
@@ -134,19 +135,19 @@ public class Library implements Serializable {
 
     private boolean addOperation(final Operation operation) {
         // TODO implement validation
-        operations.add(operation);
+        operations.add(requireNonNull(operation));
         return true;
     }
 
     public boolean addBook(final Book book) {
         // TODO implement validation
-        books.add(book);
+        books.add(requireNonNull(book));
         return true;
     }
 
     public boolean addClient(final Client client) {
         // TODO implement validation
-        clients.add(client);
+        clients.add(requireNonNull(client));
         return true;
     }
 
@@ -211,10 +212,12 @@ public class Library implements Serializable {
 
     public void deleteBook(final Book bookToDelete) {
         // TODO
+        books.remove(requireNonNull(bookToDelete));
     }
 
     public void deleteClient(final Client clientToDelete) {
         // TODO
+        clients.remove(requireNonNull(clientToDelete));
     }
 
     @FunctionalInterface
