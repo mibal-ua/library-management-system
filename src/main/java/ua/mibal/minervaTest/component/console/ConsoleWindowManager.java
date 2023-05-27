@@ -53,8 +53,6 @@ public class ConsoleWindowManager implements WindowManager {
 
     private Library cachedLibrary;
 
-    private int linesCount = 0;
-
     public ConsoleWindowManager(final DataPrinter dataPrinter,
                                 final UserInputReader inputReader) {
         this.dataPrinter = dataPrinter;
@@ -70,8 +68,6 @@ public class ConsoleWindowManager implements WindowManager {
             BOLD, RESET));
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printListOfBooks(library.getBooks());
-        final int elCount = library.getBooks().size();
-        linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
         cachedLibrary = library;
         afterAll();
     }
@@ -85,8 +81,6 @@ public class ConsoleWindowManager implements WindowManager {
             BOLD, RESET));
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printListOfClients(library.getClients());
-        final int elCount = library.getClients().size();
-        linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
         cachedLibrary = library;
         afterAll();
     }
@@ -100,8 +94,6 @@ public class ConsoleWindowManager implements WindowManager {
             BOLD, RESET));
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printListOfOperations(library.getOperations(), library.getClients());
-        final int elCount = library.getOperations().size();
-        linesCount = 3 + 3 + elCount + (elCount == 0 ? 0 : 1);
         cachedLibrary = library;
         afterAll();
     }
@@ -155,12 +147,12 @@ public class ConsoleWindowManager implements WindowManager {
                  
              """);
 
-        linesCount = 3 + 36;
         afterAll();
     }
 
     @Override
     public String[] readCommandLine() {
+        goTo(24, 0);
         dataPrinter.printInfoMessage("> ");
         String input = inputReader.getUserInput();
         return input.split(" ");
@@ -256,15 +248,12 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     private void beforeAll() {
-        linesCount = 0;
         dataPrinter.clear();
     }
 
     private void afterAll() {
-        for (int i = 0; i < WINDOW_HEIGHT - linesCount - 2; i++) {
-            dataPrinter.printlnInfoMessage("");
-        }
-        linesCount = 0;
+        dataPrinter.printlnInfoMessage("");
+        dataPrinter.printlnInfoMessage("");
     }
 
     private void printPrevState(final State state) {
