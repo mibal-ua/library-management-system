@@ -22,15 +22,8 @@ import ua.mibal.minervaTest.component.WindowManager;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
-import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
-import static ua.mibal.minervaTest.model.window.State.SEARCH_BOOK;
-import static ua.mibal.minervaTest.model.window.State.SEARCH_CLIENT;
-import static ua.mibal.minervaTest.model.window.State.SEARCH_HISTORY;
-import static ua.mibal.minervaTest.model.window.State.TAB_1;
-import static ua.mibal.minervaTest.model.window.State.TAB_2;
-import static ua.mibal.minervaTest.model.window.State.TAB_3;
 import static ua.mibal.minervaTest.utils.StringUtils.substring;
 import java.util.Arrays;
 import java.util.Optional;
@@ -44,9 +37,6 @@ public class Application {
     private final DataOperator dataOperator;
 
     private final WindowManager windowManager;
-
-    // FIXME delete var
-    private State currentTab = TAB_1;
 
     public Application(final DataOperator dataOperator,
                        final WindowManager windowManager) {
@@ -63,76 +53,59 @@ public class Application {
             final String command = input[0];
             final String[] args = Arrays.copyOfRange(input, 1, input.length);
             switch (command) {
-                case "1" -> {
-                    windowManager.tab1(library);
-                    currentTab = TAB_1;
-                }
-                case "2" -> {
-                    windowManager.tab2(library);
-                    currentTab = TAB_2;
-                }
-                case "3" -> {
-                    windowManager.tab3(library);
-                    currentTab = TAB_3;
-                }
+                case "1" -> windowManager.tab1(library);
+                case "2" -> windowManager.tab2(library);
+                case "3" -> windowManager.tab3(library);
                 case "help" -> windowManager.help();
                 case "search", "s" -> {
                     if (args.length == 0) {
-                        windowManager.showToast("You need to enter 'search' with ${query}", currentTab);
+                        windowManager.showToast("You need to enter 'search' with ${query}");
                         break;
                     }
-                    switch (currentTab.getDataType()) {
-                        case BOOK -> {
-                            windowManager.searchBookTab(library.findBooks(args), args);
-                            currentTab = SEARCH_BOOK;
-                        }
-                        case CLIENT -> {
-                            windowManager.searchClientTab(library.findClients(args), args);
-                            currentTab = SEARCH_CLIENT;
-                        }
-                        case HISTORY -> {
+                    switch (windowManager.getCurrentDataType()) {
+                        case BOOK -> windowManager.searchBookTab(library.findBooks(args), args);
+                        case CLIENT -> windowManager.searchClientTab(library.findClients(args), args);
+                        case HISTORY ->
                             windowManager.searchOperationTab(library.findOperations(args), library.getClients(), args);
-                            currentTab = SEARCH_HISTORY;
-                        }
                     }
                 }
                 case "add" -> {
-                    if (currentTab.getDataType() == HISTORY) {
-                        windowManager.showToast("You cannot change history manually", currentTab);
+                    if (windowManager.getCurrentDataType() == HISTORY) {
+                        windowManager.showToast("You cannot change history manually");
                         break;
                     }
-                    switch (currentTab.getDataType()) {
+                    switch (windowManager.getCurrentDataType()) {
                         case BOOK -> {
-                            Optional<Book> optionalBookToAdd = windowManager.initBookToAdd(library, currentTab);
+                            Optional<Book> optionalBookToAdd = windowManager.initBookToAdd(library);
                             optionalBookToAdd.ifPresent(library::addBook);
                             optionalBookToAdd.ifPresent(
-                                book -> windowManager.showToast("Book successfully added!", currentTab));
+                                book -> windowManager.showToast("Book successfully added!"));
                             dataOperator.updateLibrary(library);
                         }
                         case CLIENT -> {
-                            Optional<Client> optionalClientToAdd = windowManager.initClientToAdd(library, currentTab);
+                            Optional<Client> optionalClientToAdd = windowManager.initClientToAdd(library);
                             optionalClientToAdd.ifPresent(library::addClient);
                             optionalClientToAdd.ifPresent(
-                                client -> windowManager.showToast("Client successfully added!", currentTab));
+                                client -> windowManager.showToast("Client successfully added!"));
                             dataOperator.updateLibrary(library);
                         }
                     }
                 }
                 case "delete", "del" -> {
-                    if (currentTab.getDataType() == HISTORY) {
-                        windowManager.showToast("You cannot change history manually", currentTab);
+                    if (windowManager.getCurrentDataType() == HISTORY) {
+                        windowManager.showToast("You cannot change history manually");
                         break;
                     }
                     if (args.length == 0) {
-                        windowManager.showToast("You need to enter 'delete' with ${id}", currentTab);
+                        windowManager.showToast("You need to enter 'delete' with ${id}");
                         break;
                     }
-                    switch (currentTab.getDataType()) {
+                    switch (windowManager.getCurrentDataType()) {
                         case BOOK -> {
                             final String id = args[0];
                             if (!library.isContainBookId(id)) {
                                 windowManager.showToast(format(
-                                    "Oops, there are no books with this id '%s'", id), currentTab);
+                                    "Oops, there are no books with this id '%s'", id));
                                 break;
                             }
 
@@ -143,23 +116,23 @@ public class Application {
                             if (bookHolder.isPresent()) {
                                 String name = substring(bookHolder.get().getName(), 13) + "..";
                                 windowManager.showToast(format(
-                                    "Oops, but client '%s' holds this book '%s'", name, id), currentTab);
+                                    "Oops, but client '%s' holds this book '%s'", name, id));
                                 break;
                             }
 
                             final boolean isConfirmed = windowManager.showDialogueToast(
-                                format("You really need to delete book '%s'?", title), "YES", "NO", currentTab);
+                                format("You really need to delete book '%s'?", title), "YES", "NO");
                             if (isConfirmed) {
                                 library.deleteBook(bookToDelete);
                                 dataOperator.updateLibrary(library);
-                                windowManager.showToast("Book successfully deleted.", currentTab);
+                                windowManager.showToast("Book successfully deleted.");
                             }
                         }
                         case CLIENT -> {
                             final String id = args[0];
                             if (!library.isContainClientId(id)) {
                                 windowManager.showToast(format(
-                                    "Oops, there are no clients with this id '%s'", id), currentTab);
+                                    "Oops, there are no clients with this id '%s'", id));
                                 break;
                             }
 
@@ -168,28 +141,28 @@ public class Application {
 
                             if (library.doesClientHoldBook(clientToDelete)) {
                                 windowManager.showToast(format(
-                                    "Oops, client '%s' is holding books, we can't delete him", name), currentTab);
+                                    "Oops, client '%s' is holding books, we can't delete him", name));
                                 break;
                             }
 
                             final boolean isConfirmed = windowManager.showDialogueToast(
-                                format("You really need to delete client '%s'?", name), "YES", "NO", currentTab);
+                                format("You really need to delete client '%s'?", name), "YES", "NO");
                             if (isConfirmed) {
                                 library.deleteClient(clientToDelete);
                                 dataOperator.updateLibrary(library);
-                                windowManager.showToast("Client successfully deleted.", currentTab);
+                                windowManager.showToast("Client successfully deleted.");
                             }
                         }
                     }
                 }
                 case "exit" -> {
                     final boolean isExit = windowManager.showDialogueToast(
-                        "You really need to exit?", "YES", "NO", currentTab);
+                        "You really need to exit?", "YES", "NO");
                     if (isExit) {
                         return;
                     }
                 }
-                default -> windowManager.showToast(format("Unrecognizable command '%s'", command), currentTab);
+                default -> windowManager.showToast(format("Unrecognizable command '%s'", command));
             }
             input = windowManager.readCommandLine();
         }

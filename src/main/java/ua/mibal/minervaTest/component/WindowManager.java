@@ -20,7 +20,7 @@ import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
-import ua.mibal.minervaTest.model.window.State;
+import ua.mibal.minervaTest.model.command.DataType;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,9 +40,9 @@ public interface WindowManager {
 
     String[] readCommandLine();
 
-    void showToast(final String message, final State state);
+    void showToast(final String message);
 
-    boolean showDialogueToast(String question, String answer1, String answer2, State currentTab);
+    boolean showDialogueToast(String question, String answer1, String answer2);
 
     void searchBookTab(List<Book> books, String[] args);
 
@@ -50,7 +50,9 @@ public interface WindowManager {
 
     void searchOperationTab(List<Operation> operations, List<Client> clients, String[] args);
 
-    Optional<Book> initBookToAdd(Library library, State currentTab);
+    Optional<Book> initBookToAdd(Library library);
 
-    Optional<Client> initClientToAdd(Library library, State currentTab);
+    Optional<Client> initClientToAdd(Library library);
+
+    DataType getCurrentDataType();
 }
