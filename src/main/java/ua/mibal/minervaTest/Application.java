@@ -104,10 +104,12 @@ public class Application {
                         case BOOK -> {
                             Optional<Book> optionalBookToAdd = windowManager.initBookToAdd(library);
                             optionalBookToAdd.ifPresent(library::addBook);
+                            dataOperator.updateLibrary(library);
                         }
                         case CLIENT -> {
                             Optional<Client> optionalClientToAdd = windowManager.initClientToAdd(library);
                             optionalClientToAdd.ifPresent(library::addClient);
+                            dataOperator.updateLibrary(library);
                         }
                     }
                 }
@@ -143,6 +145,7 @@ public class Application {
                                 format("You really need to delete book '%s'?", title), "YES", "NO");
                             if (isConfirmed) {
                                 library.deleteBook(bookToDelete);
+                                dataOperator.updateLibrary(library);
                                 windowManager.showToast("Book successfully deleted.", currentTab);
                             }
                         }
@@ -165,6 +168,7 @@ public class Application {
                                 format("You really need to delete client '%s'?", name), "YES", "NO");
                             if (isConfirmed) {
                                 library.deleteClient(clientToDelete);
+                                dataOperator.updateLibrary(library);
                                 windowManager.showToast("Client successfully deleted.", currentTab);
                             }
                         }
