@@ -238,7 +238,7 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     private void afterAll() {
-        for (int i = 0; i < WINDOW_HEIGHT - linesCount - 1; i++) {
+        for (int i = 0; i < WINDOW_HEIGHT - linesCount - 2; i++) {
             dataPrinter.printlnInfoMessage("");
         }
         linesCount = 0;
