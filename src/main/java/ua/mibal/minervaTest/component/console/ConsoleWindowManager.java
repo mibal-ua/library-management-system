@@ -362,6 +362,16 @@ public class ConsoleWindowManager implements WindowManager {
         return currentTab.getDataType();
     }
 
+    @Override
+    public void parentTab() {
+
+        switch (currentTab) {
+            case TAB_1, SEARCH_BOOK -> tab1(cachedLibrary);
+            case TAB_2, SEARCH_CLIENT -> tab2(cachedLibrary);
+            case TAB_3, SEARCH_HISTORY -> tab3(cachedLibrary);
+        }
+    }
+
     private Optional<List<String>> form(final List<String> messages, final String stopCommand) {
         List<String> answers = new ArrayList<>();
         for (final String message : messages) {

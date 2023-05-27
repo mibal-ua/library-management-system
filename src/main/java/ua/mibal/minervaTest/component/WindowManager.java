@@ -55,4 +55,6 @@ public interface WindowManager {
     Optional<Client> initClientToAdd(Library library);
 
     DataType getCurrentDataType();
+
+    void parentTab();
 }

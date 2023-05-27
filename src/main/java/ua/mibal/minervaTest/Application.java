@@ -57,6 +57,7 @@ public class Application {
                 case "2" -> windowManager.tab2(library);
                 case "3" -> windowManager.tab3(library);
                 case "help" -> windowManager.help();
+                case "esc" -> windowManager.parentTab();
                 case "search", "s" -> {
                     if (args.length == 0) {
                         windowManager.showToast("You need to enter 'search' with ${query}");
