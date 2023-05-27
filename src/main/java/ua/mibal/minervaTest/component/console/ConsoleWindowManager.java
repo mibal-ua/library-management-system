@@ -226,13 +226,13 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printInfoMessage(enter);
         goTo(15, WINDOW_WIDTH / 2);
         String input = inputReader.getUserInput();
+
+        // refresh last screen and return
         if (Objects.equals(input, "1")) {
-            //refresh last screen
             printPrevState(currentTab);
             return true;
         }
         if (Objects.equals(input, "2")) {
-            //refresh last screen
             printPrevState(currentTab);
             return false;
         }
