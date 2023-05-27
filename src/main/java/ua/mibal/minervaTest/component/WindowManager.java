@@ -42,7 +42,7 @@ public interface WindowManager {
 
     void showToast(final String message, final State state);
 
-    boolean showDialogueToast(String question, String answer1, String answer2);
+    boolean showDialogueToast(String question, String answer1, String answer2, State currentTab);
 
     void searchBookTab(List<Book> books, String[] args);
 

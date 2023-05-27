@@ -205,9 +205,27 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public boolean showDialogueToast(final String question, final String answer1, final String answer2) {
-        // TODO
-        return false;
+    public boolean showDialogueToast(final String question, final String answer1, final String answer2,
+                                     final State currentTab) {
+        printBackgroundAndMessage(question);
+
+        // dialogue input
+        String enter = "1 - YES, 2 - NO";
+        goTo(14, (WINDOW_WIDTH - enter.length()) / 2);
+        dataPrinter.printInfoMessage(enter);
+        goTo(15, WINDOW_WIDTH / 2);
+        String input = inputReader.getUserInput();
+        if (Objects.equals(input, "1")) {
+            //refresh last screen
+            printPrevState(currentTab);
+            return true;
+        }
+        if (Objects.equals(input, "2")) {
+            //refresh last screen
+            printPrevState(currentTab);
+            return false;
+        }
+        return showDialogueToast(question, answer1, answer2, currentTab);
     }
 
     @Override

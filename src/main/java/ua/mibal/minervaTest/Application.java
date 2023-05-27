@@ -142,7 +142,7 @@ public class Application {
                             }
                             String title = bookToDelete.getTitle().substring(0, 12) + "...";
                             final boolean isConfirmed = windowManager.showDialogueToast(
-                                format("You really need to delete book '%s'?", title), "YES", "NO");
+                                format("You really need to delete book '%s'?", title), "YES", "NO", currentTab);
                             if (isConfirmed) {
                                 library.deleteBook(bookToDelete);
                                 dataOperator.updateLibrary(library);
@@ -165,7 +165,7 @@ public class Application {
                                 break;
                             }
                             final boolean isConfirmed = windowManager.showDialogueToast(
-                                format("You really need to delete client '%s'?", name), "YES", "NO");
+                                format("You really need to delete client '%s'?", name), "YES", "NO", currentTab);
                             if (isConfirmed) {
                                 library.deleteClient(clientToDelete);
                                 dataOperator.updateLibrary(library);
@@ -176,7 +176,7 @@ public class Application {
                 }
                 case "exit" -> {
                     final boolean isExit = windowManager.showDialogueToast(
-                        "You really need to exit?", "YES", "NO");
+                        "You really need to exit?", "YES", "NO", currentTab);
                     if (isExit) {
                         return;
                     }
