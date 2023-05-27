@@ -17,7 +17,6 @@
 package ua.mibal.minervaTest.model;
 
 import static java.util.Collections.unmodifiableList;
-import static java.util.List.of;
 import static java.util.Objects.requireNonNull;
 import static ua.mibal.minervaTest.model.OperationType.RETURN;
 import static ua.mibal.minervaTest.model.OperationType.TAKE;
@@ -64,7 +63,8 @@ public class Library implements Serializable {
         for (final String arg : input) {
             for (Book book : books) {
                 if (book.getId().equals(arg)) {
-                    return of(book);
+                    result.add(book);
+                    break;
                 }
                 if (book.getTitle().contains(arg) ||
                     book.getAuthor().contains(arg) ||
@@ -81,9 +81,11 @@ public class Library implements Serializable {
         for (final String arg : input) {
             for (Client client : clients) {
                 if (client.getId().equals(arg)) {
-                    return of(client);
+                    result.add(client);
+                    break;
                 }
-                if (client.getName().contains(arg)) {
+                if (client.getName().contains(arg) ||
+                    client.getBooksIds().contains(arg)) {
                     result.add(client);
                 }
             }
@@ -95,12 +97,19 @@ public class Library implements Serializable {
         List<Operation> result = new ArrayList<>();
         for (final String arg : input) {
             for (Operation operation : operations) {
-                if (operation.getClientId().equals(arg)) {
-                    return of(operation);
-                }
-                if (operation.getDate().contains(arg)) {
+                if (operation.getClientId().equals(arg) ||
+                    operation.getDate().contains(arg) ||
+                    operation.getOperationType().equalsIgnoreCase(arg) ||
+                    operation.getBooksIds().contains(arg)) {
                     result.add(operation);
                 }
+                // find by username
+                String id = operation.getClientId();
+                findClientById(id).ifPresent(client -> {
+                    if (client.getName().contains(arg)) {
+                        result.add(operation);
+                    }
+                });
             }
         }
         return unmodifiableList(result);
