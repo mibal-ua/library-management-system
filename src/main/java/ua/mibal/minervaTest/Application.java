@@ -31,6 +31,7 @@ import static ua.mibal.minervaTest.model.window.State.SEARCH_HISTORY;
 import static ua.mibal.minervaTest.model.window.State.TAB_1;
 import static ua.mibal.minervaTest.model.window.State.TAB_2;
 import static ua.mibal.minervaTest.model.window.State.TAB_3;
+import static ua.mibal.minervaTest.utils.StringUtils.substring;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -155,19 +156,21 @@ public class Application {
                         }
                         case CLIENT -> {
                             final String id = args[0];
-                            Optional<Client> optionalClientToDelete = library.findClientById(id);
-                            if (optionalClientToDelete.isEmpty()) {
+                            if (!library.isContainClientId(id)) {
                                 windowManager.showToast(format(
                                     "Oops, there are no clients with this id '%s'", id), currentTab);
                                 break;
                             }
-                            Client clientToDelete = optionalClientToDelete.get();
-                            String name = clientToDelete.getName().substring(0, 8) + "...";
-                            if (clientToDelete.getBooksIds().size() != 0) {
+
+                            Client clientToDelete = library.findClientById(id).get();
+                            String name = substring(clientToDelete.getName(), 13) + "..";
+
+                            if (library.doesClientHoldBook(clientToDelete)) {
                                 windowManager.showToast(format(
-                                    "Oops, client '%s' is holding books, we can't delete him", id), currentTab);
+                                    "Oops, client '%s' is holding books, we can't delete him", name), currentTab);
                                 break;
                             }
+
                             final boolean isConfirmed = windowManager.showDialogueToast(
                                 format("You really need to delete client '%s'?", name), "YES", "NO", currentTab);
                             if (isConfirmed) {
