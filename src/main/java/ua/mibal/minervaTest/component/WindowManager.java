@@ -48,7 +48,7 @@ public interface WindowManager {
 
     void searchClientTab(List<Client> clients, String[] args);
 
-    void searchOperationTab(List<Operation> operations, String[] args);
+    void searchOperationTab(List<Operation> operations, List<Client> clients, String[] args);
 
     Optional<Book> initBookToAdd(Library library);
 

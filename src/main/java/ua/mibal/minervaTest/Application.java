@@ -90,7 +90,7 @@ public class Application {
                             currentTab = SEARCH_CLIENT;
                         }
                         case HISTORY -> {
-                            windowManager.searchOperationTab(library.findOperations(args), args);
+                            windowManager.searchOperationTab(library.findOperations(args), library.getClients(), args);
                             currentTab = SEARCH_HISTORY;
                         }
                     }

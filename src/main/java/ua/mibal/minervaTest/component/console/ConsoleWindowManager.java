@@ -241,17 +241,56 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public void searchBookTab(final List<Book> books, final String[] args) {
-        // TODO
+        beforeAll();
+
+        // header
+        dataPrinter.printlnInfoMessage("");
+        final String message = "SEARCH IN BOOKS BY '" + String.join(" ", args) + "'";
+        goTo(2, (WINDOW_WIDTH - message.length()) / 2);
+        dataPrinter.printlnInfoMessage(BOLD + message + RESET);
+        dataPrinter.printlnInfoMessage("");
+
+        // table
+        dataPrinter.printListOfBooks(books);
+        this.cachedSearchBookArgs = new CachedSearchArgs<>(books, args);
+
+        afterAll();
     }
 
     @Override
     public void searchClientTab(final List<Client> clients, final String[] args) {
-        // TODO
+        beforeAll();
+
+        // header
+        dataPrinter.printlnInfoMessage("");
+        final String message = "SEARCH IN CLIENTS BY '" + String.join(" ", args) + "'";
+        goTo(2, (WINDOW_WIDTH - message.length()) / 2);
+        dataPrinter.printlnInfoMessage(BOLD + message + RESET);
+        dataPrinter.printlnInfoMessage("");
+
+        // table
+        dataPrinter.printListOfClients(clients);
+        this.cachedSearchClientArgs = new CachedSearchArgs<>(clients, args);
+
+        afterAll();
     }
 
     @Override
-    public void searchOperationTab(final List<Operation> operations, final String[] args) {
-        // TODO
+    public void searchOperationTab(final List<Operation> operations, final List<Client> clients, final String[] args) {
+        beforeAll();
+
+        // header
+        dataPrinter.printlnInfoMessage("");
+        final String message = "SEARCH IN OPERATIONS BY '" + String.join(" ", args) + "'";
+        goTo(2, (WINDOW_WIDTH - message.length()) / 2);
+        dataPrinter.printlnInfoMessage(BOLD + message + RESET);
+        dataPrinter.printlnInfoMessage("");
+
+        // table
+        dataPrinter.printListOfOperations(operations, clients);
+        this.cachedSearchOperationArgs = new CachedSearchArgs<>(operations, args);
+
+        afterAll();
     }
 
     @Override
@@ -288,6 +327,7 @@ public class ConsoleWindowManager implements WindowManager {
                 cachedSearchClientArgs.args);
             case SEARCH_HISTORY -> searchOperationTab(
                 cachedSearchOperationArgs.data,
+                cachedLibrary.getClients(),
                 cachedSearchOperationArgs.args);
         }
     }
