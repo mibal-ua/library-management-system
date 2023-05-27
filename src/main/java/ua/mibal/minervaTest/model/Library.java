@@ -229,6 +229,14 @@ public class Library implements Serializable {
         clients.remove(requireNonNull(clientToDelete));
     }
 
+    public boolean isContainClientId(final String id) {
+        return findClientById(id).isPresent();
+    }
+
+    public boolean doesClientHoldBook(final Client client) {
+        return client.getBooksIds().size() != 0;
+    }
+
     @FunctionalInterface
     public interface Lambda {
 
