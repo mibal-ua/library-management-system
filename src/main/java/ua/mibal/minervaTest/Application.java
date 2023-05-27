@@ -139,13 +139,12 @@ public class Application {
                             Book bookToDelete = optionalBookToDelete.get();
                             Optional<Client> optionalClient = library.findClientByBookId(id);
                             if (optionalClient.isPresent()) {
-                                Client client = optionalClient.get();
-                                String name = client.getName().substring(0, 8) + "...";
+                                String name = substring(optionalClient.get().getName(), 13) + "..";
                                 windowManager.showToast(format(
                                     "Oops, but client '%s' holds this book '%s'", name, id), currentTab);
                                 break;
                             }
-                            String title = bookToDelete.getTitle().substring(0, 12) + "...";
+                            String title = substring(bookToDelete.getTitle(), 12) + "..";
                             final boolean isConfirmed = windowManager.showDialogueToast(
                                 format("You really need to delete book '%s'?", title), "YES", "NO", currentTab);
                             if (isConfirmed) {
