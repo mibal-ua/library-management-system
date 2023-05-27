@@ -16,10 +16,9 @@
 
 package ua.mibal.minervaTest.model.window;
 
-import ua.mibal.minervaTest.model.command.DataType;
-import static ua.mibal.minervaTest.model.command.DataType.BOOK;
-import static ua.mibal.minervaTest.model.command.DataType.CLIENT;
-import static ua.mibal.minervaTest.model.command.DataType.HISTORY;
+import static ua.mibal.minervaTest.model.window.DataType.BOOK;
+import static ua.mibal.minervaTest.model.window.DataType.CLIENT;
+import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
 
 /**
  * @author Mykhailo Balakhon

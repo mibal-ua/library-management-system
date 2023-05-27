@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ua.mibal.minervaTest.model.command;
+package ua.mibal.minervaTest.model.window;
 
 /**
  * @author Mykhailo Balakhon

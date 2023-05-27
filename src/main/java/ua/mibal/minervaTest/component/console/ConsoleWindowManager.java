@@ -23,7 +23,7 @@ import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
-import ua.mibal.minervaTest.model.command.DataType;
+import ua.mibal.minervaTest.model.window.DataType;
 import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
 import static java.util.List.of;
