@@ -130,21 +130,23 @@ public class Application {
                     switch (currentTab.getDataType()) {
                         case BOOK -> {
                             final String id = args[0];
-                            Optional<Book> optionalBookToDelete = library.findBookById(id);
-                            if (optionalBookToDelete.isEmpty()) {
+                            if (!library.isContainBookId(id)) {
                                 windowManager.showToast(format(
                                     "Oops, there are no books with this id '%s'", id), currentTab);
                                 break;
                             }
-                            Book bookToDelete = optionalBookToDelete.get();
-                            Optional<Client> optionalClient = library.findClientByBookId(id);
-                            if (optionalClient.isPresent()) {
-                                String name = substring(optionalClient.get().getName(), 13) + "..";
+
+                            final Book bookToDelete = library.findBookById(id).get();
+                            final String title = substring(bookToDelete.getTitle(), 12) + "..";
+
+                            Optional<Client> bookHolder = library.findClientByBookId(id);
+                            if (bookHolder.isPresent()) {
+                                String name = substring(bookHolder.get().getName(), 13) + "..";
                                 windowManager.showToast(format(
                                     "Oops, but client '%s' holds this book '%s'", name, id), currentTab);
                                 break;
                             }
-                            String title = substring(bookToDelete.getTitle(), 12) + "..";
+
                             final boolean isConfirmed = windowManager.showDialogueToast(
                                 format("You really need to delete book '%s'?", title), "YES", "NO", currentTab);
                             if (isConfirmed) {
