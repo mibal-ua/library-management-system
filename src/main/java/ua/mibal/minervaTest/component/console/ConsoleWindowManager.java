@@ -62,50 +62,69 @@ public class ConsoleWindowManager implements WindowManager {
     @Override
     public void tab1(final Library library) {
         beforeAll();
+
+        // header
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printlnInfoMessage(format(
             "                %sBOOKS%s               CLIENTS               HISTORY               ",
             BOLD, RESET));
         dataPrinter.printlnInfoMessage("");
+
+        // table
         dataPrinter.printListOfBooks(library.getBooks());
         cachedLibrary = library;
+
         afterAll();
     }
 
     @Override
     public void tab2(final Library library) {
         beforeAll();
+
+        // header
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printlnInfoMessage(format(
             "                BOOKS               %sCLIENTS%s               HISTORY               ",
             BOLD, RESET));
         dataPrinter.printlnInfoMessage("");
+
+        // table
         dataPrinter.printListOfClients(library.getClients());
         cachedLibrary = library;
+
         afterAll();
     }
 
     @Override
     public void tab3(final Library library) {
         beforeAll();
+
+        // header
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printlnInfoMessage(format(
             "                BOOKS               CLIENTS               %sHISTORY%s               ",
             BOLD, RESET));
         dataPrinter.printlnInfoMessage("");
+
+        // table
         dataPrinter.printListOfOperations(library.getOperations(), library.getClients());
         cachedLibrary = library;
+
         afterAll();
     }
 
     @Override
     public void help() {
         beforeAll();
+
+        // header
         dataPrinter.printlnInfoMessage("");
         dataPrinter.printlnInfoMessage(format(
             "                                      %sHELP%s                                      ",
             BOLD, RESET));
         dataPrinter.printlnInfoMessage("");
+
+        // instructions
         dataPrinter.printlnInfoMessage("""
                                               
                                               MAIN CONTROL
