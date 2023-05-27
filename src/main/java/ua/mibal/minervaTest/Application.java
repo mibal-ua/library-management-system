@@ -19,7 +19,6 @@ package ua.mibal.minervaTest;
 
 import ua.mibal.minervaTest.component.DataOperator;
 import ua.mibal.minervaTest.component.WindowManager;
-import ua.mibal.minervaTest.component.request.RequestProcessor;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
@@ -45,17 +44,13 @@ public class Application {
 
     private final WindowManager windowManager;
 
-    private final RequestProcessor requestProcessor;
-
     // FIXME delete var
     private State currentTab = TAB_1;
 
     public Application(final DataOperator dataOperator,
-                       final WindowManager windowManager,
-                       final RequestProcessor requestProcessor) {
+                       final WindowManager windowManager) {
         this.dataOperator = dataOperator;
         this.windowManager = windowManager;
-        this.requestProcessor = requestProcessor;
     }
 
     public void start() {
