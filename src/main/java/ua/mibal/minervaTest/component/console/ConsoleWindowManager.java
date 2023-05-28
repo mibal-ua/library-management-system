@@ -364,12 +364,21 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public void parentTab() {
-
         switch (currentTab) {
             case TAB_1, SEARCH_BOOK -> tab1(cachedLibrary);
             case TAB_2, SEARCH_CLIENT -> tab2(cachedLibrary);
             case TAB_3, SEARCH_HISTORY -> tab3(cachedLibrary);
         }
+    }
+
+    @Override
+    public void bookDetails(final Book book) {
+        // TODO
+    }
+
+    @Override
+    public void clientDetails(final Client client) {
+        // TODO
     }
 
     private Optional<List<String>> form(final List<String> messages, final String stopCommand) {

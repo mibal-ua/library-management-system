@@ -57,4 +57,8 @@ public interface WindowManager {
     DataType getCurrentDataType();
 
     void parentTab();
+
+    void bookDetails(Book book);
+
+    void clientDetails(Client client);
 }

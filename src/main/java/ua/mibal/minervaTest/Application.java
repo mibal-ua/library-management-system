@@ -58,6 +58,34 @@ public class Application {
                 case "3" -> windowManager.tab3(library);
                 case "help" -> windowManager.help();
                 case "esc" -> windowManager.parentTab();
+                case "look" -> {
+                    switch (windowManager.getCurrentDataType()) {
+                        case BOOK -> {
+                            final String id = args[0];
+                            final Optional<Book> optionalBook = library.findBookById(id);
+                            if (optionalBook.isEmpty()) {
+                                windowManager.showToast(format(
+                                    "Oops, there are no books with this id '%s'", id));
+                                break;
+                            }
+                            windowManager.bookDetails(optionalBook.get());
+                        }
+                        case CLIENT -> {
+                            final String id = args[0];
+                            final Optional<Client> optionalClient = library.findClientById(id);
+                            if (optionalClient.isEmpty()) {
+                                windowManager.showToast(format(
+                                    "Oops, there are no clients with this id '%s'", id));
+                                break;
+                            }
+                            windowManager.clientDetails(optionalClient.get());
+                        }
+                        case HISTORY -> {
+                            // TODO add id to operation
+                            // final String id = args[0];
+                        }
+                    }
+                }
                 case "search", "s" -> {
                     if (args.length == 0) {
                         windowManager.showToast("You need to enter 'search' with ${query}");
