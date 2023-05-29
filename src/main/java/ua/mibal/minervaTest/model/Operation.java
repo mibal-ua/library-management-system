@@ -23,12 +23,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
 public class Operation implements Serializable {
+
+    private String id;
 
     private String date;
 
@@ -42,6 +45,7 @@ public class Operation implements Serializable {
 
     public Operation(final String clientId, final String operationType,
                      final List<String> booksIds) {
+        this.id = UUID.randomUUID().toString().replace("-", "").substring(0, 4);
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         this.date = dateFormat.format(date);
@@ -51,6 +55,10 @@ public class Operation implements Serializable {
     }
 
     public Operation() {
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getDate() {
