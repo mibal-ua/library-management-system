@@ -58,7 +58,7 @@ public class Application {
                 case "2" -> windowManager.tab2(library);
                 case "3" -> windowManager.tab3(library);
                 case "help" -> windowManager.help();
-                case "esc" -> windowManager.parentTab();
+                case "esc" -> windowManager.drawPrevTab();
                 case "look" -> {
                     switch (windowManager.getCurrentDataType()) {
                         case BOOK -> {

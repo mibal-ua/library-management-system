@@ -57,6 +57,8 @@ public class ConsoleWindowManager implements WindowManager {
 
     private State currentTab = State.TAB_1;
 
+    private State prevTab;
+
     private CachedSearchArgs<Book> cachedSearchBookArgs;
 
     private CachedSearchArgs<Client> cachedSearchClientArgs;
@@ -91,7 +93,7 @@ public class ConsoleWindowManager implements WindowManager {
         // table
         dataPrinter.printListOfBooks(library.getBooks());
         cachedLibrary = library;
-        currentTab = State.TAB_1;
+        prevTab = currentTab = State.TAB_1;
 
         afterAll();
     }
@@ -110,7 +112,7 @@ public class ConsoleWindowManager implements WindowManager {
         // table
         dataPrinter.printListOfClients(library.getClients());
         cachedLibrary = library;
-        currentTab = State.TAB_2;
+        prevTab = currentTab = State.TAB_2;
 
         afterAll();
     }
@@ -129,7 +131,7 @@ public class ConsoleWindowManager implements WindowManager {
         // table
         dataPrinter.printListOfOperations(library.getOperations(), library.getClients());
         cachedLibrary = library;
-        currentTab = State.TAB_3;
+        prevTab = currentTab = State.TAB_3;
 
         afterAll();
     }
@@ -186,6 +188,8 @@ public class ConsoleWindowManager implements WindowManager {
                                       return ${id} - to return book
                  
              """);
+        prevTab = currentTab;
+        currentTab = State.HELP_TAB;
 
         afterAll();
     }
@@ -210,7 +214,7 @@ public class ConsoleWindowManager implements WindowManager {
         inputReader.getUserInput();
 
         //refresh last screen
-        printPrevState();
+        drawBackground();
     }
 
     private void printBackgroundAndMessage(final String message) {
@@ -249,11 +253,11 @@ public class ConsoleWindowManager implements WindowManager {
 
         // refresh last screen and return
         if (Objects.equals(input, "1")) {
-            printPrevState();
+            drawBackground();
             return true;
         }
         if (Objects.equals(input, "2")) {
-            printPrevState();
+            drawBackground();
             return false;
         }
         return showDialogueToast(question, answer1, answer2);
@@ -273,6 +277,7 @@ public class ConsoleWindowManager implements WindowManager {
         // table
         dataPrinter.printListOfBooks(books);
         this.cachedSearchBookArgs = new CachedSearchArgs<>(books, args);
+        prevTab = currentTab;
         currentTab = SEARCH_BOOK;
 
         afterAll();
@@ -292,6 +297,7 @@ public class ConsoleWindowManager implements WindowManager {
         // table
         dataPrinter.printListOfClients(clients);
         this.cachedSearchClientArgs = new CachedSearchArgs<>(clients, args);
+        prevTab = currentTab;
         currentTab = SEARCH_CLIENT;
 
         afterAll();
@@ -311,6 +317,7 @@ public class ConsoleWindowManager implements WindowManager {
         // table
         dataPrinter.printListOfOperations(operations, clients);
         this.cachedSearchOperationArgs = new CachedSearchArgs<>(operations, args);
+        prevTab = currentTab;
         currentTab = SEARCH_HISTORY;
 
         afterAll();
@@ -330,7 +337,7 @@ public class ConsoleWindowManager implements WindowManager {
         Optional<List<String>> answers = form(messages, "/stop");
 
         if (answers.isEmpty()) {
-            printPrevState();
+            drawBackground();
             return Optional.empty();
         }
 
@@ -355,7 +362,7 @@ public class ConsoleWindowManager implements WindowManager {
         Optional<List<String>> answers = form(messages, "/stop");
 
         if (answers.isEmpty()) {
-            printPrevState();
+            drawBackground();
             return Optional.empty();
         }
 
@@ -369,15 +376,6 @@ public class ConsoleWindowManager implements WindowManager {
     @Override
     public DataType getCurrentDataType() {
         return currentTab.getDataType();
-    }
-
-    @Override
-    public void parentTab() {
-        switch (currentTab) {
-            case TAB_1, SEARCH_BOOK -> tab1(cachedLibrary);
-            case TAB_2, SEARCH_CLIENT -> tab2(cachedLibrary);
-            case TAB_3, SEARCH_HISTORY -> tab3(cachedLibrary);
-        }
     }
 
     @Override
@@ -406,6 +404,7 @@ public class ConsoleWindowManager implements WindowManager {
             System.out.println("+--------------+---------------------------------------------------------------+");
         }
         cachedBook = book;
+        prevTab = currentTab;
         currentTab = LOOK_BOOK;
 
         afterAll();
@@ -440,6 +439,7 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printListOfBooks(books);
 
         cachedClientDetailsArgs = new CachedClientDetailsArgs(client, books);
+        prevTab = currentTab;
         currentTab = LOOK_CLIENT;
 
         afterAll();
@@ -475,6 +475,7 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printListOfBooks(books);
 
         cachedOperationDetailsArgs = new CachedOperationDetailsArgs(operation, client, books);
+        prevTab = currentTab;
         currentTab = LOOK_HISTORY;
 
         afterAll();
@@ -507,11 +508,21 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printlnInfoMessage("");
     }
 
-    private void printPrevState() {
-        switch (currentTab) {
+    @Override
+    public void drawPrevTab() {
+        drawTab(prevTab);
+    }
+
+    public void drawBackground() {
+        drawTab(currentTab);
+    }
+
+    private void drawTab(final State tab) {
+        switch (tab) {
             case TAB_1 -> tab1(cachedLibrary);
             case TAB_2 -> tab2(cachedLibrary);
             case TAB_3 -> tab3(cachedLibrary);
+            case HELP_TAB -> help();
             case SEARCH_BOOK -> searchBookTab(
                 cachedSearchBookArgs.data,
                 cachedSearchClientArgs.args);

@@ -56,7 +56,7 @@ public interface WindowManager {
 
     DataType getCurrentDataType();
 
-    void parentTab();
+    void drawPrevTab();
 
     void bookDetails(Book book);
 

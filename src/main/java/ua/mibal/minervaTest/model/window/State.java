@@ -19,6 +19,7 @@ package ua.mibal.minervaTest.model.window;
 import static ua.mibal.minervaTest.model.window.DataType.BOOK;
 import static ua.mibal.minervaTest.model.window.DataType.CLIENT;
 import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
+import static ua.mibal.minervaTest.model.window.DataType.NULL;
 
 /**
  * @author Mykhailo Balakhon
@@ -31,6 +32,8 @@ public enum State {
     TAB_2(CLIENT),
 
     TAB_3(HISTORY),
+
+    HELP_TAB(NULL),
 
     SEARCH_BOOK(BOOK),
 

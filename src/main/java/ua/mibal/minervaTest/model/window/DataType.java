@@ -26,7 +26,9 @@ public enum DataType {
 
     CLIENT,
 
-    HISTORY;
+    HISTORY,
+
+    NULL;
 
     public static boolean contains(final String value) {
         for (DataType type : values()) {
