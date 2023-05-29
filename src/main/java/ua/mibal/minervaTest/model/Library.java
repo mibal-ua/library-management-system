@@ -156,19 +156,25 @@ public class Library implements Serializable {
     }
 
     private boolean addOperation(final Operation operation) {
-        // TODO implement validation
+        if (findOperationById(operation.getId()).isPresent()) {
+            return false;
+        }
         operations.add(requireNonNull(operation));
         return true;
     }
 
     public boolean addBook(final Book book) {
-        // TODO implement validation
+        if (findBookById(book.getId()).isPresent()) {
+            return false;
+        }
         books.add(requireNonNull(book));
         return true;
     }
 
     public boolean addClient(final Client client) {
-        // TODO implement validation
+        if (findClientById(client.getId()).isPresent()) {
+            return false;
+        }
         clients.add(requireNonNull(client));
         return true;
     }
