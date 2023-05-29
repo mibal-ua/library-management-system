@@ -36,7 +36,13 @@ public enum State {
 
     SEARCH_CLIENT(CLIENT),
 
-    SEARCH_HISTORY(HISTORY);
+    SEARCH_HISTORY(HISTORY),
+
+    LOOK_BOOK(BOOK),
+
+    LOOK_CLIENT(CLIENT),
+
+    LOOK_HISTORY(HISTORY);
 
     private final DataType dataType;
 
