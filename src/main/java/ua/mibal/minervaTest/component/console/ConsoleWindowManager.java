@@ -29,17 +29,22 @@ import static java.lang.String.format;
 import static java.util.List.of;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.BOLD;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.RESET;
+import static ua.mibal.minervaTest.model.window.State.HELP_TAB;
 import static ua.mibal.minervaTest.model.window.State.LOOK_BOOK;
 import static ua.mibal.minervaTest.model.window.State.LOOK_CLIENT;
 import static ua.mibal.minervaTest.model.window.State.LOOK_HISTORY;
 import static ua.mibal.minervaTest.model.window.State.SEARCH_BOOK;
 import static ua.mibal.minervaTest.model.window.State.SEARCH_CLIENT;
 import static ua.mibal.minervaTest.model.window.State.SEARCH_HISTORY;
+import static ua.mibal.minervaTest.model.window.State.TAB_1;
+import static ua.mibal.minervaTest.model.window.State.TAB_2;
+import static ua.mibal.minervaTest.model.window.State.TAB_3;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Stack;
 
 /**
  * @author Mykhailo Balakhon
@@ -55,9 +60,7 @@ public class ConsoleWindowManager implements WindowManager {
 
     private final UserInputReader inputReader;
 
-    private State currentTab = State.TAB_1;
-
-    private State prevTab;
+    private final Stack<State> tabsStack = new Stack<>();
 
     private CachedSearchArgs<Book> cachedSearchBookArgs;
 
@@ -77,6 +80,7 @@ public class ConsoleWindowManager implements WindowManager {
                                 final UserInputReader inputReader) {
         this.dataPrinter = dataPrinter;
         this.inputReader = inputReader;
+        tabsStack.add(TAB_1);
     }
 
     @Override
@@ -93,7 +97,8 @@ public class ConsoleWindowManager implements WindowManager {
         // table
         dataPrinter.printListOfBooks(library.getBooks());
         cachedLibrary = library;
-        prevTab = currentTab = State.TAB_1;
+
+        cacheTab(TAB_1);
 
         afterAll();
     }
@@ -112,7 +117,8 @@ public class ConsoleWindowManager implements WindowManager {
         // table
         dataPrinter.printListOfClients(library.getClients());
         cachedLibrary = library;
-        prevTab = currentTab = State.TAB_2;
+
+        cacheTab(TAB_2);
 
         afterAll();
     }
@@ -131,7 +137,8 @@ public class ConsoleWindowManager implements WindowManager {
         // table
         dataPrinter.printListOfOperations(library.getOperations(), library.getClients());
         cachedLibrary = library;
-        prevTab = currentTab = State.TAB_3;
+
+        cacheTab(TAB_3);
 
         afterAll();
     }
@@ -188,8 +195,8 @@ public class ConsoleWindowManager implements WindowManager {
                                       return ${id} - to return book
                  
              """);
-        prevTab = currentTab;
-        currentTab = State.HELP_TAB;
+
+        cacheTab(HELP_TAB);
 
         afterAll();
     }
@@ -277,8 +284,8 @@ public class ConsoleWindowManager implements WindowManager {
         // table
         dataPrinter.printListOfBooks(books);
         this.cachedSearchBookArgs = new CachedSearchArgs<>(books, args);
-        prevTab = currentTab;
-        currentTab = SEARCH_BOOK;
+
+        cacheTab(SEARCH_BOOK);
 
         afterAll();
     }
@@ -297,8 +304,8 @@ public class ConsoleWindowManager implements WindowManager {
         // table
         dataPrinter.printListOfClients(clients);
         this.cachedSearchClientArgs = new CachedSearchArgs<>(clients, args);
-        prevTab = currentTab;
-        currentTab = SEARCH_CLIENT;
+
+        cacheTab(SEARCH_CLIENT);
 
         afterAll();
     }
@@ -317,8 +324,8 @@ public class ConsoleWindowManager implements WindowManager {
         // table
         dataPrinter.printListOfOperations(operations, clients);
         this.cachedSearchOperationArgs = new CachedSearchArgs<>(operations, args);
-        prevTab = currentTab;
-        currentTab = SEARCH_HISTORY;
+
+        cacheTab(SEARCH_HISTORY);
 
         afterAll();
     }
@@ -375,7 +382,7 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public DataType getCurrentDataType() {
-        return currentTab.getDataType();
+        return tabsStack.peek().getDataType();
     }
 
     @Override
@@ -404,9 +411,8 @@ public class ConsoleWindowManager implements WindowManager {
             System.out.println("+--------------+---------------------------------------------------------------+");
         }
         cachedBook = book;
-        prevTab = currentTab;
-        currentTab = LOOK_BOOK;
 
+        cacheTab(LOOK_BOOK);
         afterAll();
     }
 
@@ -439,8 +445,8 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printListOfBooks(books);
 
         cachedClientDetailsArgs = new CachedClientDetailsArgs(client, books);
-        prevTab = currentTab;
-        currentTab = LOOK_CLIENT;
+
+        cacheTab(LOOK_CLIENT);
 
         afterAll();
     }
@@ -475,8 +481,8 @@ public class ConsoleWindowManager implements WindowManager {
         dataPrinter.printListOfBooks(books);
 
         cachedOperationDetailsArgs = new CachedOperationDetailsArgs(operation, client, books);
-        prevTab = currentTab;
-        currentTab = LOOK_HISTORY;
+
+        cacheTab(LOOK_HISTORY);
 
         afterAll();
     }
@@ -510,11 +516,12 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public void drawPrevTab() {
-        drawTab(prevTab);
+        tabsStack.pop();
+        drawTab(tabsStack.peek());
     }
 
     public void drawBackground() {
-        drawTab(currentTab);
+        drawTab(tabsStack.peek());
     }
 
     private void drawTab(final State tab) {
@@ -546,6 +553,15 @@ public class ConsoleWindowManager implements WindowManager {
                 cachedOperationDetailsArgs.client,
                 cachedOperationDetailsArgs.books
             );
+        }
+    }
+
+    private void cacheTab(final State tab) {
+        if (tab == TAB_1 || tab == TAB_2 || tab == TAB_3) {
+            tabsStack.clear();
+            tabsStack.push(tab);
+        } else if (tabsStack.peek() != tab) {
+            tabsStack.push(tab);
         }
     }
 
