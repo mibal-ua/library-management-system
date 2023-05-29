@@ -21,6 +21,7 @@ import ua.mibal.minervaTest.component.DataPrinter;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
+import static ua.mibal.minervaTest.utils.StringUtils.substring;
 import java.util.List;
 
 
@@ -119,13 +120,13 @@ public class ConsoleDataPrinter implements DataPrinter {
             return;
         }
 
-        System.out.format("+------------------+-----------------------------+-----------+-----------------+%n");
-        System.out.format("|       Date       | Client name                 | Operation | Books           |%n");
-        System.out.format("+------------------+-----------------------------+-----------+-----------------+%n");
+        System.out.format("+------+------------+----------------------------+-----------+-----------------+%n");
+        System.out.format("|  ID  | Date       | Client name                | Operation | Books           |%n");
+        System.out.format("+------+------------+----------------------------+-----------+-----------------+%n");
 
         final int booksLength = 15;
-        final int nameLength = 27;
-        final String leftAlignFormat = "| %-16s | %-" + nameLength + "s | %-9s | %-" + booksLength + "s |%n";
+        final int nameLength = 26;
+        final String leftAlignFormat = "| %-4s | %-10s | %-" + nameLength + "s | %-9s | %-" + booksLength + "s |%n";
 
         for (final Operation operation : operations) {
             Client client = null;
@@ -137,17 +138,12 @@ public class ConsoleDataPrinter implements DataPrinter {
             }
             String name = client == null
                 ? "NONE"
-                : client.getName();
-            if (name.length() > nameLength) {
-                name = name.substring(0, nameLength - 3) + "...";
-            }
-            String books = String.join(" ", operation.getBooksIds());
-            if (books.length() > booksLength) {
-                books = books.substring(0, booksLength - 3) + "...";
-            }
-            System.out.format(leftAlignFormat, operation.getDate(), name, operation.getOperationType(), books);
+                : substring(client.getName(), nameLength);
+            final String books = substring(String.join(" ", operation.getBooksIds()), booksLength);
+            final String date = substring(operation.getDate(), 10); // only "yyyy-MM-dd"
+            System.out.format(leftAlignFormat,operation.getId(), date, name, operation.getOperationType(), books);
         }
-        System.out.format("+------------------+-----------------------------+-----------+-----------------+%n");
+        System.out.format("+------+------------+----------------------------+-----------+-----------------+%n");
     }
 
     @Override
