@@ -97,6 +97,10 @@ public class Library implements Serializable {
         List<Operation> result = new ArrayList<>();
         for (final String arg : input) {
             for (Operation operation : operations) {
+                if (operation.getId().equals(arg)){
+                    result.add(operation);
+                    break;
+                }
                 if (operation.getClientId().equals(arg) ||
                     operation.getDate().contains(arg) ||
                     operation.getOperationType().equalsIgnoreCase(arg) ||
@@ -137,6 +141,15 @@ public class Library implements Serializable {
         for (Client client : clients) {
             if (client.getId().equals(id)) {
                 return Optional.of(client);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Operation> findOperationById(final String id) {
+        for (Operation operation : operations) {
+            if (operation.getId().equals(id)) {
+                return Optional.of(operation);
             }
         }
         return Optional.empty();
@@ -242,8 +255,19 @@ public class Library implements Serializable {
     }
 
     public List<Book> getBooksClientHolds(final Client client) {
-        // FIXME
-        return getBooks();
+        final List<Book> result = new ArrayList<>();
+        for (final String bookId : client.getBooksIds()) {
+            findBookById(bookId).ifPresent(result::add);
+        }
+        return result;
+    }
+
+    public List<Book> getBooksInOperation(final Operation operation) {
+        final List<Book> result = new ArrayList<>();
+        for (final String bookId : operation.getBooksIds()) {
+            findBookById(bookId).ifPresent(result::add);
+        }
+        return result;
     }
 
     @FunctionalInterface

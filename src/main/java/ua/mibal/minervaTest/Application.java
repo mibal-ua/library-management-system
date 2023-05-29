@@ -22,6 +22,7 @@ import ua.mibal.minervaTest.component.WindowManager;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
+import ua.mibal.minervaTest.model.Operation;
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
 import static ua.mibal.minervaTest.utils.StringUtils.substring;
@@ -84,27 +85,25 @@ public class Application {
                             windowManager.clientDetails(client, booksClientHolds);
                         }
                         case HISTORY -> {
-//                            final String id = args[0];
-//                            final Optional<Operation> optionalOperation = library.findOperationById(id);
-//                            if (optionalOperation.isEmpty()) {
-//                                windowManager.showToast(format(
-//                                    "Oops, there are no operations with this id '%s'", id));
-//                                break;
-//                            }
-//                            Operation operation = optionalOperation.get();
-//                            Optional<Client> optionalClient = library.findClientById(operation.getClientId());
-//
-//                            if (optionalClient.isEmpty()) {
-//                                windowManager.showToast(format(
-//                                    "Oops, there are no clients with id '%s' that specialized in operation",
-//                                    operation.getClientId()));
-//                                break;
-//                            }
-//                            Client client = optionalClient.get();
-//                            List<Book> booksInOperation = library.getBooksInOperation(operation);
-//                            windowManager.operationDetails(operation, client, booksInOperation);
-                            windowManager.operationDetails(library.getOperations().get(0), library.getClients().get(0),
-                                library.getBooks()); // FIXME STUB
+                            final String id = args[0];
+                            final Optional<Operation> optionalOperation = library.findOperationById(id);
+                            if (optionalOperation.isEmpty()) {
+                                windowManager.showToast(format(
+                                    "Oops, there are no operations with this id '%s'", id));
+                                break;
+                            }
+                            Operation operation = optionalOperation.get();
+                            Optional<Client> optionalClient = library.findClientById(operation.getClientId());
+
+                            if (optionalClient.isEmpty()) {
+                                windowManager.showToast(format(
+                                    "Oops, there are no clients with id '%s' that specialized in operation",
+                                    operation.getClientId()));
+                                break;
+                            }
+                            Client client = optionalClient.get();
+                            List<Book> booksInOperation = library.getBooksInOperation(operation);
+                            windowManager.operationDetails(operation, client, booksInOperation);
                         }
                         case NULL ->
                             windowManager.showToast(format("You can not use command '%s' in this tab.", command));
