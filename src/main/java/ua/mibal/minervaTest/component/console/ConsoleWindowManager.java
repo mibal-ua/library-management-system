@@ -29,6 +29,7 @@ import static java.lang.String.format;
 import static java.util.List.of;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.BOLD;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.RESET;
+import static ua.mibal.minervaTest.model.window.State.LOOK_BOOK;
 import static ua.mibal.minervaTest.model.window.State.SEARCH_BOOK;
 import static ua.mibal.minervaTest.model.window.State.SEARCH_CLIENT;
 import static ua.mibal.minervaTest.model.window.State.SEARCH_HISTORY;
@@ -61,6 +62,8 @@ public class ConsoleWindowManager implements WindowManager {
     private CachedSearchArgs<Operation> cachedSearchOperationArgs;
 
     private Library cachedLibrary;
+
+    private Book cachedBook;
 
     public ConsoleWindowManager(final DataPrinter dataPrinter,
                                 final UserInputReader inputReader) {
@@ -373,7 +376,33 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public void bookDetails(final Book book) {
-        // TODO
+        beforeAll();
+
+        System.out.println("""
+                                              
+                                              BOOK DETAILS
+            """);
+
+        List<String> keyVal = of(
+            "ID", book.getId(),
+            "Title", book.getTitle(),
+            "Subtitle", book.getSubtitle(),
+            "Publisher", book.getPublisher(),
+            "Publish date", book.getPublishedDate(),
+            "Free", book.isFree() ? "YES" : "NO"
+        );
+
+        System.out.println("+--------------+---------------------------------------------------------------+");
+        for (int i = 0; i < keyVal.size(); i += 2) {
+            String key = keyVal.get(i);
+            String val = keyVal.get(i + 1);
+            System.out.format("| %-12s | %-61s |%n", key, val);
+            System.out.println("+--------------+---------------------------------------------------------------+");
+        }
+        cachedBook = book;
+        currentTab = LOOK_BOOK;
+
+        afterAll();
     }
 
     @Override
@@ -423,6 +452,7 @@ public class ConsoleWindowManager implements WindowManager {
                 cachedSearchOperationArgs.data,
                 cachedLibrary.getClients(),
                 cachedSearchOperationArgs.args);
+            case LOOK_BOOK -> bookDetails(cachedBook);
         }
     }
 
