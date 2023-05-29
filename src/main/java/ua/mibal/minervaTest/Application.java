@@ -131,14 +131,24 @@ public class Application {
                     switch (windowManager.getCurrentDataType()) {
                         case BOOK -> {
                             Optional<Book> optionalBookToAdd = windowManager.initBookToAdd(library);
-                            optionalBookToAdd.ifPresent(library::addBook);
-                            optionalBookToAdd.ifPresent(
-                                book -> windowManager.showToast("Book successfully added!"));
+                            optionalBookToAdd.ifPresent(book -> {
+                                if (library.addBook(book)) {
+                                    windowManager.showToast("Book successfully added!");
+                                } else {
+                                    windowManager.showToast("Book doesnt added(");
+                                }
+                            });
                             dataOperator.updateLibrary(library);
                         }
                         case CLIENT -> {
                             Optional<Client> optionalClientToAdd = windowManager.initClientToAdd(library);
-                            optionalClientToAdd.ifPresent(library::addClient);
+                            optionalClientToAdd.ifPresent(client -> {
+                                if (library.addClient(client)) {
+                                    windowManager.showToast("Client successfully added!");
+                                } else {
+                                    windowManager.showToast("Client doesnt added(");
+                                }
+                            });
                             optionalClientToAdd.ifPresent(
                                 client -> windowManager.showToast("Client successfully added!"));
                             dataOperator.updateLibrary(library);
@@ -179,9 +189,12 @@ public class Application {
                             final boolean isConfirmed = windowManager.showDialogueToast(
                                 format("You really need to delete book '%s'?", title), "YES", "NO");
                             if (isConfirmed) {
-                                library.deleteBook(bookToDelete);
+                                if (library.deleteBook(bookToDelete)) {
+                                    windowManager.showToast("Book successfully deleted.");
+                                } else {
+                                    windowManager.showToast("Book doesnt deleted.");
+                                }
                                 dataOperator.updateLibrary(library);
-                                windowManager.showToast("Book successfully deleted.");
                             }
                         }
                         case CLIENT -> {
@@ -204,9 +217,12 @@ public class Application {
                             final boolean isConfirmed = windowManager.showDialogueToast(
                                 format("You really need to delete client '%s'?", name), "YES", "NO");
                             if (isConfirmed) {
-                                library.deleteClient(clientToDelete);
+                                if (library.deleteClient(clientToDelete)) {
+                                    windowManager.showToast("Client successfully deleted.");
+                                } else {
+                                    windowManager.showToast("Client doesnt deleted.");
+                                }
                                 dataOperator.updateLibrary(library);
-                                windowManager.showToast("Client successfully deleted.");
                             }
                         }
                         case NULL ->
