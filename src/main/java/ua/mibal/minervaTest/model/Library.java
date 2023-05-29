@@ -238,14 +238,12 @@ public class Library implements Serializable {
         addOperation(operation);
     }
 
-    public void deleteBook(final Book bookToDelete) {
-        // TODO
-        books.remove(requireNonNull(bookToDelete));
+    public boolean deleteBook(final Book bookToDelete) {
+        return books.remove(requireNonNull(bookToDelete));
     }
 
-    public void deleteClient(final Client clientToDelete) {
-        // TODO
-        clients.remove(requireNonNull(clientToDelete));
+    public boolean deleteClient(final Client clientToDelete) {
+        return clients.remove(requireNonNull(clientToDelete));
     }
 
     public boolean isContainClientId(final String id) {
