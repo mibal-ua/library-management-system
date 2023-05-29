@@ -35,7 +35,7 @@ public class Client implements Serializable {
     private List<String> booksIds;
 
     public Client(final String name, final List<String> booksIds) {
-        this.id = UUID.randomUUID().toString().replace("-","").substring(0, 4);
+        this.id = UUID.randomUUID().toString().replace("-", "").substring(0, 4);
         this.name = name;
         this.booksIds = booksIds;
     }

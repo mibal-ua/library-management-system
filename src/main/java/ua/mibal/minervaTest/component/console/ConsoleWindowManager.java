@@ -525,22 +525,27 @@ public class ConsoleWindowManager implements WindowManager {
             case HELP_TAB -> help();
             case SEARCH_BOOK -> searchBookTab(
                 cachedSearchBookArgs.data,
-                cachedSearchClientArgs.args);
+                cachedSearchClientArgs.args
+            );
             case SEARCH_CLIENT -> searchClientTab(
                 cachedSearchClientArgs.data,
-                cachedSearchClientArgs.args);
+                cachedSearchClientArgs.args
+            );
             case SEARCH_HISTORY -> searchOperationTab(
                 cachedSearchOperationArgs.data,
                 cachedLibrary.getClients(),
-                cachedSearchOperationArgs.args);
+                cachedSearchOperationArgs.args
+            );
             case LOOK_BOOK -> bookDetails(cachedBook);
             case LOOK_CLIENT -> clientDetails(
                 cachedClientDetailsArgs.client,
-                cachedClientDetailsArgs.books);
+                cachedClientDetailsArgs.books
+            );
             case LOOK_HISTORY -> operationDetails(
                 cachedOperationDetailsArgs.operation,
                 cachedOperationDetailsArgs.client,
-                cachedOperationDetailsArgs.books);
+                cachedOperationDetailsArgs.books
+            );
         }
     }
 
