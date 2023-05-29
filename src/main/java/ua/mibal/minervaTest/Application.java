@@ -84,8 +84,27 @@ public class Application {
                             windowManager.clientDetails(client, booksClientHolds);
                         }
                         case HISTORY -> {
-                            // TODO add id to operation
-                            // final String id = args[0];
+//                            final String id = args[0];
+//                            final Optional<Operation> optionalOperation = library.findOperationById(id);
+//                            if (optionalOperation.isEmpty()) {
+//                                windowManager.showToast(format(
+//                                    "Oops, there are no operations with this id '%s'", id));
+//                                break;
+//                            }
+//                            Operation operation = optionalOperation.get();
+//                            Optional<Client> optionalClient = library.findClientById(operation.getClientId());
+//
+//                            if (optionalClient.isEmpty()) {
+//                                windowManager.showToast(format(
+//                                    "Oops, there are no clients with id '%s' that specialized in operation",
+//                                    operation.getClientId()));
+//                                break;
+//                            }
+//                            Client client = optionalClient.get();
+//                            List<Book> booksInOperation = library.getBooksInOperation(operation);
+//                            windowManager.operationDetails(operation, client, booksInOperation);
+                            windowManager.operationDetails(library.getOperations().get(0), library.getClients().get(0),
+                                library.getBooks()); // FIXME STUB
                         }
                     }
                 }
