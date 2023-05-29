@@ -62,19 +62,7 @@ public class ConsoleWindowManager implements WindowManager {
 
     private final Stack<State> tabsStack = new Stack<>();
 
-    private CachedSearchArgs<Book> cachedSearchBookArgs;
-
-    private CachedSearchArgs<Client> cachedSearchClientArgs;
-
-    private CachedSearchArgs<Operation> cachedSearchOperationArgs;
-
-    private CachedClientDetailsArgs cachedClientDetailsArgs;
-
-    private CachedOperationDetailsArgs cachedOperationDetailsArgs;
-
-    private Library cachedLibrary;
-
-    private Book cachedBook;
+    private final CacheManager cache = new CacheManager();
 
     public ConsoleWindowManager(final DataPrinter dataPrinter,
                                 final UserInputReader inputReader) {
@@ -96,8 +84,8 @@ public class ConsoleWindowManager implements WindowManager {
 
         // table
         dataPrinter.printListOfBooks(library.getBooks());
-        cachedLibrary = library;
 
+        cache.cache(library);
         cacheTab(TAB_1);
 
         afterAll();
@@ -116,8 +104,8 @@ public class ConsoleWindowManager implements WindowManager {
 
         // table
         dataPrinter.printListOfClients(library.getClients());
-        cachedLibrary = library;
 
+        cache.cache(library);
         cacheTab(TAB_2);
 
         afterAll();
@@ -136,8 +124,8 @@ public class ConsoleWindowManager implements WindowManager {
 
         // table
         dataPrinter.printListOfOperations(library.getOperations(), library.getClients());
-        cachedLibrary = library;
 
+        cache.cache(library);
         cacheTab(TAB_3);
 
         afterAll();
@@ -283,8 +271,8 @@ public class ConsoleWindowManager implements WindowManager {
 
         // table
         dataPrinter.printListOfBooks(books);
-        this.cachedSearchBookArgs = new CachedSearchArgs<>(books, args);
 
+        cache.cache(books, args);
         cacheTab(SEARCH_BOOK);
 
         afterAll();
@@ -303,8 +291,8 @@ public class ConsoleWindowManager implements WindowManager {
 
         // table
         dataPrinter.printListOfClients(clients);
-        this.cachedSearchClientArgs = new CachedSearchArgs<>(clients, args);
 
+        cache.cache(clients, args);
         cacheTab(SEARCH_CLIENT);
 
         afterAll();
@@ -323,8 +311,8 @@ public class ConsoleWindowManager implements WindowManager {
 
         // table
         dataPrinter.printListOfOperations(operations, clients);
-        this.cachedSearchOperationArgs = new CachedSearchArgs<>(operations, args);
 
+        cache.cache(operations, args);
         cacheTab(SEARCH_HISTORY);
 
         afterAll();
@@ -410,9 +398,10 @@ public class ConsoleWindowManager implements WindowManager {
             System.out.format("| %-12s | %-61s |%n", key, val);
             System.out.println("+--------------+---------------------------------------------------------------+");
         }
-        cachedBook = book;
 
+        cache.cache(book);
         cacheTab(LOOK_BOOK);
+
         afterAll();
     }
 
@@ -444,8 +433,7 @@ public class ConsoleWindowManager implements WindowManager {
             """);
         dataPrinter.printListOfBooks(books);
 
-        cachedClientDetailsArgs = new CachedClientDetailsArgs(client, books);
-
+        cache.cache(client, books);
         cacheTab(LOOK_CLIENT);
 
         afterAll();
@@ -480,8 +468,7 @@ public class ConsoleWindowManager implements WindowManager {
             """);
         dataPrinter.printListOfBooks(books);
 
-        cachedOperationDetailsArgs = new CachedOperationDetailsArgs(operation, client, books);
-
+        cache.cache(operation, client, books);
         cacheTab(LOOK_HISTORY);
 
         afterAll();
@@ -526,32 +513,32 @@ public class ConsoleWindowManager implements WindowManager {
 
     private void drawTab(final State tab) {
         switch (tab) {
-            case TAB_1 -> tab1(cachedLibrary);
-            case TAB_2 -> tab2(cachedLibrary);
-            case TAB_3 -> tab3(cachedLibrary);
+            case TAB_1 -> tab1(cache.library);
+            case TAB_2 -> tab2(cache.library);
+            case TAB_3 -> tab3(cache.library);
             case HELP_TAB -> help();
             case SEARCH_BOOK -> searchBookTab(
-                cachedSearchBookArgs.data,
-                cachedSearchClientArgs.args
+                cache.searchBook.data(),
+                cache.searchBook.args()
             );
             case SEARCH_CLIENT -> searchClientTab(
-                cachedSearchClientArgs.data,
-                cachedSearchClientArgs.args
+                cache.searchClient.data(),
+                cache.searchClient.args()
             );
             case SEARCH_HISTORY -> searchOperationTab(
-                cachedSearchOperationArgs.data,
-                cachedLibrary.getClients(),
-                cachedSearchOperationArgs.args
+                cache.searchOperation.data(),
+                cache.library.getClients(),
+                cache.searchOperation.args()
             );
-            case LOOK_BOOK -> bookDetails(cachedBook);
+            case LOOK_BOOK -> bookDetails(cache.bookDetails);
             case LOOK_CLIENT -> clientDetails(
-                cachedClientDetailsArgs.client,
-                cachedClientDetailsArgs.books
+                cache.clientDetails.client(),
+                cache.clientDetails.books()
             );
             case LOOK_HISTORY -> operationDetails(
-                cachedOperationDetailsArgs.operation,
-                cachedOperationDetailsArgs.client,
-                cachedOperationDetailsArgs.books
+                cache.operationDetails.operation(),
+                cache.operationDetails.client(),
+                cache.operationDetails.books()
             );
         }
     }
@@ -563,17 +550,5 @@ public class ConsoleWindowManager implements WindowManager {
         } else if (tabsStack.peek() != tab) {
             tabsStack.push(tab);
         }
-    }
-
-    private record CachedSearchArgs<T>(List<T> data, String[] args) {
-
-    }
-
-    private record CachedClientDetailsArgs(Client client, List<Book> books) {
-
-    }
-
-    private record CachedOperationDetailsArgs(Operation operation, Client client, List<Book> books) {
-
     }
 }
