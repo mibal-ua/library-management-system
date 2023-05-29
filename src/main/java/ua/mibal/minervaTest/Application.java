@@ -106,6 +106,8 @@ public class Application {
                             windowManager.operationDetails(library.getOperations().get(0), library.getClients().get(0),
                                 library.getBooks()); // FIXME STUB
                         }
+                        case NULL ->
+                            windowManager.showToast(format("You can not use command '%s' in this tab.", command));
                     }
                 }
                 case "search", "s" -> {
@@ -118,6 +120,8 @@ public class Application {
                         case CLIENT -> windowManager.searchClientTab(library.findClients(args), args);
                         case HISTORY ->
                             windowManager.searchOperationTab(library.findOperations(args), library.getClients(), args);
+                        case NULL ->
+                            windowManager.showToast(format("You can not use command '%s' in this tab.", command));
                     }
                 }
                 case "add" -> {
@@ -140,6 +144,8 @@ public class Application {
                                 client -> windowManager.showToast("Client successfully added!"));
                             dataOperator.updateLibrary(library);
                         }
+                        case NULL ->
+                            windowManager.showToast(format("You can not use command '%s' in this tab.", command));
                     }
                 }
                 case "delete", "del" -> {
@@ -204,6 +210,8 @@ public class Application {
                                 windowManager.showToast("Client successfully deleted.");
                             }
                         }
+                        case NULL ->
+                            windowManager.showToast(format("You can not use command '%s' in this tab.", command));
                     }
                 }
                 case "exit" -> {
