@@ -241,6 +241,11 @@ public class Library implements Serializable {
         return findBookById(id).isPresent();
     }
 
+    public List<Book> getBooksClientHolds(final Client client) {
+        // FIXME
+        return getBooks();
+    }
+
     @FunctionalInterface
     public interface Lambda {
 

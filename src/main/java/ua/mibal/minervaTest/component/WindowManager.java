@@ -60,5 +60,7 @@ public interface WindowManager {
 
     void bookDetails(Book book);
 
-    void clientDetails(Client client);
+    void clientDetails(Client client, List<Book> books);
 }
+
+//    void operationDetails(Operation operation, List<Client> clients, List<Book> books);

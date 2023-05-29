@@ -30,6 +30,7 @@ import static java.util.List.of;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.BOLD;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.RESET;
 import static ua.mibal.minervaTest.model.window.State.LOOK_BOOK;
+import static ua.mibal.minervaTest.model.window.State.LOOK_CLIENT;
 import static ua.mibal.minervaTest.model.window.State.SEARCH_BOOK;
 import static ua.mibal.minervaTest.model.window.State.SEARCH_CLIENT;
 import static ua.mibal.minervaTest.model.window.State.SEARCH_HISTORY;
@@ -60,6 +61,8 @@ public class ConsoleWindowManager implements WindowManager {
     private CachedSearchArgs<Client> cachedSearchClientArgs;
 
     private CachedSearchArgs<Operation> cachedSearchOperationArgs;
+
+    private CachedClientDetailsArgs cachedClientDetailsArgs;
 
     private Library cachedLibrary;
 
@@ -406,8 +409,37 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public void clientDetails(final Client client) {
-        // TODO
+    public void clientDetails(final Client client, final List<Book> books) {
+        beforeAll();
+
+        System.out.println("""
+                                              
+                                             CLIENT DETAILS
+            """);
+
+        List<String> keyVal = of(
+            "ID", client.getId(),
+            "Name", client.getName()
+        );
+
+        System.out.println("+------+-----------------------------------------------------------------------+");
+        for (int i = 0; i < keyVal.size(); i += 2) {
+            String key = keyVal.get(i);
+            String val = keyVal.get(i + 1);
+            System.out.format("| %-4s | %-69s |%n", key, val);
+            System.out.println("+------+-----------------------------------------------------------------------+");
+        }
+
+        System.out.println("""
+                                              
+                                        Books that client holds
+            """);
+        dataPrinter.printListOfBooks(books);
+
+        cachedClientDetailsArgs = new CachedClientDetailsArgs(client, books);
+        currentTab = LOOK_CLIENT;
+
+        afterAll();
     }
 
     private Optional<List<String>> form(final List<String> messages, final String stopCommand) {
@@ -453,10 +485,17 @@ public class ConsoleWindowManager implements WindowManager {
                 cachedLibrary.getClients(),
                 cachedSearchOperationArgs.args);
             case LOOK_BOOK -> bookDetails(cachedBook);
+            case LOOK_CLIENT -> clientDetails(
+                cachedClientDetailsArgs.client,
+                cachedClientDetailsArgs.books);
         }
     }
 
     private record CachedSearchArgs<T>(List<T> data, String[] args) {
+
+    }
+
+    private record CachedClientDetailsArgs(Client client, List<Book> books) {
 
     }
 }

@@ -26,6 +26,7 @@ import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
 import static ua.mibal.minervaTest.utils.StringUtils.substring;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -78,7 +79,9 @@ public class Application {
                                     "Oops, there are no clients with this id '%s'", id));
                                 break;
                             }
-                            windowManager.clientDetails(optionalClient.get());
+                            Client client = optionalClient.get();
+                            List<Book> booksClientHolds = library.getBooksClientHolds(client);
+                            windowManager.clientDetails(client, booksClientHolds);
                         }
                         case HISTORY -> {
                             // TODO add id to operation
