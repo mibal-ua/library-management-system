@@ -97,7 +97,7 @@ public class Library implements Serializable {
         List<Operation> result = new ArrayList<>();
         for (final String arg : input) {
             for (Operation operation : operations) {
-                if (operation.getId().equals(arg)){
+                if (operation.getId().equals(arg)) {
                     result.add(operation);
                     break;
                 }
@@ -179,61 +179,42 @@ public class Library implements Serializable {
         return true;
     }
 
-    public void takeBooks(final Client client, final List<String> bookIds,
-                          final Lambda ifNotFree, final Lambda ifNotExists) {
-        List<String> filteredList = bookIds.stream().filter((bookId) -> {
-            Optional<Book> optionalBook = findBookById(bookId);
-            if (optionalBook.isEmpty()) {
-                ifNotExists.apply(bookId);
-                return false;
-            }
-            Book book = optionalBook.get();
-            if (!book.isFree()) {
-                ifNotFree.apply(bookId);
-                return false;
-            }
-            book.setFree(false);
-            return true;
-        }).toList();
-        if (filteredList.size() == 0) {
+    public void takeBooks(final Client client, final List<String> bookIdsToTake) {
+        if (bookIdsToTake.isEmpty()) {
             return;
         }
+
+        bookIdsToTake.forEach(
+            bookId -> findBookById(bookId)
+                .ifPresent(book -> book.setFree(false))
+        );
+
+        client.getBooksIds().addAll(bookIdsToTake);
+
         Operation operation = new Operation(
             client.getId(),
             TAKE.toString(),
-            filteredList
+            bookIdsToTake
         );
         addOperation(operation);
     }
 
-    public void returnBooks(final Client client, final List<String> bookIds,
-                            final Lambda ifFree, final Lambda ifNotExists,
-                            final UserDontHaveBookLambda ifUserDontHaveBook) {
-        List<String> filteredList = bookIds.stream().filter((bookId) -> {
-            Optional<Book> optionalBook = findBookById(bookId);
-            if (optionalBook.isEmpty()) {
-                ifNotExists.apply(bookId);
-                return false;
-            }
-            Book book = optionalBook.get();
-            if (book.isFree()) {
-                ifFree.apply(bookId);
-                return false;
-            }
-            if (!client.getBooksIds().contains(bookId)) {
-                ifUserDontHaveBook.apply(client, book);
-                return false;
-            }
-            book.setFree(true);
-            return true;
-        }).toList();
-        if (filteredList.size() == 0) {
+    public void returnBooks(final Client client, final List<String> bookIdsToReturn) {
+        if (bookIdsToReturn.isEmpty()) {
             return;
         }
+
+        bookIdsToReturn.forEach(
+            bookId -> findBookById(bookId)
+                .ifPresent(book -> book.setFree(true))
+        );
+
+        client.getBooksIds().removeAll(bookIdsToReturn);
+
         Operation operation = new Operation(
             client.getId(),
             RETURN.toString(),
-            filteredList
+            bookIdsToReturn
         );
         addOperation(operation);
     }
