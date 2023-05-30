@@ -21,6 +21,7 @@ import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
+import ua.mibal.minervaTest.model.window.State;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,6 +57,8 @@ public interface WindowManager {
 
     DataType getCurrentDataType();
 
+    State getCurrentTabState();
+
     void drawPrevTab();
 
     void bookDetails(Book book);
@@ -63,5 +66,9 @@ public interface WindowManager {
     void clientDetails(Client client, List<Book> books);
 
     void operationDetails(Operation operation, Client client, List<Book> books);
+
+    String getCachedBookId();
+
+    String getCachedClientId();
 }
 

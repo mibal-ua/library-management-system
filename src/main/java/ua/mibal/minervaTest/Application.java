@@ -23,8 +23,12 @@ import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
+import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
+import static ua.mibal.minervaTest.model.window.State.LOOK_BOOK;
+import static ua.mibal.minervaTest.model.window.State.LOOK_CLIENT;
+import static ua.mibal.minervaTest.model.window.State.LOOK_HISTORY;
 import static ua.mibal.minervaTest.utils.StringUtils.substring;
 import java.util.Arrays;
 import java.util.List;
@@ -162,71 +166,142 @@ public class Application {
                         windowManager.showToast("You cannot change history manually");
                         break;
                     }
-                    if (args.length == 0) {
-                        windowManager.showToast("You need to enter 'delete' with ${id}");
-                        break;
-                    }
-                    switch (windowManager.getCurrentDataType()) {
-                        case BOOK -> {
-                            final String id = args[0];
-                            if (!library.isContainBookId(id)) {
-                                windowManager.showToast(format(
-                                    "Oops, there are no books with this id '%s'", id));
-                                break;
-                            }
-
-                            final Book bookToDelete = library.findBookById(id).get();
-                            final String title = substring(bookToDelete.getTitle(), 12) + "..";
-
-                            Optional<Client> bookHolder = library.findClientByBookId(id);
-                            if (bookHolder.isPresent()) {
-                                String name = substring(bookHolder.get().getName(), 13) + "..";
-                                windowManager.showToast(format(
-                                    "Oops, but client '%s' holds this book '%s'", name, id));
-                                break;
-                            }
-
-                            final boolean isConfirmed = windowManager.showDialogueToast(
-                                format("You really need to delete book '%s'?", title), "YES", "NO");
-                            if (isConfirmed) {
-                                if (library.deleteBook(bookToDelete)) {
-                                    windowManager.showToast("Book successfully deleted.");
-                                } else {
-                                    windowManager.showToast("Book doesnt deleted.");
+                    // TODO FIXME
+                    final State tab = windowManager.getCurrentTabState();
+                    if (tab == LOOK_BOOK ||
+                        tab == LOOK_CLIENT ||
+                        tab == LOOK_HISTORY) {
+                        switch (windowManager.getCurrentDataType()) {
+                            case BOOK -> {
+                                final String id = windowManager.getCachedBookId();
+                                if (!library.isContainBookId(id)) {
+                                    windowManager.showToast(format(
+                                        "Oops, there are no books with this id '%s'", id));
+                                    break;
                                 }
-                                dataOperator.updateLibrary(library);
-                            }
-                        }
-                        case CLIENT -> {
-                            final String id = args[0];
-                            if (!library.isContainClientId(id)) {
-                                windowManager.showToast(format(
-                                    "Oops, there are no clients with this id '%s'", id));
-                                break;
-                            }
 
-                            Client clientToDelete = library.findClientById(id).get();
-                            String name = substring(clientToDelete.getName(), 13) + "..";
+                                final Book bookToDelete = library.findBookById(id).get();
+                                final String title = substring(bookToDelete.getTitle(), 12) + "..";
 
-                            if (library.doesClientHoldBook(clientToDelete)) {
-                                windowManager.showToast(format(
-                                    "Oops, client '%s' is holding books, we can't delete him", name));
-                                break;
-                            }
-
-                            final boolean isConfirmed = windowManager.showDialogueToast(
-                                format("You really need to delete client '%s'?", name), "YES", "NO");
-                            if (isConfirmed) {
-                                if (library.deleteClient(clientToDelete)) {
-                                    windowManager.showToast("Client successfully deleted.");
-                                } else {
-                                    windowManager.showToast("Client doesnt deleted.");
+                                Optional<Client> bookHolder = library.findClientByBookId(id);
+                                if (bookHolder.isPresent()) {
+                                    String name = substring(bookHolder.get().getName(), 13) + "..";
+                                    windowManager.showToast(format(
+                                        "Oops, but client '%s' holds this book '%s'", name, id));
+                                    break;
                                 }
-                                dataOperator.updateLibrary(library);
+
+                                final boolean isConfirmed = windowManager.showDialogueToast(
+                                    format("You really need to delete book '%s'?", title), "YES", "NO");
+                                if (isConfirmed) {
+                                    if (library.deleteBook(bookToDelete)) {
+                                        windowManager.showToast("Book successfully deleted.");
+                                        windowManager.drawPrevTab();
+                                    } else {
+                                        windowManager.showToast("Book doesnt deleted.");
+                                    }
+                                    dataOperator.updateLibrary(library);
+                                }
                             }
+                            case CLIENT -> {
+                                final String id = windowManager.getCachedClientId();
+                                if (!library.isContainClientId(id)) {
+                                    windowManager.showToast(format(
+                                        "Oops, there are no clients with this id '%s'", id));
+                                    break;
+                                }
+
+                                Client clientToDelete = library.findClientById(id).get();
+                                String name = substring(clientToDelete.getName(), 13) + "..";
+
+                                if (library.doesClientHoldBook(clientToDelete)) {
+                                    windowManager.showToast(format(
+                                        "Oops, client '%s' is holding books, we can't delete him", name));
+                                    break;
+                                }
+
+                                final boolean isConfirmed = windowManager.showDialogueToast(
+                                    format("You really need to delete client '%s'?", name), "YES", "NO");
+                                if (isConfirmed) {
+                                    if (library.deleteClient(clientToDelete)) {
+                                        windowManager.showToast("Client successfully deleted.");
+                                        windowManager.drawPrevTab();
+                                    } else {
+                                        windowManager.showToast("Client doesnt deleted.");
+                                    }
+                                    dataOperator.updateLibrary(library);
+                                }
+                            }
+                            case NULL ->
+                                windowManager.showToast(format("You can not use command '%s' in this tab.", command));
                         }
-                        case NULL ->
-                            windowManager.showToast(format("You can not use command '%s' in this tab.", command));
+                    } else {
+                        if (args.length == 0) {
+                            windowManager.showToast("You need to enter 'delete' with ${id}");
+                            break;
+                        }
+                        switch (windowManager.getCurrentDataType()) {
+                            case BOOK -> {
+                                final String id = args[0];
+                                if (!library.isContainBookId(id)) {
+                                    windowManager.showToast(format(
+                                        "Oops, there are no books with this id '%s'", id));
+                                    break;
+                                }
+
+                                final Book bookToDelete = library.findBookById(id).get();
+                                final String title = substring(bookToDelete.getTitle(), 12) + "..";
+
+                                Optional<Client> bookHolder = library.findClientByBookId(id);
+                                if (bookHolder.isPresent()) {
+                                    String name = substring(bookHolder.get().getName(), 13) + "..";
+                                    windowManager.showToast(format(
+                                        "Oops, but client '%s' holds this book '%s'", name, id));
+                                    break;
+                                }
+
+                                final boolean isConfirmed = windowManager.showDialogueToast(
+                                    format("You really need to delete book '%s'?", title), "YES", "NO");
+                                if (isConfirmed) {
+                                    if (library.deleteBook(bookToDelete)) {
+                                        windowManager.showToast("Book successfully deleted.");
+                                    } else {
+                                        windowManager.showToast("Book doesnt deleted.");
+                                    }
+                                    dataOperator.updateLibrary(library);
+                                }
+                            }
+                            case CLIENT -> {
+                                final String id = args[0];
+                                if (!library.isContainClientId(id)) {
+                                    windowManager.showToast(format(
+                                        "Oops, there are no clients with this id '%s'", id));
+                                    break;
+                                }
+
+                                Client clientToDelete = library.findClientById(id).get();
+                                String name = substring(clientToDelete.getName(), 13) + "..";
+
+                                if (library.doesClientHoldBook(clientToDelete)) {
+                                    windowManager.showToast(format(
+                                        "Oops, client '%s' is holding books, we can't delete him", name));
+                                    break;
+                                }
+
+                                final boolean isConfirmed = windowManager.showDialogueToast(
+                                    format("You really need to delete client '%s'?", name), "YES", "NO");
+                                if (isConfirmed) {
+                                    if (library.deleteClient(clientToDelete)) {
+                                        windowManager.showToast("Client successfully deleted.");
+                                    } else {
+                                        windowManager.showToast("Client doesnt deleted.");
+                                    }
+                                    dataOperator.updateLibrary(library);
+                                }
+                            }
+                            case NULL ->
+                                windowManager.showToast(format("You can not use command '%s' in this tab.", command));
+                        }
                     }
                 }
                 case "exit" -> {

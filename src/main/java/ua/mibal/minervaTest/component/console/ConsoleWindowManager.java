@@ -374,6 +374,11 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
+    public State getCurrentTabState() {
+        return tabsStack.peek();
+    }
+
+    @Override
     public void bookDetails(final Book book) {
         beforeAll();
 
@@ -472,6 +477,16 @@ public class ConsoleWindowManager implements WindowManager {
         cacheTab(LOOK_HISTORY);
 
         afterAll();
+    }
+
+    @Override
+    public String getCachedBookId() {
+        return cache.bookDetails.getId();
+    }
+
+    @Override
+    public String getCachedClientId() {
+        return cache.clientDetails.client().getId();
     }
 
     private Optional<List<String>> form(final List<String> messages, final String stopCommand) {
