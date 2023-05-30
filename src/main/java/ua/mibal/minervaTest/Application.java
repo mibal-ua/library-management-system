@@ -48,7 +48,6 @@ public class Application {
             "3", applicationController::tab3,
             "esc", applicationController::esc,
             "help", applicationController::help,
-            "exit", applicationController::exit,
             "search", applicationController::search,
             "look", applicationController::look,
             "s", applicationController::search,
@@ -58,8 +57,7 @@ public class Application {
             "delete", applicationController::delete,
             "del", applicationController::delete,
             "take", applicationController::take,
-            "return", applicationController::returnn,
-            "exit", applicationController::exit
+            "return", applicationController::returnn
         ));
         this.windowManager = windowManager;
     }
@@ -70,6 +68,14 @@ public class Application {
             String[] input = windowManager.readCommandLine();
             final String command = input[0];
             final String[] args = Arrays.copyOfRange(input, 1, input.length);
+
+            if (command.equals("exit")) {
+                final boolean isExit = windowManager.showDialogueToast(
+                    "You really need to exit?", "YES", "NO");
+                if (isExit) {
+                    return;
+                }
+            }
 
             commandMap.getOrDefault(command,
                     ignored -> windowManager.showToast(format("Unrecognizable command '%s'", command)))

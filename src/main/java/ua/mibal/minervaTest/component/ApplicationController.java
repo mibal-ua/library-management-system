@@ -71,14 +71,6 @@ public class ApplicationController {
         windowManager.help();
     }
 
-    public void exit(final String[] args) {
-        final boolean isExit = windowManager.showDialogueToast(
-            "You really need to exit?", "YES", "NO");
-        if (isExit) {
-            // TODO windowManager.exitHandler();
-        }
-    }
-
     public void search(final String[] args) {
         if (args.length == 0) {
             windowManager.showToast("You need to enter 'search' with ${query}");
