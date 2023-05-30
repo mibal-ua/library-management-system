@@ -31,48 +31,48 @@ import java.util.Map;
  */
 public class Application {
 
-    private final DataOperator dataOperator;
+    private final Map<String, OwnFunction> commandMap;
 
     private final WindowManager windowManager;
 
     public Application(final DataOperator dataOperator,
                        final WindowManager windowManager) {
-        this.dataOperator = dataOperator;
-        this.windowManager = windowManager;
-    }
-
-    public void start() {
-        ApplicationController applicationController =
-            new ApplicationController(windowManager, dataOperator, dataOperator.getLibrary());
-
-        Map<String, OwnFunction> commandMap = new HashMap<>(Map.of(
-            "1", (args) -> applicationController.tab1(),
-            "2", (args) -> applicationController.tab2(),
-            "3", (args) -> applicationController.tab3(),
-            "esc", (esc) -> applicationController.esc(),
-            "help", (args) -> applicationController.help(),
+        final ApplicationController applicationController = new ApplicationController(
+            windowManager,
+            dataOperator,
+            dataOperator.getLibrary()
+        );
+        this.commandMap = new HashMap<>(Map.of(
+            "1", applicationController::tab1,
+            "2", applicationController::tab2,
+            "3", applicationController::tab3,
+            "esc", applicationController::esc,
+            "help", applicationController::help,
             "exit", applicationController::exit,
             "search", applicationController::search,
             "look", applicationController::look,
             "s", applicationController::search,
             "add", applicationController::add
         ));
-        commandMap.putAll(Map.of(
+        this.commandMap.putAll(Map.of(
             "delete", applicationController::delete,
             "del", applicationController::delete,
             "take", applicationController::take,
             "return", applicationController::returnn,
             "exit", applicationController::exit
         ));
+        this.windowManager = windowManager;
+    }
 
-        applicationController.tab1();
+    public void start() {
+        commandMap.get("1").apply(null);
         while (true) {
             String[] input = windowManager.readCommandLine();
             final String command = input[0];
             final String[] args = Arrays.copyOfRange(input, 1, input.length);
 
             commandMap.getOrDefault(command,
-                    com -> windowManager.showToast(format("Unrecognizable command '%s'", command)))
+                    ignored -> windowManager.showToast(format("Unrecognizable command '%s'", command)))
                 .apply(args);
         }
     }

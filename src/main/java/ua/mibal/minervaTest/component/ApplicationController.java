@@ -51,23 +51,23 @@ public class ApplicationController {
         this.library = library;
     }
 
-    public void tab1() {
+    public void tab1(final String[] args) {
         windowManager.tab1(library);
     }
 
-    public void tab2() {
+    public void tab2(final String[] args) {
         windowManager.tab2(library);
     }
 
-    public void tab3() {
+    public void tab3(final String[] args) {
         windowManager.tab3(library);
     }
 
-    public void esc() {
+    public void esc(final String[] args) {
         windowManager.drawPrevTab();
     }
 
-    public void help() {
+    public void help(final String[] args) {
         windowManager.help();
     }
 
@@ -318,7 +318,6 @@ public class ApplicationController {
     }
 
     public void take(final String[] args) {
-
         if (windowManager.getCurrentTabState() == LOOK_CLIENT) {
             if (args.length == 0) {
                 windowManager.showToast("You need to enter 'take' with '${id1} ${id2}..' of books");
@@ -342,7 +341,6 @@ public class ApplicationController {
                 // TODO case "look" at updated client
                 dataOperator.updateLibrary(library);
                 windowManager.showToast("Books successfully taken!");
-
             }
         } else {
             windowManager.showToast("You can not use command 'take' in this tab.");
