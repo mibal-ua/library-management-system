@@ -304,6 +304,66 @@ public class Application {
                         }
                     }
                 }
+                case "take" -> {
+                    if (windowManager.getCurrentTabState() == LOOK_CLIENT) {
+                        if (args.length == 0) {
+                            windowManager.showToast(
+                                format("You need to enter '%s' with '${id1} ${id2}..'  of books", command));
+                            break;
+                        }
+
+                        final Client client = library
+                            .findClientById(windowManager.getCachedClientId())
+                            .get();
+
+                        final List<String> booksToTake = Arrays.stream(args)
+                            .filter(bookId -> {
+                                    Optional<Book> optionalBook = library.findBookById(bookId);
+                                    return optionalBook.isPresent() && optionalBook.get().isFree();
+                                }
+                            ).toList();
+                        if (booksToTake.isEmpty()) {
+                            windowManager.showToast("Oops, all books you are enter not free");
+                        } else {
+                            library.takeBooks(client, booksToTake);
+                            // TODO case "look" at updated client
+                            dataOperator.updateLibrary(library);
+                            windowManager.showToast("Books successfully taken!");
+
+                        }
+                    } else {
+                        windowManager.showToast(format("You can not use command '%s' in this tab.", command));
+                    }
+                }
+                case "return" -> {
+                    if (windowManager.getCurrentTabState() == LOOK_CLIENT) {
+                        if (args.length == 0) {
+                            windowManager.showToast(
+                                format("You need to enter '%s' with '${id1} ${id2}..'  of books", command));
+                            break;
+                        }
+
+                        final Client client = library
+                            .findClientById(windowManager.getCachedClientId())
+                            .get();
+
+                        final List<String> booksToReturn = Arrays.stream(args)
+                            .filter(bookId -> library.findBookById(bookId).isPresent() &&
+                                          client.getBooksIds().contains(bookId))
+                            .toList();
+
+                        if (booksToReturn.isEmpty()) {
+                            windowManager.showToast("Oops, all books you are enter not yours");
+                        } else {
+                            library.returnBooks(client, booksToReturn);
+                            // TODO case "look" at updated client
+                            dataOperator.updateLibrary(library);
+                            windowManager.showToast("Books successfully returned!");
+                        }
+                    } else {
+                        windowManager.showToast(format("You can not use command '%s' in this tab.", command));
+                    }
+                }
                 case "exit" -> {
                     final boolean isExit = windowManager.showDialogueToast(
                         "You really need to exit?", "YES", "NO");
