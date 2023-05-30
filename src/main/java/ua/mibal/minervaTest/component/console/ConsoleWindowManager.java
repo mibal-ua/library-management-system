@@ -518,7 +518,9 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public void drawPrevTab() {
-        tabsStack.pop();
+        if (tabsStack.size() > 1) {
+            tabsStack.pop();
+        }
         drawTab(tabsStack.peek());
     }
 
