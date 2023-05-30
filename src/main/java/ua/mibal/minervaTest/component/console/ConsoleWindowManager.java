@@ -240,7 +240,7 @@ public class ConsoleWindowManager implements WindowManager {
         printBackgroundAndMessage(question);
 
         // dialogue input
-        String enter = "1 - YES, 2 - NO";
+        final String enter = format("1 - %s, 2 - %s", answer1, answer2);
         goTo(14, (WINDOW_WIDTH - enter.length()) / 2);
         dataPrinter.printInfoMessage(enter);
         goTo(15, WINDOW_WIDTH / 2);
