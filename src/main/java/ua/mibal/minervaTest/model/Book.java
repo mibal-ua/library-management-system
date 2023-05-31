@@ -43,6 +43,18 @@ public class Book implements Serializable, HaveId {
     @JsonProperty("isFree")
     private boolean isFree;
 
+    public Book(final String id, final String title, final String subtitle, final String author,
+                final String publishedDate, final String publisher,
+                final boolean isFree) {
+        this.id = id;
+        this.title = title;
+        this.subtitle = subtitle;
+        this.author = author;
+        this.publishedDate = publishedDate;
+        this.publisher = publisher;
+        this.isFree = isFree;
+    }
+
     public Book(final String title, final String subtitle, final String author,
                 final String publishedDate, final String publisher,
                 final boolean isFree) {

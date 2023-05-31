@@ -133,6 +133,73 @@ public class ApplicationController {
         }
     }
 
+    public void edit(final String[] args) {
+        if (windowManager.getCurrentDataType() == HISTORY) {
+            windowManager.showToast("You cannot change history manually");
+            return;
+        }
+
+        final State tab = windowManager.getCurrentTabState();
+        final boolean isDetailsTab = tab == LOOK_BOOK || tab == LOOK_CLIENT || tab == LOOK_HISTORY;
+
+        if (!isDetailsTab && args.length == 0) {
+            windowManager.showToast("You need to enter 'edit' with ${id}");
+            return;
+        }
+
+        switch (windowManager.getCurrentDataType()) {
+            case BOOK -> {
+                final String id = isDetailsTab
+                    ? windowManager.getCachedBookId()
+                    : args[0];
+
+                Optional<Book> optionalToEditBook = library.findBookById(id);
+                if (optionalToEditBook.isEmpty()) {
+                    windowManager.showToast(format(
+                        "Oops, there are no books with this id '%s'", id));
+                    break;
+                }
+
+                windowManager.editBook(optionalToEditBook.get())
+                    .ifPresent(book -> {
+                        library.updateBook(book);
+                        if (isDetailsTab) {
+                            windowManager.bookDetails(book);
+                        }
+                        windowManager.showToast("Book successfully updated!");
+                        dataOperator.updateLibrary(library);
+                    });
+            }
+            case CLIENT -> {
+                final String id = isDetailsTab
+                    ? windowManager.getCachedClientId()
+                    : args[0];
+
+                Optional<Client> optionalToEditClient = library.findClientById(id);
+                if (optionalToEditClient.isEmpty()) {
+                    windowManager.showToast(format(
+                        "Oops, there are no clients with this id '%s'", id));
+                    break;
+                }
+
+                windowManager.editClient(optionalToEditClient.get())
+                    .ifPresent(client -> {
+                        library.updateClient(client);
+                        if (isDetailsTab) {
+                            windowManager.clientDetails(
+                                client,
+                                library.getBooksClientHolds(client)
+                            );
+                        }
+                        windowManager.showToast("Client successfully updated!");
+                        dataOperator.updateLibrary(library);
+                    });
+            }
+            case NULL -> windowManager.showToast("You can not use command 'edit' in this tab.");
+        }
+
+    }
+
     public void add(final String[] args) {
         if (windowManager.getCurrentDataType() == HISTORY) {
             windowManager.showToast("You cannot change history manually");

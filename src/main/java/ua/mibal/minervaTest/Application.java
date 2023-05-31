@@ -56,6 +56,7 @@ public class Application {
         commandMap.put("search", applicationController::search);
         commandMap.put("s", applicationController::search);
         commandMap.put("look", applicationController::look);
+        commandMap.put("edit", applicationController::edit);
         commandMap.put("add", applicationController::add);
         commandMap.put("delete", applicationController::delete);
         commandMap.put("del", applicationController::delete);

@@ -41,6 +41,12 @@ public class Client implements Serializable, HaveId {
         this.booksIds = booksIds;
     }
 
+    public Client(final String id, final String name, final List<String> booksIds) {
+        this.id = id;
+        this.name = name;
+        this.booksIds = booksIds;
+    }
+
     public Client() {
     }
 
@@ -54,9 +60,5 @@ public class Client implements Serializable, HaveId {
 
     public List<String> getBooksIds() {
         return booksIds;
-    }
-
-    public void setBooksIds(final List<String> booksIds) {
-        this.booksIds = booksIds;
     }
 }

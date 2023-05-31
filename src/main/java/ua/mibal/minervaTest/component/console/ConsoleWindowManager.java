@@ -336,6 +336,76 @@ public class ConsoleWindowManager implements WindowManager {
         ));
     }
 
+    @Override
+    public Optional<Book> editBook(final Book originalBook) {
+        List<String> messages = of(
+            format("prev book title: '%s'", originalBook.getTitle()),
+            format("prev book subtitle: '%s'", originalBook.getSubtitle()),
+            format("prev book author: '%s'", originalBook.getAuthor()),
+            format("prev book publish date: '%s'", originalBook.getPublishedDate()),
+            format("prev book publisher: '%s'", originalBook.getPublisher())
+        );
+
+        showToast("Lets edit book! You can stop everywhere by entering '/stop'");
+        showToast("If you want to edit some fields, enter new data");
+        showToast("If you want to skip field, just click enter");
+        Optional<List<String>> answersOptional = form(messages, "/stop");
+
+        if (answersOptional.isEmpty()) {
+            drawBackground();
+            return Optional.empty();
+        }
+
+        List<String> answers = answersOptional.get();
+
+        return Optional.of(new Book(
+            originalBook.getId(),
+            answers.get(0).equals("")
+                ? originalBook.getTitle()
+                : answers.get(0),
+            answers.get(1).equals("")
+                ? originalBook.getSubtitle()
+                : answers.get(1),
+            answers.get(2).equals("")
+                ? originalBook.getAuthor()
+                : answers.get(2),
+            answers.get(3).equals("")
+                ? originalBook.getPublishedDate()
+                : answers.get(3),
+            answers.get(4).equals("")
+                ? originalBook.getPublisher()
+                : answers.get(4),
+            originalBook.isFree()
+        ));
+    }
+
+    @Override
+    public Optional<Client> editClient(final Client originalClient) {
+        List<String> messages = of(
+            format("prev client name: '%s'", originalClient.getName())
+        );
+
+        showToast("Lets edit client! You can stop everywhere by entering '/stop'");
+        showToast("If you want to edit some fields, enter new data");
+        showToast("If you want to skip field, just click enter");
+        Optional<List<String>> answersOptional = form(messages, "/stop");
+
+        if (answersOptional.isEmpty()) {
+            drawBackground();
+            return Optional.empty();
+        }
+
+        List<String> answers = answersOptional.get();
+
+        return Optional.of(new Client(
+            originalClient.getId(),
+            answers.get(0).equals("")
+                ? originalClient.getName()
+                : answers.get(0),
+            originalClient.getBooksIds()
+        ));
+    }
+
     // <<< Cached Tabs drawing >>>
 
     @Override
