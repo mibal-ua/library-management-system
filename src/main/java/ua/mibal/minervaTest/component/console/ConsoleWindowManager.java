@@ -17,6 +17,7 @@
 package ua.mibal.minervaTest.component.console;
 
 import ua.mibal.minervaTest.component.DataPrinter;
+import ua.mibal.minervaTest.component.TabsContainer;
 import ua.mibal.minervaTest.component.UserInputReader;
 import ua.mibal.minervaTest.component.WindowManager;
 import ua.mibal.minervaTest.model.Book;
@@ -26,16 +27,8 @@ import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
 import ua.mibal.minervaTest.model.window.State;
 import static java.lang.String.format;
+import static java.lang.String.join;
 import static java.util.List.of;
-import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.BOLD;
-import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.RESET;
-import static ua.mibal.minervaTest.model.window.State.HELP_TAB;
-import static ua.mibal.minervaTest.model.window.State.LOOK_BOOK;
-import static ua.mibal.minervaTest.model.window.State.LOOK_CLIENT;
-import static ua.mibal.minervaTest.model.window.State.LOOK_HISTORY;
-import static ua.mibal.minervaTest.model.window.State.SEARCH_BOOK;
-import static ua.mibal.minervaTest.model.window.State.SEARCH_CLIENT;
-import static ua.mibal.minervaTest.model.window.State.SEARCH_HISTORY;
 import static ua.mibal.minervaTest.model.window.State.TAB_1;
 import static ua.mibal.minervaTest.model.window.State.TAB_2;
 import static ua.mibal.minervaTest.model.window.State.TAB_3;
@@ -64,129 +57,43 @@ public class ConsoleWindowManager implements WindowManager {
 
     private final CacheManager cache = new CacheManager();
 
+    private final TabsContainer tabs;
+
     public ConsoleWindowManager(final DataPrinter dataPrinter,
                                 final UserInputReader inputReader) {
         this.dataPrinter = dataPrinter;
         this.inputReader = inputReader;
-        tabsStack.add(TAB_1);
+        tabs = new TabsContainer(
+            dataPrinter::clear,
+            this::cacheTab,
+            WINDOW_WIDTH
+        );
     }
 
     @Override
     public void tab1(final Library library) {
-        beforeAll();
-
-        // header
-        dataPrinter.printlnInfoMessage("");
-        dataPrinter.printlnInfoMessage(format(
-            "                %sBOOKS%s               CLIENTS               HISTORY               ",
-            BOLD, RESET));
-        dataPrinter.printlnInfoMessage("");
-
-        // table
-        dataPrinter.printListOfBooks(library.getBooks());
-
-        cache.cache(library);
-        cacheTab(TAB_1);
-
-        afterAll();
+        tabs.tab1.setBody(() -> dataPrinter.printListOfBooks(library.getBooks()))
+            .setDataCaching(() -> cache.cache(library))
+            .draw();
     }
 
     @Override
     public void tab2(final Library library) {
-        beforeAll();
-
-        // header
-        dataPrinter.printlnInfoMessage("");
-        dataPrinter.printlnInfoMessage(format(
-            "                BOOKS               %sCLIENTS%s               HISTORY               ",
-            BOLD, RESET));
-        dataPrinter.printlnInfoMessage("");
-
-        // table
-        dataPrinter.printListOfClients(library.getClients());
-
-        cache.cache(library);
-        cacheTab(TAB_2);
-
-        afterAll();
+        tabs.tab2.setBody(() -> dataPrinter.printListOfClients(library.getClients()))
+            .setDataCaching(() -> cache.cache(library))
+            .draw();
     }
 
     @Override
     public void tab3(final Library library) {
-        beforeAll();
-
-        // header
-        dataPrinter.printlnInfoMessage("");
-        dataPrinter.printlnInfoMessage(format(
-            "                BOOKS               CLIENTS               %sHISTORY%s               ",
-            BOLD, RESET));
-        dataPrinter.printlnInfoMessage("");
-
-        // table
-        dataPrinter.printListOfOperations(library.getOperations(), library.getClients());
-
-        cache.cache(library);
-        cacheTab(TAB_3);
-
-        afterAll();
+        tabs.tab3.setBody(() -> dataPrinter.printListOfOperations(library.getOperations(), library.getClients()))
+            .setDataCaching(() -> cache.cache(library))
+            .draw();
     }
 
     @Override
     public void help() {
-        beforeAll();
-
-        // header
-        dataPrinter.printlnInfoMessage("");
-        dataPrinter.printlnInfoMessage(format(
-            "                                      %sHELP%s                                      ",
-            BOLD, RESET));
-        dataPrinter.printlnInfoMessage("");
-
-        // instructions
-        dataPrinter.printlnInfoMessage("""
-                                              
-                                              MAIN CONTROL
-            --------------------------------------------------------------------------------
-                       
-                                           1, 2, 3 - open tab
-                                        
-                                              exit - to exit
-                                                
-                                                
-                                                IN TABS
-            --------------------------------------------------------------------------------
-                               
-                      search(s) ${query} - search element in current tab
-                                 
-                              look ${id} - look at concrete item in list in current tab
-                                     
-                                     add - to add element into list in current tab
-                                     
-                       delete(del) ${id} - to delete element in list in current tab
-                           
-                           
-                                         IN CONCRETE BOOK/CLIENT
-            --------------------------------------------------------------------------------
-                                         
-                                       edit - to edit this book/client
-                                      
-                                delete(del) - to delete this book/client
-                               
-                                        esc - go to previous window
-                             
-                           
-                                           IN CONCRETE CLIENT
-            --------------------------------------------------------------------------------
-                         
-                                        take ${id} - to take book
-                                
-                                      return ${id} - to return book
-                 
-             """);
-
-        cacheTab(HELP_TAB);
-
-        afterAll();
+        tabs.help.draw();
     }
 
     @Override
@@ -232,7 +139,7 @@ public class ConsoleWindowManager implements WindowManager {
 
     private void goTo(final int row, final int column) {
         char escCode = 0x1B;
-        dataPrinter.printInfoMessage(String.format("%c[%d;%df", escCode, row, column));
+        dataPrinter.printInfoMessage(format("%c[%d;%df", escCode, row, column));
     }
 
     @Override
@@ -260,62 +167,32 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public void searchBookTab(final List<Book> books, final String[] args) {
-        beforeAll();
-
-        // header
-        dataPrinter.printlnInfoMessage("");
-        final String message = "SEARCH IN BOOKS BY '" + String.join(" ", args) + "'";
-        goTo(2, (WINDOW_WIDTH - message.length()) / 2);
-        dataPrinter.printlnInfoMessage(BOLD + message + RESET);
-        dataPrinter.printlnInfoMessage("");
-
-        // table
-        dataPrinter.printListOfBooks(books);
-
-        cache.cache(books, args);
-        cacheTab(SEARCH_BOOK);
-
-        afterAll();
+        final String header = format("SEARCH IN BOOKS BY '%s'", join(" ", args));
+        tabs.searchBookTab
+            .setTabsNames(new String[] { header }, 0)
+            .setBody(() -> dataPrinter.printListOfBooks(books))
+            .setDataCaching(() -> cache.cache(books, args))
+            .draw();
     }
 
     @Override
     public void searchClientTab(final List<Client> clients, final String[] args) {
-        beforeAll();
-
-        // header
-        dataPrinter.printlnInfoMessage("");
-        final String message = "SEARCH IN CLIENTS BY '" + String.join(" ", args) + "'";
-        goTo(2, (WINDOW_WIDTH - message.length()) / 2);
-        dataPrinter.printlnInfoMessage(BOLD + message + RESET);
-        dataPrinter.printlnInfoMessage("");
-
-        // table
-        dataPrinter.printListOfClients(clients);
-
-        cache.cache(clients, args);
-        cacheTab(SEARCH_CLIENT);
-
-        afterAll();
+        final String header = format("SEARCH IN CLIENTS BY '%s'", join(" ", args));
+        tabs.searchClientTab
+            .setTabsNames(new String[] { header }, 0)
+            .setBody(() -> dataPrinter.printListOfClients(clients))
+            .setDataCaching(() -> cache.cache(clients, args))
+            .draw();
     }
 
     @Override
     public void searchOperationTab(final List<Operation> operations, final List<Client> clients, final String[] args) {
-        beforeAll();
-
-        // header
-        dataPrinter.printlnInfoMessage("");
-        final String message = "SEARCH IN OPERATIONS BY '" + String.join(" ", args) + "'";
-        goTo(2, (WINDOW_WIDTH - message.length()) / 2);
-        dataPrinter.printlnInfoMessage(BOLD + message + RESET);
-        dataPrinter.printlnInfoMessage("");
-
-        // table
-        dataPrinter.printListOfOperations(operations, clients);
-
-        cache.cache(operations, args);
-        cacheTab(SEARCH_HISTORY);
-
-        afterAll();
+        final String header = format("SEARCH IN OPERATIONS BY '%s'", join(" ", args));
+        tabs.searchOperationTab
+            .setTabsNames(new String[] { header }, 0)
+            .setBody(() -> dataPrinter.printListOfOperations(operations, clients))
+            .setDataCaching(() -> cache.cache(operations, args))
+            .draw();
     }
 
     @Override
@@ -380,13 +257,6 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public void bookDetails(final Book book) {
-        beforeAll();
-
-        System.out.println("""
-                                              
-                                              BOOK DETAILS
-            """);
-
         List<String> keyVal = of(
             "ID", book.getId(),
             "Title", book.getTitle(),
@@ -395,88 +265,64 @@ public class ConsoleWindowManager implements WindowManager {
             "Publish date", book.getPublishedDate(),
             "Free", book.isFree() ? "YES" : "NO"
         );
-
-        System.out.println("+--------------+---------------------------------------------------------------+");
-        for (int i = 0; i < keyVal.size(); i += 2) {
-            String key = keyVal.get(i);
-            String val = keyVal.get(i + 1);
-            System.out.format("| %-12s | %-61s |%n", key, val);
-            System.out.println("+--------------+---------------------------------------------------------------+");
-        }
-
-        cache.cache(book);
-        cacheTab(LOOK_BOOK);
-
-        afterAll();
+        tabs.bookDetails
+            .setBody(() -> {
+                System.out.println("+--------------+---------------------------------------------------------------+");
+                for (int i = 0; i < keyVal.size(); i += 2) {
+                    String key = keyVal.get(i);
+                    String val = keyVal.get(i + 1);
+                    System.out.format("| %-12s | %-61s |%n", key, val);
+                    System.out.println(
+                        "+--------------+---------------------------------------------------------------+");
+                }
+            }).setDataCaching(() -> cache.cache(book))
+            .draw();
     }
 
     @Override
     public void clientDetails(final Client client, final List<Book> books) {
-        beforeAll();
-
-        System.out.println("""
-                                              
-                                             CLIENT DETAILS
-            """);
-
         List<String> keyVal = of(
             "ID", client.getId(),
             "Name", client.getName()
         );
-
-        System.out.println("+------+-----------------------------------------------------------------------+");
-        for (int i = 0; i < keyVal.size(); i += 2) {
-            String key = keyVal.get(i);
-            String val = keyVal.get(i + 1);
-            System.out.format("| %-4s | %-69s |%n", key, val);
-            System.out.println("+------+-----------------------------------------------------------------------+");
-        }
-
-        System.out.println("""
-                                              
-                                        Books that client holds
-            """);
-        dataPrinter.printListOfBooks(books);
-
-        cache.cache(client, books);
-        cacheTab(LOOK_CLIENT);
-
-        afterAll();
+        tabs.clientDetails
+            .setBody(() -> {
+                System.out.println("+------+-----------------------------------------------------------------------+");
+                for (int i = 0; i < keyVal.size(); i += 2) {
+                    String key = keyVal.get(i);
+                    String val = keyVal.get(i + 1);
+                    System.out.format("| %-4s | %-69s |%n", key, val);
+                    System.out.println(
+                        "+------+-----------------------------------------------------------------------+");
+                }
+                System.out.println("""
+                                                      
+                                                Books that client holds
+                    """);
+                dataPrinter.printListOfBooks(books);
+            }).setDataCaching(() -> cache.cache(client, books))
+            .draw();
     }
 
     @Override
     public void operationDetails(final Operation operation, final Client client, final List<Book> books) {
-        beforeAll();
-
-        System.out.println("""
-                                              
-                                            OPERATION DETAILS
-            """);
-
         List<String> keyVal = of(
             "Date", operation.getDate(),
             "Client", client.getName(),
             "Type", operation.getOperationType()
         );
-
-        System.out.println("+--------+---------------------------------------------------------------------+");
-        for (int i = 0; i < keyVal.size(); i += 2) {
-            String key = keyVal.get(i);
-            String val = keyVal.get(i + 1);
-            System.out.format("| %-6s | %-67s |%n", key, val);
-            System.out.println("+--------+---------------------------------------------------------------------+");
-        }
-
-        System.out.println("""
-                                              
-                                                  Books
-            """);
-        dataPrinter.printListOfBooks(books);
-
-        cache.cache(operation, client, books);
-        cacheTab(LOOK_HISTORY);
-
-        afterAll();
+        tabs.operationDetails
+            .setBody(() -> {
+                System.out.println("+--------+---------------------------------------------------------------------+");
+                for (int i = 0; i < keyVal.size(); i += 2) {
+                    String key = keyVal.get(i);
+                    String val = keyVal.get(i + 1);
+                    System.out.format("| %-6s | %-67s |%n", key, val);
+                    System.out.println(
+                        "+--------+---------------------------------------------------------------------+");
+                }
+            }).setDataCaching(() -> cache.cache(operation, client, books))
+            .draw();
     }
 
     @Override
@@ -505,15 +351,6 @@ public class ConsoleWindowManager implements WindowManager {
             answers.add(input);
         }
         return Optional.of(answers);
-    }
-
-    private void beforeAll() {
-        dataPrinter.clear();
-    }
-
-    private void afterAll() {
-        dataPrinter.printlnInfoMessage("");
-        dataPrinter.printlnInfoMessage("");
     }
 
     @Override

@@ -35,6 +35,10 @@ public class ConsoleDataPrinter implements DataPrinter {
 
     public static String RESET = "\033[0m";
 
+    public static String bold(final String str) {
+        return BOLD + str + RESET;
+    }
+
     @Override
     public void printInfoMessage(final String message) {
         System.out.print(message);
