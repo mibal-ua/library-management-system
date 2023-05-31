@@ -310,4 +310,10 @@ public class ApplicationController {
             windowManager.showToast("You can not use command 'return' in this tab.");
         }
     }
+
+    @FunctionalInterface
+    public interface OwnFunction {
+
+        void apply(String[] args);
+    }
 }

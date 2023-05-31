@@ -18,6 +18,7 @@ package ua.mibal.minervaTest;
 
 
 import ua.mibal.minervaTest.component.ApplicationController;
+import ua.mibal.minervaTest.component.ApplicationController.OwnFunction;
 import ua.mibal.minervaTest.component.DataOperator;
 import ua.mibal.minervaTest.component.WindowManager;
 import static java.lang.String.format;
@@ -31,20 +32,22 @@ import java.util.Map;
  */
 public class Application {
 
-    private final Map<String, OwnFunction> commandMap;
+   private final ApplicationController applicationController;
 
     private final WindowManager windowManager;
 
     public Application(final DataOperator dataOperator,
                        final WindowManager windowManager) {
         this.windowManager = windowManager;
-        final ApplicationController applicationController = new ApplicationController(
+        this.applicationController = new ApplicationController(
             windowManager,
             dataOperator,
             dataOperator.getLibrary()
         );
+    }
 
-        commandMap = new HashMap<>();
+    public void start() {
+        Map<String, OwnFunction> commandMap = new HashMap<>();
         commandMap.put("1", applicationController::tab1);
         commandMap.put("2", applicationController::tab2);
         commandMap.put("3", applicationController::tab3);
@@ -58,9 +61,7 @@ public class Application {
         commandMap.put("del", applicationController::delete);
         commandMap.put("take", applicationController::take);
         commandMap.put("return", applicationController::returnn);
-    }
 
-    public void start() {
         commandMap.get("1").apply(null);
         while (true) {
             String[] input = windowManager.readCommandLine();
@@ -74,16 +75,11 @@ public class Application {
                     return;
                 }
             } else {
-                commandMap.getOrDefault(command,
-                        ignored -> windowManager.showToast(format("Unrecognizable command '%s'", command)))
+                commandMap
+                    .getOrDefault(command, ignored ->
+                        windowManager.showToast(format("Unrecognizable command '%s'", command)))
                     .apply(args);
             }
         }
-    }
-
-    @FunctionalInterface
-    private interface OwnFunction {
-
-        void apply(String[] args);
     }
 }
