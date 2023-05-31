@@ -255,6 +255,30 @@ public class Library implements Serializable {
         return result;
     }
 
+    public boolean updateBook(final Book bookToUpdate) {
+        return updateById(books, bookToUpdate);
+    }
+
+    public boolean updateClient(final Client clientToUpdate) {
+        return updateById(clients, clientToUpdate);
+    }
+
+    private <T extends HaveId> boolean updateById(final List<T> list, final T obj) {
+        final String objId = obj.getId();
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getId().equals(objId)) {
+                list.set(i, obj);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public interface HaveId {
+
+        String getId();
+    }
+
     @FunctionalInterface
     public interface Lambda {
 

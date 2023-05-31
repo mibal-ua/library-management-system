@@ -17,6 +17,7 @@
 package ua.mibal.minervaTest.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import ua.mibal.minervaTest.model.Library.HaveId;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,7 +30,7 @@ import java.util.UUID;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Operation implements Serializable {
+public class Operation implements Serializable, HaveId {
 
     private String id;
 

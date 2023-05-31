@@ -17,6 +17,7 @@
 package ua.mibal.minervaTest.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import static ua.mibal.minervaTest.model.Library.HaveId;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ import java.util.UUID;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Book implements Serializable {
+public class Book implements Serializable, HaveId {
 
     private String id;
 
