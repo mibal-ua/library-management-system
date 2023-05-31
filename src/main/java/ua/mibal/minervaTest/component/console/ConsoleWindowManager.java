@@ -17,7 +17,6 @@
 package ua.mibal.minervaTest.component.console;
 
 import ua.mibal.minervaTest.component.DataPrinter;
-import ua.mibal.minervaTest.component.TabsContainer;
 import ua.mibal.minervaTest.component.UserInputReader;
 import ua.mibal.minervaTest.component.WindowManager;
 import ua.mibal.minervaTest.model.Book;

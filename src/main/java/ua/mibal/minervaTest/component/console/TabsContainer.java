@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ua.mibal.minervaTest.component;
+package ua.mibal.minervaTest.component.console;
 
 import ua.mibal.minervaTest.model.window.State;
 import static java.util.Objects.requireNonNull;
