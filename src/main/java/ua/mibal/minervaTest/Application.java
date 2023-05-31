@@ -37,29 +37,27 @@ public class Application {
 
     public Application(final DataOperator dataOperator,
                        final WindowManager windowManager) {
+        this.windowManager = windowManager;
         final ApplicationController applicationController = new ApplicationController(
             windowManager,
             dataOperator,
             dataOperator.getLibrary()
         );
-        this.commandMap = new HashMap<>(Map.of(
-            "1", applicationController::tab1,
-            "2", applicationController::tab2,
-            "3", applicationController::tab3,
-            "esc", applicationController::esc,
-            "help", applicationController::help,
-            "search", applicationController::search,
-            "s", applicationController::search,
-            "look", applicationController::look,
-            "add", applicationController::add
-        ));
-        this.commandMap.putAll(Map.of(
-            "delete", applicationController::delete,
-            "del", applicationController::delete,
-            "take", applicationController::take,
-            "return", applicationController::returnn
-        ));
-        this.windowManager = windowManager;
+
+        commandMap = new HashMap<>();
+        commandMap.put("1", applicationController::tab1);
+        commandMap.put("2", applicationController::tab2);
+        commandMap.put("3", applicationController::tab3);
+        commandMap.put("esc", applicationController::esc);
+        commandMap.put("help", applicationController::help);
+        commandMap.put("search", applicationController::search);
+        commandMap.put("s", applicationController::search);
+        commandMap.put("look", applicationController::look);
+        commandMap.put("add", applicationController::add);
+        commandMap.put("delete", applicationController::delete);
+        commandMap.put("del", applicationController::delete);
+        commandMap.put("take", applicationController::take);
+        commandMap.put("return", applicationController::returnn);
     }
 
     public void start() {
@@ -75,11 +73,11 @@ public class Application {
                 if (isExit) {
                     return;
                 }
+            } else {
+                commandMap.getOrDefault(command,
+                        ignored -> windowManager.showToast(format("Unrecognizable command '%s'", command)))
+                    .apply(args);
             }
-
-            commandMap.getOrDefault(command,
-                    ignored -> windowManager.showToast(format("Unrecognizable command '%s'", command)))
-                .apply(args);
         }
     }
 
