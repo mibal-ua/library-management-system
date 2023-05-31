@@ -278,16 +278,4 @@ public class Library implements Serializable {
 
         String getId();
     }
-
-    @FunctionalInterface
-    public interface Lambda {
-
-        void apply(String id);
-    }
-
-    @FunctionalInterface
-    public interface UserDontHaveBookLambda {
-
-        void apply(Client client, Book book);
-    }
 }
