@@ -340,7 +340,10 @@ public class ApplicationController {
                 windowManager.showToast("Oops, all books you are enter not free");
             } else {
                 library.takeBooks(client, booksToTake);
-                look(new String[] {client.getId()});
+                windowManager.clientDetails(
+                    client,
+                    library.getBooksClientHolds(client)
+                );
                 dataOperator.updateLibrary(library);
                 windowManager.showToast("Books successfully taken!");
             }
@@ -369,7 +372,10 @@ public class ApplicationController {
                 windowManager.showToast("Oops, all books you are enter not yours");
             } else {
                 library.returnBooks(client, booksToReturn);
-                look(new String[] {client.getId()});
+                windowManager.clientDetails(
+                    client,
+                    library.getBooksClientHolds(client)
+                );
                 dataOperator.updateLibrary(library);
                 windowManager.showToast("Books successfully returned!");
             }
