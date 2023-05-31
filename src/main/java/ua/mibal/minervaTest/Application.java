@@ -49,8 +49,8 @@ public class Application {
             "esc", applicationController::esc,
             "help", applicationController::help,
             "search", applicationController::search,
-            "look", applicationController::look,
             "s", applicationController::search,
+            "look", applicationController::look,
             "add", applicationController::add
         ));
         this.commandMap.putAll(Map.of(
