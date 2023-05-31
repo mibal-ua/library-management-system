@@ -307,6 +307,7 @@ public class ConsoleWindowManager implements WindowManager {
     @Override
     public void operationDetails(final Operation operation, final Client client, final List<Book> books) {
         List<String> keyVal = of(
+            "ID", operation.getId(),
             "Date", operation.getDate(),
             "Client", client.getName(),
             "Type", operation.getOperationType()
