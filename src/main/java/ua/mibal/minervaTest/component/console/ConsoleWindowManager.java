@@ -69,6 +69,8 @@ public class ConsoleWindowManager implements WindowManager {
         );
     }
 
+    // <<< Tabs >>>
+
     @Override
     public void tab1(final Library library) {
         tabs.tab1.setBody(() -> dataPrinter.printListOfBooks(library.getBooks()))
@@ -95,75 +97,6 @@ public class ConsoleWindowManager implements WindowManager {
     @Override
     public void help() {
         tabs.help.draw();
-    }
-
-    @Override
-    public String[] readCommandLine() {
-        goTo(24, 0);
-        dataPrinter.printInfoMessage("> ");
-        String input = inputReader.getUserInput();
-        return input.split(" ");
-    }
-
-    @Override
-    public void showToast(final String message) {
-        printBackgroundAndMessage(message);
-
-        // print click to continue
-        String enter = "Click enter to continue...";
-        goTo(14, (WINDOW_WIDTH - enter.length()) / 2);
-        dataPrinter.printInfoMessage(enter);
-        goTo(15, WINDOW_WIDTH / 2);
-        inputReader.getUserInput();
-
-        //refresh last screen
-        drawBackground();
-    }
-
-    private void printBackgroundAndMessage(final String message) {
-        int padding = 10;
-
-        // print background of window
-        goTo(8, padding);
-        dataPrinter.printInfoMessage("+----------------------------------------------------------+");
-        for (int i = 0; i < 10; i++) {
-            goTo(i + 9, padding);
-            dataPrinter.printInfoMessage("|                                                          |");
-        }
-        goTo(19, padding);
-        dataPrinter.printInfoMessage("+----------------------------------------------------------+");
-
-        // print message
-        goTo(12, (WINDOW_WIDTH - message.length()) / 2);
-        dataPrinter.printInfoMessage(message);
-    }
-
-    private void goTo(final int row, final int column) {
-        char escCode = 0x1B;
-        dataPrinter.printInfoMessage(format("%c[%d;%df", escCode, row, column));
-    }
-
-    @Override
-    public boolean showDialogueToast(final String question, final String answer1, final String answer2) {
-        printBackgroundAndMessage(question);
-
-        // dialogue input
-        final String enter = format("1 - %s, 2 - %s", answer1, answer2);
-        goTo(14, (WINDOW_WIDTH - enter.length()) / 2);
-        dataPrinter.printInfoMessage(enter);
-        goTo(15, WINDOW_WIDTH / 2);
-        String input = inputReader.getUserInput();
-
-        // refresh last screen and return
-        if (Objects.equals(input, "1")) {
-            drawBackground();
-            return true;
-        }
-        if (Objects.equals(input, "2")) {
-            drawBackground();
-            return false;
-        }
-        return showDialogueToast(question, answer1, answer2);
     }
 
     @Override
@@ -194,66 +127,6 @@ public class ConsoleWindowManager implements WindowManager {
             .setBody(() -> dataPrinter.printListOfOperations(operations, clients))
             .setDataCaching(() -> cache.cache(operations, args))
             .draw();
-    }
-
-    @Override
-    public Optional<Book> initBookToAdd(final Library library) {
-        List<String> messages = of(
-            "Enter book title",
-            "Enter subtitle",
-            "Enter author",
-            "Enter publish date (in format '2018-12-04')",
-            "Enter book publisher"
-        );
-
-        showToast("Lets create book! You can stop everywhere by entering '/stop'");
-        Optional<List<String>> answers = form(messages, "/stop");
-
-        if (answers.isEmpty()) {
-            drawBackground();
-            return Optional.empty();
-        }
-
-        Iterator<String> iterator = answers.get().listIterator();
-        return Optional.of(new Book(
-            iterator.next(),
-            iterator.next(),
-            iterator.next(),
-            iterator.next(),
-            iterator.next(),
-            true
-        ));
-    }
-
-    @Override
-    public Optional<Client> initClientToAdd(final Library library) {
-        List<String> messages = of(
-            "Enter client name"
-        );
-
-        showToast("Lets add client! You can stop everywhere by entering '/stop'");
-        Optional<List<String>> answers = form(messages, "/stop");
-
-        if (answers.isEmpty()) {
-            drawBackground();
-            return Optional.empty();
-        }
-
-        Iterator<String> iterator = answers.get().listIterator();
-        return Optional.of(new Client(
-            iterator.next(),
-            List.of()
-        ));
-    }
-
-    @Override
-    public DataType getCurrentDataType() {
-        return tabsStack.peek().getDataType();
-    }
-
-    @Override
-    public State getCurrentTabState() {
-        return tabsStack.peek();
     }
 
     @Override
@@ -327,14 +200,49 @@ public class ConsoleWindowManager implements WindowManager {
             .draw();
     }
 
-    @Override
-    public String getCachedBookId() {
-        return cache.bookDetails.getId();
-    }
+    // <<< Read >>>
 
     @Override
-    public String getCachedClientId() {
-        return cache.clientDetails.client().getId();
+    public String[] readCommandLine() {
+        goTo(24, 0);
+        dataPrinter.printInfoMessage("> ");
+        String input = inputReader.getUserInput();
+        return input.split(" ");
+    }
+
+    // <<< Toasts >>>
+
+    @Override
+    public void showToast(final String message) {
+        printBackgroundAndMessage(message);
+
+        // print click to continue
+        String enter = "Click enter to continue...";
+        goTo(14, (WINDOW_WIDTH - enter.length()) / 2);
+        dataPrinter.printInfoMessage(enter);
+        goTo(15, WINDOW_WIDTH / 2);
+        inputReader.getUserInput();
+
+        //refresh last screen
+        drawBackground();
+    }
+
+    private void printBackgroundAndMessage(final String message) {
+        int padding = 10;
+
+        // print background of window
+        goTo(8, padding);
+        dataPrinter.printInfoMessage("+----------------------------------------------------------+");
+        for (int i = 0; i < 10; i++) {
+            goTo(i + 9, padding);
+            dataPrinter.printInfoMessage("|                                                          |");
+        }
+        goTo(19, padding);
+        dataPrinter.printInfoMessage("+----------------------------------------------------------+");
+
+        // print message
+        goTo(12, (WINDOW_WIDTH - message.length()) / 2);
+        dataPrinter.printInfoMessage(message);
     }
 
     private Optional<List<String>> form(final List<String> messages, final String stopCommand) {
@@ -354,6 +262,81 @@ public class ConsoleWindowManager implements WindowManager {
         }
         return Optional.of(answers);
     }
+
+    @Override
+    public boolean showDialogueToast(final String question, final String answer1, final String answer2) {
+        printBackgroundAndMessage(question);
+
+        // dialogue input
+        final String enter = format("1 - %s, 2 - %s", answer1, answer2);
+        goTo(14, (WINDOW_WIDTH - enter.length()) / 2);
+        dataPrinter.printInfoMessage(enter);
+        goTo(15, WINDOW_WIDTH / 2);
+        String input = inputReader.getUserInput();
+
+        // refresh last screen and return
+        if (Objects.equals(input, "1")) {
+            drawBackground();
+            return true;
+        }
+        if (Objects.equals(input, "2")) {
+            drawBackground();
+            return false;
+        }
+        return showDialogueToast(question, answer1, answer2);
+    }
+
+    @Override
+    public Optional<Book> initBookToAdd(final Library library) {
+        List<String> messages = of(
+            "Enter book title",
+            "Enter subtitle",
+            "Enter author",
+            "Enter publish date (in format '2018-12-04')",
+            "Enter book publisher"
+        );
+
+        showToast("Lets create book! You can stop everywhere by entering '/stop'");
+        Optional<List<String>> answers = form(messages, "/stop");
+
+        if (answers.isEmpty()) {
+            drawBackground();
+            return Optional.empty();
+        }
+
+        Iterator<String> iterator = answers.get().listIterator();
+        return Optional.of(new Book(
+            iterator.next(),
+            iterator.next(),
+            iterator.next(),
+            iterator.next(),
+            iterator.next(),
+            true
+        ));
+    }
+
+    @Override
+    public Optional<Client> initClientToAdd(final Library library) {
+        List<String> messages = of(
+            "Enter client name"
+        );
+
+        showToast("Lets add client! You can stop everywhere by entering '/stop'");
+        Optional<List<String>> answers = form(messages, "/stop");
+
+        if (answers.isEmpty()) {
+            drawBackground();
+            return Optional.empty();
+        }
+
+        Iterator<String> iterator = answers.get().listIterator();
+        return Optional.of(new Client(
+            iterator.next(),
+            List.of()
+        ));
+    }
+
+    // <<< Cached Tabs drawing >>>
 
     @Override
     public void drawPrevTab() {
@@ -406,5 +389,34 @@ public class ConsoleWindowManager implements WindowManager {
         } else if (tabsStack.peek() != tab) {
             tabsStack.push(tab);
         }
+    }
+
+    // <<< Cached data Getters >>>
+
+    @Override
+    public DataType getCurrentDataType() {
+        return tabsStack.peek().getDataType();
+    }
+
+    @Override
+    public State getCurrentTabState() {
+        return tabsStack.peek();
+    }
+
+    @Override
+    public String getCachedBookId() {
+        return cache.bookDetails.getId();
+    }
+
+    @Override
+    public String getCachedClientId() {
+        return cache.clientDetails.client().getId();
+    }
+
+    // <<< Console esc-sequences >>>
+
+    private void goTo(final int row, final int column) {
+        char escCode = 0x1B;
+        dataPrinter.printInfoMessage(format("%c[%d;%df", escCode, row, column));
     }
 }
