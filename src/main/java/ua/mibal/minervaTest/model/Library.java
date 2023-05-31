@@ -129,53 +129,43 @@ public class Library implements Serializable {
     }
 
     public Optional<Book> findBookById(final String id) {
-        for (Book book : books) {
-            if (book.getId().equals(id)) {
-                return Optional.of(book);
-            }
-        }
-        return Optional.empty();
+        return findById(books, id);
     }
 
     public Optional<Client> findClientById(final String id) {
-        for (Client client : clients) {
-            if (client.getId().equals(id)) {
-                return Optional.of(client);
-            }
-        }
-        return Optional.empty();
+        return findById(clients, id);
     }
 
     public Optional<Operation> findOperationById(final String id) {
-        for (Operation operation : operations) {
-            if (operation.getId().equals(id)) {
-                return Optional.of(operation);
+        return findById(operations, id);
+    }
+
+    private<T extends HaveId> Optional<T> findById(final List<T> list, final String id) {
+        for (T el: list) {
+            if (el.getId().equals(id)) {
+                return Optional.of(el);
             }
         }
         return Optional.empty();
     }
 
     private boolean addOperation(final Operation operation) {
-        if (findOperationById(operation.getId()).isPresent()) {
-            return false;
-        }
-        operations.add(requireNonNull(operation));
-        return true;
+        return add(operations, operation);
     }
 
     public boolean addBook(final Book book) {
-        if (findBookById(book.getId()).isPresent()) {
-            return false;
-        }
-        books.add(requireNonNull(book));
-        return true;
+        return add(books, book);
     }
 
     public boolean addClient(final Client client) {
-        if (findClientById(client.getId()).isPresent()) {
+        return add(clients, client);
+    }
+
+    private<T extends HaveId> boolean add(final List<T> list, final T obj) {
+        if (findById(list, obj.getId()).isPresent()) {
             return false;
         }
-        clients.add(requireNonNull(client));
+        list.add(requireNonNull(obj));
         return true;
     }
 
