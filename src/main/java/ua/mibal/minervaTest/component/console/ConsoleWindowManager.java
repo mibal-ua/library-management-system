@@ -86,8 +86,10 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public void tab3(final Library library) {
-        tabs.tab3.setBody(() -> dataPrinter.printListOfOperations(library.getOperations(), library.getClients()))
-            .setDataCaching(() -> cache.cache(library))
+        tabs.tab3.setBody(() -> dataPrinter.printListOfOperations(
+                library.getOperations(),
+                library.getClients())
+            ).setDataCaching(() -> cache.cache(library))
             .draw();
     }
 
