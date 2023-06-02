@@ -17,9 +17,11 @@
 package ua.mibal.minervaTest.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import static ua.mibal.minervaTest.model.Library.HaveId;
+import ua.mibal.minervaTest.utils.IdUtils;
+
 import java.io.Serializable;
-import java.util.UUID;
+
+import static ua.mibal.minervaTest.model.Library.HaveId;
 
 /**
  * @author Mykhailo Balakhon
@@ -58,7 +60,7 @@ public class Book implements Serializable, HaveId {
     public Book(final String title, final String subtitle, final String author,
                 final String publishedDate, final String publisher,
                 final boolean isFree) {
-        this.id = UUID.randomUUID().toString().replace("-", "").substring(0, 4);
+        this.id = IdUtils.generateId();
         this.title = title;
         this.subtitle = subtitle;
         this.author = author;

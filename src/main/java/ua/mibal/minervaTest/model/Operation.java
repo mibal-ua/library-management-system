@@ -18,13 +18,14 @@ package ua.mibal.minervaTest.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import ua.mibal.minervaTest.model.Library.HaveId;
+import ua.mibal.minervaTest.utils.IdUtils;
+
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Mykhailo Balakhon
@@ -46,7 +47,7 @@ public class Operation implements Serializable, HaveId {
 
     public Operation(final String clientId, final String operationType,
                      final List<String> booksIds) {
-        this.id = UUID.randomUUID().toString().replace("-", "").substring(0, 4);
+        this.id = IdUtils.generateId();
         Date date = Calendar.getInstance().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         this.date = dateFormat.format(date);
