@@ -21,8 +21,11 @@ import ua.mibal.minervaTest.component.DataPrinter;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
-import static ua.mibal.minervaTest.utils.StringUtils.substring;
+
 import java.util.List;
+
+import static java.util.List.of;
+import static ua.mibal.minervaTest.utils.StringUtils.substring;
 
 
 /**
@@ -126,13 +129,78 @@ public class ConsoleDataPrinter implements DataPrinter {
                 }
             }
             String name = client == null
-                ? "NONE"
-                : substring(client.getName(), nameLength);
+                    ? "NONE"
+                    : substring(client.getName(), nameLength);
             final String books = substring(String.join(" ", operation.getBooksIds()), booksLength);
             final String date = substring(operation.getDate(), 10); // only "yyyy-MM-dd"
-            System.out.format(leftAlignFormat,operation.getId(), date, name, operation.getOperationType(), books);
+            System.out.format(leftAlignFormat, operation.getId(), date, name, operation.getOperationType(), books);
         }
         System.out.format("+------+------------+----------------------------+-----------+-----------------+%n");
+    }
+
+    @Override
+    public void printBookDetails(Book book) {
+        List<String> keyVal = of(
+                "ID", book.getId(),
+                "Title", book.getTitle(),
+                "Subtitle", book.getSubtitle(),
+                "Publisher", book.getPublisher(),
+                "Publish date", book.getPublishedDate(),
+                "Free", book.isFree() ? "YES" : "NO"
+        );
+        // TODO printDetailsTable(keyVal);
+        System.out.println("+--------------+---------------------------------------------------------------+");
+        for (int i = 0; i < keyVal.size(); i += 2) {
+            String key = keyVal.get(i);
+            String val = keyVal.get(i + 1);
+            System.out.format("| %-12s | %-61s |%n", key, val);
+            System.out.println(
+                    "+--------------+---------------------------------------------------------------+");
+        }
+    }
+
+    @Override
+    public void printClientDetails(Client client, List<Book> booksThatClientHolds) {
+        List<String> keyVal = of(
+                "ID", client.getId(),
+                "Name", client.getName()
+        );
+        System.out.println("+------+-----------------------------------------------------------------------+");
+        for (int i = 0; i < keyVal.size(); i += 2) {
+            String key = keyVal.get(i);
+            String val = keyVal.get(i + 1);
+            System.out.format("| %-4s | %-69s |%n", key, val);
+            System.out.println(
+                    "+------+-----------------------------------------------------------------------+");
+        }
+        System.out.println("""
+                                                  
+                                            Books that client holds
+                """);
+        printListOfBooks(booksThatClientHolds);
+    }
+
+    @Override
+    public void printOperationDetails(Operation operation, Client clientInOperation, List<Book> booksInOperation) {
+        List<String> keyVal = of(
+                "ID", operation.getId(),
+                "Date", operation.getDate(),
+                "Client", clientInOperation.getName(),
+                "Type", operation.getOperationType()
+        );
+        System.out.println("+--------+---------------------------------------------------------------------+");
+        for (int i = 0; i < keyVal.size(); i += 2) {
+            String key = keyVal.get(i);
+            String val = keyVal.get(i + 1);
+            System.out.format("| %-6s | %-67s |%n", key, val);
+            System.out.println(
+                    "+--------+---------------------------------------------------------------------+");
+        }
+        System.out.println("""
+                                                  
+                                             Books in operation
+                """);
+        printListOfBooks(booksInOperation);
     }
 
     @Override

@@ -130,72 +130,25 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public void bookDetails(final Book book) {
-        List<String> keyVal = of(
-                "ID", book.getId(),
-                "Title", book.getTitle(),
-                "Subtitle", book.getSubtitle(),
-                "Publisher", book.getPublisher(),
-                "Publish date", book.getPublishedDate(),
-                "Free", book.isFree() ? "YES" : "NO"
-        );
         tabs.bookDetails
-                .setBody(() -> {
-                    System.out.println("+--------------+---------------------------------------------------------------+");
-                    for (int i = 0; i < keyVal.size(); i += 2) {
-                        String key = keyVal.get(i);
-                        String val = keyVal.get(i + 1);
-                        System.out.format("| %-12s | %-61s |%n", key, val);
-                        System.out.println(
-                                "+--------------+---------------------------------------------------------------+");
-                    }
-                }).setDataCaching(() -> cache.cache(book))
+                .setBody(() -> dataPrinter.printBookDetails(book))
+                .setDataCaching(() -> cache.cache(book))
                 .draw();
     }
 
     @Override
     public void clientDetails(final Client client, final List<Book> books) {
-        List<String> keyVal = of(
-                "ID", client.getId(),
-                "Name", client.getName()
-        );
         tabs.clientDetails
-                .setBody(() -> {
-                    System.out.println("+------+-----------------------------------------------------------------------+");
-                    for (int i = 0; i < keyVal.size(); i += 2) {
-                        String key = keyVal.get(i);
-                        String val = keyVal.get(i + 1);
-                        System.out.format("| %-4s | %-69s |%n", key, val);
-                        System.out.println(
-                                "+------+-----------------------------------------------------------------------+");
-                    }
-                    System.out.println("""
-                                                              
-                                                        Books that client holds
-                            """);
-                    dataPrinter.printListOfBooks(books);
-                }).setDataCaching(() -> cache.cache(client, books))
+                .setBody(() -> dataPrinter.printClientDetails(client, books))
+                .setDataCaching(() -> cache.cache(client, books))
                 .draw();
     }
 
     @Override
     public void operationDetails(final Operation operation, final Client client, final List<Book> books) {
-        List<String> keyVal = of(
-                "ID", operation.getId(),
-                "Date", operation.getDate(),
-                "Client", client.getName(),
-                "Type", operation.getOperationType()
-        );
         tabs.operationDetails
-                .setBody(() -> {
-                    System.out.println("+--------+---------------------------------------------------------------------+");
-                    for (int i = 0; i < keyVal.size(); i += 2) {
-                        String key = keyVal.get(i);
-                        String val = keyVal.get(i + 1);
-                        System.out.format("| %-6s | %-67s |%n", key, val);
-                        System.out.println(
-                                "+--------+---------------------------------------------------------------------+");
-                    }
-                }).setDataCaching(() -> cache.cache(operation, client, books))
+                .setBody(() -> dataPrinter.printOperationDetails(operation, client, books))
+                .setDataCaching(() -> cache.cache(operation, client, books))
                 .draw();
     }
 

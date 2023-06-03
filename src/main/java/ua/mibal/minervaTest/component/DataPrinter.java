@@ -19,6 +19,7 @@ package ua.mibal.minervaTest.component;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
+
 import java.util.List;
 
 /**
@@ -32,6 +33,12 @@ public interface DataPrinter {
     void printListOfClients(List<Client> clients);
 
     void printListOfOperations(List<Operation> operations, List<Client> clients);
+
+    void printBookDetails(Book book);
+
+    void printClientDetails(Client client, List<Book> booksThatClientHolds);
+
+    void printOperationDetails(Operation operation, Client clientInOperation, List<Book> booksInOperation);
 
     void clear();
 }
