@@ -47,7 +47,7 @@ public class ConsoleWindowManager implements WindowManager {
 
     private final static int WINDOW_HEIGHT = 25;
 
-    private final static int WINDOW_WIDTH = 80;
+    public final static int WINDOW_WIDTH = 80;
 
     private final DataPrinter dataPrinter;
 

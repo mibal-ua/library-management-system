@@ -22,9 +22,12 @@ import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import static java.util.List.of;
+import static java.lang.String.format;
+import static ua.mibal.minervaTest.component.console.ConsoleWindowManager.WINDOW_WIDTH;
 import static ua.mibal.minervaTest.utils.StringUtils.substring;
 
 
@@ -139,40 +142,24 @@ public class ConsoleDataPrinter implements DataPrinter {
     }
 
     @Override
-    public void printBookDetails(Book book) {
-        List<String> keyVal = of(
-                "ID", book.getId(),
-                "Title", book.getTitle(),
-                "Subtitle", book.getSubtitle(),
-                "Publisher", book.getPublisher(),
-                "Publish date", book.getPublishedDate(),
-                "Free", book.isFree() ? "YES" : "NO"
-        );
-        // TODO printDetailsTable(keyVal);
-        System.out.println("+--------------+---------------------------------------------------------------+");
-        for (int i = 0; i < keyVal.size(); i += 2) {
-            String key = keyVal.get(i);
-            String val = keyVal.get(i + 1);
-            System.out.format("| %-12s | %-61s |%n", key, val);
-            System.out.println(
-                    "+--------------+---------------------------------------------------------------+");
-        }
+    public void printBookDetails(final Book book) {
+        Map<String, String> valuesMap = new LinkedHashMap<>();
+        valuesMap.put("ID", book.getId());
+        valuesMap.put("Title", book.getTitle());
+        valuesMap.put("Subtitle", book.getSubtitle());
+        valuesMap.put("Publisher", book.getPublisher());
+        valuesMap.put("Publish date", book.getPublishedDate());
+        valuesMap.put("Free", book.isFree() ? "YES" : "NO");
+        printDetailsTable(valuesMap);
     }
 
     @Override
-    public void printClientDetails(Client client, List<Book> booksThatClientHolds) {
-        List<String> keyVal = of(
-                "ID", client.getId(),
-                "Name", client.getName()
-        );
-        System.out.println("+------+-----------------------------------------------------------------------+");
-        for (int i = 0; i < keyVal.size(); i += 2) {
-            String key = keyVal.get(i);
-            String val = keyVal.get(i + 1);
-            System.out.format("| %-4s | %-69s |%n", key, val);
-            System.out.println(
-                    "+------+-----------------------------------------------------------------------+");
-        }
+    public void printClientDetails(final Client client, final List<Book> booksThatClientHolds) {
+        Map<String, String> valuesMap = new LinkedHashMap<>();
+        valuesMap.put("ID", client.getId());
+        valuesMap.put("Name", client.getName());
+        printDetailsTable(valuesMap);
+
         System.out.println("""
                                                   
                                             Books that client holds
@@ -181,24 +168,17 @@ public class ConsoleDataPrinter implements DataPrinter {
     }
 
     @Override
-    public void printOperationDetails(Operation operation, Client clientInOperation, List<Book> booksInOperation) {
-        List<String> keyVal = of(
-                "ID", operation.getId(),
-                "Date", operation.getDate(),
-                "Client", clientInOperation.getName(),
-                "Type", operation.getOperationType()
-        );
-        System.out.println("+--------+---------------------------------------------------------------------+");
-        for (int i = 0; i < keyVal.size(); i += 2) {
-            String key = keyVal.get(i);
-            String val = keyVal.get(i + 1);
-            System.out.format("| %-6s | %-67s |%n", key, val);
-            System.out.println(
-                    "+--------+---------------------------------------------------------------------+");
-        }
+    public void printOperationDetails(final Operation operation, final Client clientInOperation, final List<Book> booksInOperation) {
+        Map<String, String> valuesMap = new LinkedHashMap<>();
+        valuesMap.put("ID", operation.getId());
+        valuesMap.put("Date", operation.getDate());
+        valuesMap.put("Client", clientInOperation.getName());
+        valuesMap.put("Type", operation.getOperationType());
+        printDetailsTable(valuesMap);
+
         System.out.println("""
                                                   
-                                             Books in operation
+                                               Books in operation
                 """);
         printListOfBooks(booksInOperation);
     }
@@ -207,5 +187,29 @@ public class ConsoleDataPrinter implements DataPrinter {
     public void clear() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    private void printDetailsTable(final Map<String, String> valuesMap) {
+        if (valuesMap.isEmpty()) {
+            throw new RuntimeException("Map with values is empty.");
+        }
+
+        int keyMaxLength = -1;
+        for (Map.Entry<String, String> entry : valuesMap.entrySet()) {
+            int keyLength = entry.getKey().length();
+            if (keyLength > keyMaxLength) {
+                keyMaxLength = keyLength;
+            }
+        }
+
+        int valueMaxLength = (WINDOW_WIDTH - keyMaxLength - 7);
+        final String template = "| %-" + keyMaxLength + "s | %-" + valueMaxLength + "s |%n";
+        final String divider = format("+-%s-+-%s-+%n", "-".repeat(keyMaxLength), "-".repeat(valueMaxLength));
+
+        System.out.print(divider);
+        for (Map.Entry<String, String> entry : valuesMap.entrySet()) {
+            System.out.format(template, entry.getKey(), entry.getValue());
+            System.out.print(divider);
+        }
     }
 }
