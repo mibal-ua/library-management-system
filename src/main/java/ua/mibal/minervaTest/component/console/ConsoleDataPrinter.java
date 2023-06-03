@@ -40,21 +40,6 @@ public class ConsoleDataPrinter implements DataPrinter {
     }
 
     @Override
-    public void printInfoMessage(final String message) {
-        System.out.print(message);
-    }
-
-    @Override
-    public void printlnInfoMessage(final String message) {
-        System.out.println(message);
-    }
-
-    @Override
-    public void printErrorMessage(final String message) {
-        System.err.println(message);
-    }
-
-    @Override
     public void printListOfBooks(final List<Book> books) {
         if (books.size() == 0) {
             System.out.format("+------------------------------------------------------------------------------+%n");
