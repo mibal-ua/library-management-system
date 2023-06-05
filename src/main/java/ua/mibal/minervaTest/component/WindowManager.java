@@ -22,6 +22,7 @@ import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
 import ua.mibal.minervaTest.model.window.State;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +50,7 @@ public interface WindowManager {
 
     void searchClientTab(List<Client> clients, String[] args);
 
-    void searchOperationTab(List<Operation> operations, List<Client> clients, String[] args);
+    void searchOperationTab(List<Operation> operations, Library library, String[] args);
 
     Optional<Book> initBookToAdd(Library library);
 

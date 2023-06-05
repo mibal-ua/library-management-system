@@ -20,6 +20,7 @@ package ua.mibal.minervaTest.component.console;
 import ua.mibal.minervaTest.component.DataPrinter;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
+import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
 
 import java.util.LinkedHashMap;
@@ -76,7 +77,7 @@ public class ConsoleDataPrinter implements DataPrinter {
     }
 
     @Override
-    public void printListOfOperations(final List<Operation> operations, final List<Client> clients) {
+    public void printListOfOperations(final List<Operation> operations, final Library library) {
         final List<String> tableHeaders = List.of(" ID ", "Date", "Client name", "Operation", "Books");
         final int dateLength = 10;
         final int nameLength = 26;
@@ -85,19 +86,10 @@ public class ConsoleDataPrinter implements DataPrinter {
         final List<Function<Operation, String>> getters = List.of(
                 operation -> operation.getId(),
                 operation -> substring(operation.getDate(), dateLength),
-                operation -> {
-                    // FIXME use library instead of searching
-                    Client client = null;
-                    for (final Client cl : clients) {
-                        if (cl.getId().equals(operation.getClientId())) {
-                            client = cl;
-                            break;
-                        }
-                    }
-                    return client == null
-                            ? "NONE"
-                            : substring(client.getName(), nameLength);
-                },
+                operation -> library
+                        .findClientById(operation.getClientId())
+                        .map(client -> substring(client.getName(), nameLength))
+                        .orElse("NONE"),
                 operation -> operation.getOperationType(),
                 operation -> substring(String.join(" ", operation.getBooksIds()), booksLength)
         );

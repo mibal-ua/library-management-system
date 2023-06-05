@@ -81,7 +81,7 @@ public class ApplicationController {
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> windowManager.searchBookTab(library.findBooks(args), args);
             case CLIENT -> windowManager.searchClientTab(library.findClients(args), args);
-            case HISTORY -> windowManager.searchOperationTab(library.findOperations(args), library.getClients(), args);
+            case HISTORY -> windowManager.searchOperationTab(library.findOperations(args), library, args);
             case NULL -> windowManager.showToast("You can not use command 'search' in this tab.");
         }
     }

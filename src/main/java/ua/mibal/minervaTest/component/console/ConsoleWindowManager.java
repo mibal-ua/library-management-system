@@ -88,7 +88,7 @@ public class ConsoleWindowManager implements WindowManager {
         tabs.tab3
                 .setBody(() -> dataPrinter.printListOfOperations(
                         library.getOperations(),
-                        library.getClients()
+                        library
                 )).setDataCaching(() -> cache.cache(library))
                 .draw();
     }
@@ -119,11 +119,11 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public void searchOperationTab(final List<Operation> operations, final List<Client> clients, final String[] args) {
+    public void searchOperationTab(final List<Operation> operations, final Library library, final String[] args) {
         final String header = format("SEARCH IN OPERATIONS BY '%s'", join(" ", args));
         tabs.searchOperationTab
                 .setTabsNames(new String[]{header}, 0)
-                .setBody(() -> dataPrinter.printListOfOperations(operations, clients))
+                .setBody(() -> dataPrinter.printListOfOperations(operations, library))
                 .setDataCaching(() -> cache.cache(operations, args))
                 .draw();
     }
@@ -329,7 +329,7 @@ public class ConsoleWindowManager implements WindowManager {
             );
             case SEARCH_HISTORY -> searchOperationTab(
                     cache.searchOperation.data(),
-                    cache.library.getClients(),
+                    cache.library,
                     cache.searchOperation.args()
             );
             case LOOK_BOOK -> bookDetails(cache.bookDetails);
