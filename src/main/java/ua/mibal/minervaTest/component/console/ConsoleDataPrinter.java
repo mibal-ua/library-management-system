@@ -85,7 +85,7 @@ public class ConsoleDataPrinter implements DataPrinter {
         final List<Integer> sizes = List.of(4, dateLength, nameLength, 9, booksLength);
         final List<Function<Operation, String>> getters = List.of(
                 operation -> operation.getId(),
-                operation -> substring(operation.getDate(), dateLength),
+                operation -> operation.getDate().substring(0, dateLength),
                 operation -> library
                         .findClientById(operation.getClientId())
                         .map(client -> substringAppend(client.getName(), "..", nameLength))
