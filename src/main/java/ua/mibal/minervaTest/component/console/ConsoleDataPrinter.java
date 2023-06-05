@@ -143,6 +143,7 @@ public class ConsoleDataPrinter implements DataPrinter {
         valuesMap.put("ID", book.getId());
         valuesMap.put("Title", book.getTitle());
         valuesMap.put("Subtitle", book.getSubtitle());
+        valuesMap.put("Author", book.getAuthor());
         valuesMap.put("Publisher", book.getPublisher());
         valuesMap.put("Publish date", book.getPublishedDate());
         valuesMap.put("Free", book.isFree() ? "YES" : "NO");
