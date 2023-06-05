@@ -26,15 +26,24 @@ import ua.mibal.minervaTest.model.window.DataType;
 import ua.mibal.minervaTest.model.window.State;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
-import java.util.Stack;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.List.of;
+import static java.util.Objects.requireNonNull;
+import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.bold;
+import static ua.mibal.minervaTest.model.window.State.HELP_TAB;
+import static ua.mibal.minervaTest.model.window.State.LOOK_BOOK;
+import static ua.mibal.minervaTest.model.window.State.LOOK_CLIENT;
+import static ua.mibal.minervaTest.model.window.State.LOOK_HISTORY;
+import static ua.mibal.minervaTest.model.window.State.SEARCH_BOOK;
+import static ua.mibal.minervaTest.model.window.State.SEARCH_CLIENT;
+import static ua.mibal.minervaTest.model.window.State.SEARCH_HISTORY;
 import static ua.mibal.minervaTest.model.window.State.TAB_1;
 import static ua.mibal.minervaTest.model.window.State.TAB_2;
 import static ua.mibal.minervaTest.model.window.State.TAB_3;
@@ -45,111 +54,156 @@ import static ua.mibal.minervaTest.model.window.State.TAB_3;
  */
 public class ConsoleWindowManager implements WindowManager {
 
-    private final static int WINDOW_HEIGHT = 25;
-
     public final static int WINDOW_WIDTH = 80;
-
+    private final static int WINDOW_HEIGHT = 25;
     private final DataPrinter dataPrinter;
-
-    private final Stack<State> tabsStack = new Stack<>();
 
     private final CacheManager cache = new CacheManager();
 
-    private final TabsContainer tabs;
-
     public ConsoleWindowManager(final DataPrinter dataPrinter) {
         this.dataPrinter = dataPrinter;
-        tabs = new TabsContainer(
-                dataPrinter::clear,
-                this::cacheTab,
-                WINDOW_WIDTH
-        );
     }
 
     // <<< Tabs >>>
 
     @Override
     public void tab1(final Library library) {
-        tabs.tab1.setBody(() -> dataPrinter.printListOfBooks(library.getBooks()))
-                .setDataCaching(() -> cache.cache(library))
-                .draw();
+        new Tab(new String[]{"BOOKS", "CLIENTS", "HISTORY"},
+                0,
+                () -> dataPrinter.printListOfBooks(library.getBooks()),
+                TAB_1,
+                true
+        ).draw();
     }
 
     @Override
     public void tab2(final Library library) {
-        tabs.tab2
-                .setBody(() -> dataPrinter.printListOfClients(library.getClients()))
-                .setDataCaching(() -> cache.cache(library))
-                .draw();
+        new Tab(new String[]{"BOOKS", "CLIENTS", "HISTORY"},
+                1,
+                () -> dataPrinter.printListOfClients(library.getClients()),
+                TAB_2,
+                true
+        ).draw();
     }
 
     @Override
     public void tab3(final Library library) {
-        tabs.tab3
-                .setBody(() -> dataPrinter.printListOfOperations(
+        new Tab(new String[]{"BOOKS", "CLIENTS", "HISTORY"},
+                2,
+                () -> dataPrinter.printListOfOperations(
                         library.getOperations(),
                         library
-                )).setDataCaching(() -> cache.cache(library))
-                .draw();
+                ),
+                TAB_3,
+                true
+        ).draw();
     }
 
     @Override
     public void help() {
-        tabs.help.draw();
+        new Tab(new String[]{"HELP"},
+                0,
+                () -> System.out.println("""
+
+                                                          MAIN CONTROL
+                        --------------------------------------------------------------------------------
+
+                                                       1, 2, 3 - open tab
+
+                                                          exit - to exit
+
+
+                                                            IN TABS
+                        --------------------------------------------------------------------------------
+
+                                  search(s) ${query} - search element in current tab
+
+                                          look ${id} - look at concrete item in list in current tab
+
+                                                 add - to add element into list in current tab
+
+                                   delete(del) ${id} - to delete element in list in current tab
+
+
+                                                     IN CONCRETE BOOK/CLIENT
+                        --------------------------------------------------------------------------------
+
+                                                   edit - to edit this book/client
+
+                                            delete(del) - to delete this book/client
+
+                                                    esc - go to previous window
+
+
+                                                       IN CONCRETE CLIENT
+                        --------------------------------------------------------------------------------
+
+                                                    take ${id} - to take book
+
+                                                  return ${id} - to return book
+
+                         """),
+                HELP_TAB
+        ).draw();
     }
 
     @Override
     public void searchBookTab(final List<Book> books, final String[] args) {
         final String header = format("SEARCH IN BOOKS BY '%s'", join(" ", args));
-        tabs.searchBookTab
-                .setTabsNames(new String[]{header}, 0)
-                .setBody(() -> dataPrinter.printListOfBooks(books))
-                .setDataCaching(() -> cache.cache(books, args))
-                .draw();
+        new Tab(new String[]{header},
+                0,
+                () -> dataPrinter.printListOfBooks(books),
+                SEARCH_BOOK
+        ).draw();
     }
 
     @Override
     public void searchClientTab(final List<Client> clients, final String[] args) {
         final String header = format("SEARCH IN CLIENTS BY '%s'", join(" ", args));
-        tabs.searchClientTab
-                .setTabsNames(new String[]{header}, 0)
-                .setBody(() -> dataPrinter.printListOfClients(clients))
-                .setDataCaching(() -> cache.cache(clients, args))
-                .draw();
+        new Tab(new String[]{header},
+                0,
+                () -> dataPrinter.printListOfClients(clients),
+                SEARCH_CLIENT
+        ).draw();
     }
 
     @Override
     public void searchOperationTab(final List<Operation> operations, final Library library, final String[] args) {
         final String header = format("SEARCH IN OPERATIONS BY '%s'", join(" ", args));
-        tabs.searchOperationTab
-                .setTabsNames(new String[]{header}, 0)
-                .setBody(() -> dataPrinter.printListOfOperations(operations, library))
-                .setDataCaching(() -> cache.cache(operations, args))
-                .draw();
+        new Tab(new String[]{header},
+                0,
+                () -> dataPrinter.printListOfOperations(operations, library),
+                SEARCH_HISTORY
+        ).draw();
     }
 
     @Override
     public void bookDetails(final Book book) {
-        tabs.bookDetails
-                .setBody(() -> dataPrinter.printBookDetails(book))
-                .setDataCaching(() -> cache.cache(book))
-                .draw();
+        new Tab(new String[]{"BOOK DETAILS"},
+                0,
+                () -> dataPrinter.printBookDetails(book),
+                LOOK_BOOK
+        ).draw();
+        cache.push(book);
     }
 
     @Override
     public void clientDetails(final Client client, final List<Book> books) {
-        tabs.clientDetails
-                .setBody(() -> dataPrinter.printClientDetails(client, books))
-                .setDataCaching(() -> cache.cache(client, books))
-                .draw();
+        new Tab(new String[]{"CLIENT DETAILS"},
+                0,
+                () -> dataPrinter.printClientDetails(client, books),
+                LOOK_CLIENT
+        ).draw();
+        cache.push(client);
     }
 
     @Override
     public void operationDetails(final Operation operation, final Client client, final List<Book> books) {
-        tabs.operationDetails
-                .setBody(() -> dataPrinter.printOperationDetails(operation, client, books))
-                .setDataCaching(() -> cache.cache(operation, client, books))
-                .draw();
+        new Tab(new String[]{"OPERATION DETAILS"},
+                0,
+                () -> dataPrinter.printOperationDetails(operation, client, books),
+                LOOK_HISTORY
+        ).draw();
     }
 
     // <<< Read >>>
@@ -303,77 +357,36 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public void drawPrevTab() {
-        if (tabsStack.size() > 1) {
-            tabsStack.pop();
+        if (cache.stack.size() > 1) {
+            cache.stack.pop();
         }
-        drawTab(tabsStack.peek());
+        cache.stack.peek().draw();
     }
 
     public void drawBackground() {
-        drawTab(tabsStack.peek());
-    }
-
-    private void drawTab(final State tab) {
-        switch (tab) {
-            case TAB_1 -> tab1(cache.library);
-            case TAB_2 -> tab2(cache.library);
-            case TAB_3 -> tab3(cache.library);
-            case HELP_TAB -> help();
-            case SEARCH_BOOK -> searchBookTab(
-                    cache.searchBook.data(),
-                    cache.searchBook.args()
-            );
-            case SEARCH_CLIENT -> searchClientTab(
-                    cache.searchClient.data(),
-                    cache.searchClient.args()
-            );
-            case SEARCH_HISTORY -> searchOperationTab(
-                    cache.searchOperation.data(),
-                    cache.library,
-                    cache.searchOperation.args()
-            );
-            case LOOK_BOOK -> bookDetails(cache.bookDetails);
-            case LOOK_CLIENT -> clientDetails(
-                    cache.clientDetails.client(),
-                    cache.clientDetails.books()
-            );
-            case LOOK_HISTORY -> operationDetails(
-                    cache.operationDetails.operation(),
-                    cache.operationDetails.client(),
-                    cache.operationDetails.books()
-            );
-        }
-    }
-
-    private void cacheTab(final State tab) {
-        if (tab == TAB_1 || tab == TAB_2 || tab == TAB_3) {
-            tabsStack.clear();
-            tabsStack.push(tab);
-        } else if (tabsStack.peek() != tab) {
-            tabsStack.push(tab);
-        }
+        cache.stack.peek().draw();
     }
 
     // <<< Cached data Getters >>>
 
     @Override
     public DataType getCurrentDataType() {
-        return tabsStack.peek().getDataType();
+        return cache.stack.peek().getDataType();
     }
 
     @Override
     public State getCurrentTabState() {
-        return tabsStack.peek();
+        return cache.stack.peek().getCurrentTabState();
     }
 
     @Override
     public String getCachedBookId() {
-        return cache.bookDetails.getId();
+        return cache.getBook().getId();
     }
 
     @Override
     public String getCachedClientId() {
-        return cache.clientDetails.client().getId();
+        return cache.getClient().getId();
     }
 
     // <<< Console esc-sequences >>>
@@ -381,6 +394,93 @@ public class ConsoleWindowManager implements WindowManager {
     private void goTo(final int row, final int column) {
         char escCode = 0x1B;
         System.out.printf("%c[%d;%df", escCode, row, column);
+    }
+
+    // <<< Tabs >>>
+
+    /**
+     * @author Mykhailo Balakhon
+     * @link t.me/mibal_ua
+     */
+    public class Tab {
+
+        private final String[] tabsNames;
+
+        private final int boldTab;
+
+        private final Runnable body;
+
+        private final State currentTabState;
+
+        public Tab(final String[] tabsNames,
+                   final int boldTab,
+                   final Runnable body,
+                   final State currentTabState) {
+            this(tabsNames, boldTab, body, currentTabState, false);
+        }
+
+        public Tab(final String[] tabsNames,
+                   final int boldTab,
+                   final Runnable body,
+                   final State currentTabState,
+                   final boolean isRootTab) {
+            this.tabsNames = tabsNames;
+            if (-1 < boldTab && boldTab < tabsNames.length) {
+                this.boldTab = boldTab;
+            } else {
+                this.boldTab = -1;
+            }
+            this.body = body;
+            this.currentTabState = currentTabState;
+            if (isRootTab) {
+                cache.stack.clear();
+            }
+            cache.push(this);
+        }
+
+
+        public void draw() {
+            // beforeAll
+            dataPrinter.clear();
+
+            // header
+            final int allWordsLength = Arrays
+                    .stream(tabsNames)
+                    .reduce(0,
+                            (acc, str) -> acc + str.length(),
+                            Integer::sum);
+            final int spaceLength = (WINDOW_WIDTH - allWordsLength) / (tabsNames.length + 1);
+            final String space = " ".repeat(spaceLength);
+
+            final StringBuilder message = new StringBuilder(space);
+            for (int i = 0; i < tabsNames.length; i++) {
+                String tabsName = i == boldTab
+                        ? bold(tabsNames[i])
+                        : tabsNames[i];
+                message.append(tabsName)
+                        .append(space);
+            }
+
+            System.out.println();
+            System.out.println(message);
+            System.out.println();
+
+            // body
+            requireNonNull(body);
+            body.run();
+
+            // margin afterAll
+            System.out.println();
+            System.out.println();
+        }
+
+        public DataType getDataType() {
+            return currentTabState.getDataType();
+        }
+
+        public State getCurrentTabState() {
+            return currentTabState;
+        }
     }
 
     // <<< Toasts >>>
@@ -408,7 +508,7 @@ public class ConsoleWindowManager implements WindowManager {
             printMessage(message);
 
             appropriateBody();
-            drawPrevTab();
+            drawBackground();
             return this;
         }
 
@@ -569,7 +669,7 @@ public class ConsoleWindowManager implements WindowManager {
 
         public Optional<List<String>> getAnswers() {
             if (answers == null) {
-                throw new RuntimeException("you must first call the `.draw()` method.");
+                throw new RuntimeException("You must first call the `.draw()` method.");
             }
             return answers;
         }

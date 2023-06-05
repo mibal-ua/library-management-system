@@ -16,11 +16,11 @@
 
 package ua.mibal.minervaTest.component.console;
 
+import ua.mibal.minervaTest.component.console.ConsoleWindowManager.Tab;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
-import ua.mibal.minervaTest.model.Library;
-import ua.mibal.minervaTest.model.Operation;
-import java.util.List;
+
+import java.util.Stack;
 
 /**
  * @author Mykhailo Balakhon
@@ -28,78 +28,27 @@ import java.util.List;
  */
 public class CacheManager {
 
-    protected CachedSearchArgs<Book> searchBook;
+    public final Stack<Tab> stack = new Stack<>();
+    private Book cachedBook;
+    private Client cachedClient;
 
-    protected CachedSearchArgs<Client> searchClient;
-
-    protected CachedSearchArgs<Operation> searchOperation;
-
-    protected CachedClientDetailsArgs clientDetails;
-
-    protected CachedOperationDetailsArgs operationDetails;
-
-    protected Book bookDetails;
-
-    protected Library library;
-
-    // bookDetails
-    public void cache(final Book book) {
-        bookDetails = book;
+    public void push(final Tab tab){
+        stack.push(tab);
     }
 
-    // clientDetails
-    public void cache(final Client client, final List<Book> books) {
-        clientDetails = new CachedClientDetailsArgs(client, books);
+    public void push(final Book book){
+        this.cachedBook = book;
     }
 
-    // operationDetails
-    public void cache(final Operation operation, final Client client, final List<Book> books) {
-        operationDetails = new CachedOperationDetailsArgs(operation, client, books);
+    public void push(final Client client){
+        this.cachedClient = client;
     }
 
-    // tab 1/2/3
-    public void cache(final Library library) {
-        this.library = library;
+    public Book getBook() {
+        return cachedBook;
     }
 
-    // search${dataType}Tab
-    public <T> void cache(final List<T> data, final String[] args) {
-        // FIXME
-        Class<T> clazz = (Class<T>) data.get(0).getClass();
-        if (clazz == Book.class) {
-            this.searchBook = new CachedSearchArgs<>((List<Book>) data, args);
-        } else if (clazz == Client.class) {
-            this.searchClient = new CachedSearchArgs<>((List<Client>) data, args);
-        } else if (clazz == Operation.class) {
-            this.searchOperation = new CachedSearchArgs<>((List<Operation>) data, args);
-        } else {
-            throw new IllegalStateException("Unexpected value: " + clazz);
-        }
+    public Client getClient() {
+        return cachedClient;
     }
-
-
-    /**
-     * @author Mykhailo Balakhon
-     * @link t.me/mibal_ua
-     */
-    protected record CachedSearchArgs<T>(List<T> data, String[] args) {
-
-    }
-
-    /**
-     * @author Mykhailo Balakhon
-     * @link t.me/mibal_ua
-     */
-    protected record CachedClientDetailsArgs(Client client, List<Book> books) {
-
-    }
-
-    /**
-     * @author Mykhailo Balakhon
-     * @link t.me/mibal_ua
-     */
-    protected record CachedOperationDetailsArgs(Operation operation, Client client, List<Book> books) {
-
-    }
-
 }
