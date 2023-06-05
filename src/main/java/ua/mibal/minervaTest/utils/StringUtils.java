@@ -29,4 +29,24 @@ public class StringUtils {
         return str.substring(0, max);
     }
 
+    /**
+     * Returns a string that is a substring of this original string with
+     * appended {@code toAppend} string or original string if its length
+     * less than {@code max}.
+     * <p>
+     * Examples:
+     * <blockquote><pre>
+     * substringAppend("hamburger", ".." , 5) returns "ham.."
+     * substringAppend("cheeseburger", ".." , 20) returns "cheeseburger"
+     * </pre></blockquote>
+     * @param      str   the original string to operate.
+     * @param      toAppend     string that have to append.
+     * @return     the specified substring.
+     */
+    public static String substringAppend(final String str, final String toAppend, final int max) {
+        if (str.length() < max) {
+            return str;
+        }
+        return str.substring(0, max - toAppend.length()) + toAppend ;
+    }
 }

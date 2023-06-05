@@ -31,7 +31,7 @@ import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
 import static ua.mibal.minervaTest.model.window.State.LOOK_BOOK;
 import static ua.mibal.minervaTest.model.window.State.LOOK_CLIENT;
 import static ua.mibal.minervaTest.model.window.State.LOOK_HISTORY;
-import static ua.mibal.minervaTest.utils.StringUtils.substring;
+import static ua.mibal.minervaTest.utils.StringUtils.substringAppend;
 
 /**
  * @author Mykhailo Balakhon
@@ -97,7 +97,7 @@ public class ApplicationController {
                 final Optional<Book> optionalBook = library.findBookById(id);
                 if (optionalBook.isEmpty()) {
                     windowManager.showToast(format(
-                        "Oops, there are no books with this id '%s'", id));
+                            "Oops, there are no books with this id '%s'", id));
                     break;
                 }
                 windowManager.bookDetails(optionalBook.get());
@@ -107,7 +107,7 @@ public class ApplicationController {
                 final Optional<Client> optionalClient = library.findClientById(id);
                 if (optionalClient.isEmpty()) {
                     windowManager.showToast(format(
-                        "Oops, there are no clients with this id '%s'", id));
+                            "Oops, there are no clients with this id '%s'", id));
                     break;
                 }
                 Client client = optionalClient.get();
@@ -119,7 +119,7 @@ public class ApplicationController {
                 final Optional<Operation> optionalOperation = library.findOperationById(id);
                 if (optionalOperation.isEmpty()) {
                     windowManager.showToast(format(
-                        "Oops, there are no operations with this id '%s'", id));
+                            "Oops, there are no operations with this id '%s'", id));
                     break;
                 }
                 Operation operation = optionalOperation.get();
@@ -127,8 +127,8 @@ public class ApplicationController {
 
                 if (optionalClient.isEmpty()) {
                     windowManager.showToast(format(
-                        "Oops, there are no clients with id '%s' that specialized in operation",
-                        operation.getClientId()));
+                            "Oops, there are no clients with id '%s' that specialized in operation",
+                            operation.getClientId()));
                     break;
                 }
                 Client client = optionalClient.get();
@@ -156,52 +156,52 @@ public class ApplicationController {
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> {
                 final String id = isDetailsTab
-                    ? windowManager.getCachedBookId()
-                    : args[0];
+                        ? windowManager.getCachedBookId()
+                        : args[0];
 
                 Optional<Book> optionalToEditBook = library.findBookById(id);
                 if (optionalToEditBook.isEmpty()) {
                     windowManager.showToast(format(
-                        "Oops, there are no books with this id '%s'", id));
+                            "Oops, there are no books with this id '%s'", id));
                     break;
                 }
 
                 windowManager.editBook(optionalToEditBook.get())
-                    .ifPresent(book -> {
-                        library.updateBook(book);
-                        if (isDetailsTab) {
-                            windowManager.drawPrevTab();
-                            windowManager.bookDetails(book);
-                        }
-                        windowManager.showToast("Book successfully updated!");
-                        dataOperator.updateLibrary(library);
-                    });
+                        .ifPresent(book -> {
+                            library.updateBook(book);
+                            if (isDetailsTab) {
+                                windowManager.drawPrevTab();
+                                windowManager.bookDetails(book);
+                            }
+                            windowManager.showToast("Book successfully updated!");
+                            dataOperator.updateLibrary(library);
+                        });
             }
             case CLIENT -> {
                 final String id = isDetailsTab
-                    ? windowManager.getCachedClientId()
-                    : args[0];
+                        ? windowManager.getCachedClientId()
+                        : args[0];
 
                 Optional<Client> optionalToEditClient = library.findClientById(id);
                 if (optionalToEditClient.isEmpty()) {
                     windowManager.showToast(format(
-                        "Oops, there are no clients with this id '%s'", id));
+                            "Oops, there are no clients with this id '%s'", id));
                     break;
                 }
 
                 windowManager.editClient(optionalToEditClient.get())
-                    .ifPresent(client -> {
-                        library.updateClient(client);
-                        if (isDetailsTab) {
-                            windowManager.drawPrevTab();
-                            windowManager.clientDetails(
-                                client,
-                                library.getBooksClientHolds(client)
-                            );
-                        }
-                        windowManager.showToast("Client successfully updated!");
-                        dataOperator.updateLibrary(library);
-                    });
+                        .ifPresent(client -> {
+                            library.updateClient(client);
+                            if (isDetailsTab) {
+                                windowManager.drawPrevTab();
+                                windowManager.clientDetails(
+                                        client,
+                                        library.getBooksClientHolds(client)
+                                );
+                            }
+                            windowManager.showToast("Client successfully updated!");
+                            dataOperator.updateLibrary(library);
+                        });
             }
             case NULL -> windowManager.showToast("You can not use command 'edit' in this tab.");
         }
@@ -257,27 +257,27 @@ public class ApplicationController {
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> {
                 final String id = isDetailsTab
-                    ? windowManager.getCachedBookId()
-                    : args[0];
+                        ? windowManager.getCachedBookId()
+                        : args[0];
 
                 if (!library.isContainBookId(id)) {
                     windowManager.showToast(format(
-                        "Oops, there are no books with this id '%s'", id));
+                            "Oops, there are no books with this id '%s'", id));
                     break;
                 }
                 final Book bookToDelete = library.findBookById(id).get();
-                final String title = substring(bookToDelete.getTitle(), 14);
+                final String title = substringAppend(bookToDelete.getTitle(), "..", 14);
 
                 Optional<Client> bookHolder = library.findClientByBookId(id);
                 if (bookHolder.isPresent()) {
-                    String name = substring(bookHolder.get().getName(), 15);
+                    String name = substringAppend(bookHolder.get().getName(), "..", 15);
                     windowManager.showToast(format(
-                        "Oops, but client '%s' holds this book '%s'", name, id));
+                            "Oops, but client '%s' holds this book '%s'", name, id));
                     break;
                 }
 
                 final boolean isConfirmed = windowManager.showDialogueToast(
-                    format("You really need to delete book '%s'?", title), "YES", "NO");
+                        format("You really need to delete book '%s'?", title), "YES", "NO");
                 if (isConfirmed) {
                     if (library.deleteBook(bookToDelete)) {
                         windowManager.showToast("Book successfully deleted.");
@@ -292,25 +292,25 @@ public class ApplicationController {
             }
             case CLIENT -> {
                 final String id = isDetailsTab
-                    ? windowManager.getCachedClientId()
-                    : args[0];
+                        ? windowManager.getCachedClientId()
+                        : args[0];
 
                 if (!library.isContainClientId(id)) {
                     windowManager.showToast(format(
-                        "Oops, there are no clients with this id '%s'", id));
+                            "Oops, there are no clients with this id '%s'", id));
                     break;
                 }
                 Client clientToDelete = library.findClientById(id).get();
-                String name = substring(clientToDelete.getName(), 15);
+                String name = substringAppend(clientToDelete.getName(), "..", 15);
 
                 if (library.doesClientHoldBook(clientToDelete)) {
                     windowManager.showToast(format(
-                        "Oops, client '%s' is holding books, we can't delete him", name));
+                            "Oops, client '%s' is holding books, we can't delete him", name));
                     break;
                 }
 
                 final boolean isConfirmed = windowManager.showDialogueToast(
-                    format("You really need to delete client '%s'?", name), "YES", "NO");
+                        format("You really need to delete client '%s'?", name), "YES", "NO");
                 if (isConfirmed) {
                     if (library.deleteClient(clientToDelete)) {
                         windowManager.showToast("Client successfully deleted.");
@@ -335,22 +335,22 @@ public class ApplicationController {
             }
 
             final Client client = library
-                .findClientById(windowManager.getCachedClientId())
-                .get();
+                    .findClientById(windowManager.getCachedClientId())
+                    .get();
 
             final List<String> booksToTake = Arrays.stream(args)
-                .filter(bookId -> {
-                        Optional<Book> optionalBook = library.findBookById(bookId);
-                        return optionalBook.isPresent() && optionalBook.get().isFree();
-                    }
-                ).toList();
+                    .filter(bookId -> {
+                                Optional<Book> optionalBook = library.findBookById(bookId);
+                                return optionalBook.isPresent() && optionalBook.get().isFree();
+                            }
+                    ).toList();
             if (booksToTake.isEmpty()) {
                 windowManager.showToast("Oops, all books you are enter not free");
             } else {
                 library.takeBooks(client, booksToTake);
                 windowManager.clientDetails(
-                    client,
-                    library.getBooksClientHolds(client)
+                        client,
+                        library.getBooksClientHolds(client)
                 );
                 dataOperator.updateLibrary(library);
                 windowManager.showToast("Books successfully taken!");
@@ -368,21 +368,21 @@ public class ApplicationController {
             }
 
             final Client client = library
-                .findClientById(windowManager.getCachedClientId())
-                .get();
+                    .findClientById(windowManager.getCachedClientId())
+                    .get();
 
             final List<String> booksToReturn = Arrays.stream(args)
-                .filter(bookId -> library.findBookById(bookId).isPresent() &&
-                                  client.getBooksIds().contains(bookId))
-                .toList();
+                    .filter(bookId -> library.findBookById(bookId).isPresent() &&
+                            client.getBooksIds().contains(bookId))
+                    .toList();
 
             if (booksToReturn.isEmpty()) {
                 windowManager.showToast("Oops, all books you are enter not yours");
             } else {
                 library.returnBooks(client, booksToReturn);
                 windowManager.clientDetails(
-                    client,
-                    library.getBooksClientHolds(client)
+                        client,
+                        library.getBooksClientHolds(client)
                 );
                 dataOperator.updateLibrary(library);
                 windowManager.showToast("Books successfully returned!");

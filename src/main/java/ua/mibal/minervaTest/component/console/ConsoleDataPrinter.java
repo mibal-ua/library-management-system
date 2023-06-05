@@ -30,7 +30,7 @@ import java.util.function.Function;
 
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.component.console.ConsoleWindowManager.WINDOW_WIDTH;
-import static ua.mibal.minervaTest.utils.StringUtils.substring;
+import static ua.mibal.minervaTest.utils.StringUtils.substringAppend;
 
 
 /**
@@ -55,8 +55,8 @@ public class ConsoleDataPrinter implements DataPrinter {
         final List<Integer> sizes = List.of(4, titleLength, authorLength, 4);
         final List<Function<Book, String>> getters = List.of(
                 book -> book.getId(),
-                book -> substring(book.getTitle(), titleLength),
-                book -> substring(book.getAuthor(), authorLength),
+                book -> substringAppend(book.getTitle(), "..", titleLength),
+                book -> substringAppend(book.getAuthor(), "..", authorLength),
                 book -> book.isFree() ? "Yes" : "No"
         );
         printListTable(tableHeaders, sizes, getters, books);
@@ -70,8 +70,8 @@ public class ConsoleDataPrinter implements DataPrinter {
         final List<Integer> sizes = List.of(4, nameLength, booksLength);
         final List<Function<Client, String>> getters = List.of(
                 client -> client.getId(),
-                client -> substring(client.getName(), nameLength),
-                client -> substring(String.join(" ", client.getBooksIds()), booksLength)
+                client -> substringAppend(client.getName(), "..", nameLength),
+                client -> substringAppend(String.join(" ", client.getBooksIds()), "..", booksLength)
         );
         printListTable(tableHeaders, sizes, getters, clients);
     }
@@ -88,10 +88,10 @@ public class ConsoleDataPrinter implements DataPrinter {
                 operation -> substring(operation.getDate(), dateLength),
                 operation -> library
                         .findClientById(operation.getClientId())
-                        .map(client -> substring(client.getName(), nameLength))
+                        .map(client -> substringAppend(client.getName(), "..", nameLength))
                         .orElse("NONE"),
                 operation -> operation.getOperationType(),
-                operation -> substring(String.join(" ", operation.getBooksIds()), booksLength)
+                operation -> substringAppend(String.join(" ", operation.getBooksIds()), "..", booksLength)
         );
         printListTable(tableHeaders, sizes, getters, operations);
     }
