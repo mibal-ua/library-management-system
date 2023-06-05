@@ -170,6 +170,7 @@ public class ApplicationController {
                     .ifPresent(book -> {
                         library.updateBook(book);
                         if (isDetailsTab) {
+                            windowManager.drawPrevTab();
                             windowManager.bookDetails(book);
                         }
                         windowManager.showToast("Book successfully updated!");
@@ -192,6 +193,7 @@ public class ApplicationController {
                     .ifPresent(client -> {
                         library.updateClient(client);
                         if (isDetailsTab) {
+                            windowManager.drawPrevTab();
                             windowManager.clientDetails(
                                 client,
                                 library.getBooksClientHolds(client)
