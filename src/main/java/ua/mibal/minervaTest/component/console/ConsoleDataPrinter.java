@@ -38,9 +38,9 @@ import static ua.mibal.minervaTest.utils.StringUtils.substring;
  */
 public class ConsoleDataPrinter implements DataPrinter {
 
-    public static String BOLD = "\033[1m";
+    private static final String BOLD = "\033[1m";
 
-    public static String RESET = "\033[0m";
+    private static final String RESET = "\033[0m";
 
     public static String bold(final String str) {
         return BOLD + str + RESET;
