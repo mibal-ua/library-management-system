@@ -25,6 +25,7 @@ import ua.mibal.minervaTest.model.Operation;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.component.console.ConsoleWindowManager.WINDOW_WIDTH;
@@ -47,98 +48,101 @@ public class ConsoleDataPrinter implements DataPrinter {
 
     @Override
     public void printListOfBooks(final List<Book> books) {
-        if (books.size() == 0) {
-            System.out.format("+------------------------------------------------------------------------------+%n");
-            System.out.format("|                                 List is empty                                |%n");
-            System.out.format("+------------------------------------------------------------------------------+%n");
-            return;
-        }
-
-        System.out.format("+------+--------------------------------------+-------------------------+------+%n");
-        System.out.format("|  ID  | Title                                | Author                  | Free |%n");
-        System.out.format("+------+--------------------------------------+-------------------------+------+%n");
-
+        final List<String> tableHeaders = List.of(" ID ", "Title", "Author", "Free");
         final int titleLength = 36;
         final int authorLength = 23;
-        final String leftAlignFormat = "| %-4s | %-" + titleLength + "s | %-" + authorLength + "s | %-4s |%n";
-
-        for (final Book book : books) {
-            String title = book.getTitle();
-            if (title.length() > titleLength) {
-                title = title.substring(0, titleLength - 3) + "...";
-            }
-            String author = book.getAuthor();
-            if (author.length() > authorLength) {
-                author = author.substring(0, authorLength - 3) + "...";
-            }
-            System.out.format(leftAlignFormat, book.getId(), title, author, book.isFree() ? "Yes" : "No");
-        }
-        System.out.format("+------+--------------------------------------+-------------------------+------+%n");
+        final List<Integer> sizes = List.of(4, titleLength, authorLength, 4);
+        final List<Function<Book, String>> getters = List.of(
+                book -> book.getId(),
+                book -> substring(book.getTitle(), titleLength),
+                book -> substring(book.getAuthor(), authorLength),
+                book -> book.isFree() ? "Yes" : "No"
+        );
+        printListTable(tableHeaders, sizes, getters, books);
     }
 
     @Override
     public void printListOfClients(final List<Client> clients) {
-        if (clients.size() == 0) {
-            System.out.format("+------------------------------------------------------------------------------+%n");
-            System.out.format("|                                List is empty                                 |%n");
-            System.out.format("+------------------------------------------------------------------------------+%n");
-            return;
-        }
-        System.out.format("+------+-------------------------------------+---------------------------------+%n");
-        System.out.format("|  ID  | Name                                | Books                           |%n");
-        System.out.format("+------+-------------------------------------+---------------------------------+%n");
-
+        final List<String> tableHeaders = List.of(" ID ", "Name", "Books");
         final int nameLength = 35;
         final int booksLength = 31;
-        final String leftAlignFormat = "| %-4s | %-" + nameLength + "s | %-" + booksLength + "s |%n";
-
-        for (final Client client : clients) {
-            String name = client.getName();
-            if (name.length() > nameLength) {
-                name = name.substring(0, nameLength - 3) + "...";
-            }
-            String books = String.join(" ", client.getBooksIds());
-            if (books.length() > booksLength) {
-                books = books.substring(0, booksLength - 3) + "...";
-            }
-            System.out.format(leftAlignFormat, client.getId(), name, books);
-        }
-        System.out.format("+------+-------------------------------------+---------------------------------+%n");
+        final List<Integer> sizes = List.of(4, nameLength, booksLength);
+        final List<Function<Client, String>> getters = List.of(
+                client -> client.getId(),
+                client -> substring(client.getName(), nameLength),
+                client -> substring(String.join(" ", client.getBooksIds()), booksLength)
+        );
+        printListTable(tableHeaders, sizes, getters, clients);
     }
 
     @Override
     public void printListOfOperations(final List<Operation> operations, final List<Client> clients) {
-        if (operations.size() == 0) {
+        final List<String> tableHeaders = List.of(" ID ", "Date", "Client name", "Operation", "Books");
+        final int dateLength = 10;
+        final int nameLength = 26;
+        final int booksLength = 15;
+        final List<Integer> sizes = List.of(4, dateLength, nameLength, 9, booksLength);
+        final List<Function<Operation, String>> getters = List.of(
+                operation -> operation.getId(),
+                operation -> substring(operation.getDate(), dateLength),
+                operation -> {
+                    // FIXME use library instead of searching
+                    Client client = null;
+                    for (final Client cl : clients) {
+                        if (cl.getId().equals(operation.getClientId())) {
+                            client = cl;
+                            break;
+                        }
+                    }
+                    return client == null
+                            ? "NONE"
+                            : substring(client.getName(), nameLength);
+                },
+                operation -> operation.getOperationType(),
+                operation -> substring(String.join(" ", operation.getBooksIds()), booksLength)
+        );
+        printListTable(tableHeaders, sizes, getters, operations);
+    }
+
+    private <T> void printListTable(final List<String> tableHeaders,
+                                    final List<Integer> sizes,
+                                    final List<Function<T, String>> getters,
+                                    final List<T> data) {
+        if (data.size() == 0) {
             System.out.format("+------------------------------------------------------------------------------+%n");
             System.out.format("|                                List is empty                                 |%n");
             System.out.format("+------------------------------------------------------------------------------+%n");
             return;
         }
-
-        System.out.format("+------+------------+----------------------------+-----------+-----------------+%n");
-        System.out.format("|  ID  | Date       | Client name                | Operation | Books           |%n");
-        System.out.format("+------+------------+----------------------------+-----------+-----------------+%n");
-
-        final int booksLength = 15;
-        final int nameLength = 26;
-        final String leftAlignFormat = "| %-4s | %-10s | %-" + nameLength + "s | %-9s | %-" + booksLength + "s |%n";
-
-        for (final Operation operation : operations) {
-            Client client = null;
-            for (final Client cl : clients) {
-                if (cl.getId().equals(operation.getClientId())) {
-                    client = cl;
-                    break;
-                }
-            }
-            String name = client == null
-                    ? "NONE"
-                    : substring(client.getName(), nameLength);
-            final String books = substring(String.join(" ", operation.getBooksIds()), booksLength);
-            final String date = substring(operation.getDate(), 10); // only "yyyy-MM-dd"
-            System.out.format(leftAlignFormat, operation.getId(), date, name, operation.getOperationType(), books);
+        if (tableHeaders.size() != getters.size()) {
+            throw new IllegalArgumentException(format(
+                    "Number of table names (%d) differs from number of getters (%d)",
+                    tableHeaders.size(), getters.size()));
         }
-        System.out.format("+------+------------+----------------------------+-----------+-----------------+%n");
+        if (sizes.isEmpty()) {
+            throw new IllegalArgumentException("Sizes list is empty");
+        }
+
+        final StringBuilder dataTemplateBuilder = new StringBuilder("|");
+        final StringBuilder dividerBuilder = new StringBuilder("+");
+        for (Integer size : sizes) {
+            dataTemplateBuilder.append(" %-").append(size).append("s |");
+            dividerBuilder.append("-").append("-".repeat(size)).append("-+");
+        }
+
+        final String dataTemplate = dataTemplateBuilder.append("%n").toString();
+        final String divider = dividerBuilder.append("\n").toString();
+
+        System.out.print(divider);
+        System.out.printf(dataTemplate, tableHeaders.toArray());
+        System.out.print(divider);
+        for (T el : data) {
+            final List<String> fields = getters.stream()
+                    .map(getter -> getter.apply(el))
+                    .toList();
+            System.out.printf(dataTemplate, fields.toArray());
+        }
+        System.out.print(divider);
     }
 
     @Override
