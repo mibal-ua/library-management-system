@@ -21,15 +21,17 @@ import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.State;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
 import static ua.mibal.minervaTest.model.window.State.LOOK_BOOK;
 import static ua.mibal.minervaTest.model.window.State.LOOK_CLIENT;
 import static ua.mibal.minervaTest.model.window.State.LOOK_HISTORY;
 import static ua.mibal.minervaTest.utils.StringUtils.substring;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Mykhailo Balakhon
@@ -85,6 +87,10 @@ public class ApplicationController {
     }
 
     public void look(final String[] args) {
+        if (args.length == 0) {
+            windowManager.showToast("You need to enter 'look' with ${query}");
+            return;
+        }
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> {
                 final String id = args[0];
