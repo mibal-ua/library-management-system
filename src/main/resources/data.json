@@ -1,5 +1,13 @@
 {
   "books" : [ {
+    "id" : "01ab",
+    "title" : "Meditations. Alone with yourself",
+    "subtitle" : "Notes of Marcus Aurelius",
+    "author" : "Marcus Aurelius",
+    "publisher" : "",
+    "published" : "-170-00-00",
+    "free" : false
+  }, {
     "id" : "0620",
     "title" : "Eloquent JavaScript, Third Edition",
     "subtitle" : "A Modern Introduction to Programming",
@@ -73,6 +81,10 @@
     "free" : true
   } ],
   "clients" : [ {
+    "id" : "00aa",
+    "name" : "Marcus Aurelius",
+    "books" : [ "01ab" ]
+  }, {
     "id" : "54ob",
     "name" : "Mykhailo Balakhon",
     "books" : [ ]
@@ -94,6 +106,12 @@
     "books" : [ ]
   } ],
   "operations" : [ {
+    "id" : "0000",
+    "date" : "-167-04-03",
+    "clientId" : "00aa",
+    "operation" : "TAKE",
+    "books" : [ "01ab" ]
+  }, {
     "id" : "152c",
     "date" : "2023-05-11 03:48",
     "clientId" : "g6e4",
