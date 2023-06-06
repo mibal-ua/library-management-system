@@ -5,72 +5,72 @@
     "subtitle" : "Notes of Marcus Aurelius",
     "author" : "Marcus Aurelius",
     "publisher" : "",
-    "published" : "-170-00-00",
-    "free" : false
+    "free" : false,
+    "published" : "-170-00-00"
   }, {
     "id" : "0620",
     "title" : "Eloquent JavaScript, Third Edition",
     "subtitle" : "A Modern Introduction to Programming",
     "author" : "Marijn Haverbeke",
     "publisher" : "No Starch Press",
-    "published" : "2018-12-04",
-    "free" : false
+    "free" : false,
+    "published" : "2018-12-04"
   }, {
     "id" : "9d28",
     "title" : "Practical Modern JavaScript",
     "subtitle" : "Dive into ES6 and the Future of JavaScript",
     "author" : "Nicolás Bevacqua",
     "publisher" : "O'Reilly Media",
-    "published" : "2017-07-16",
-    "free" : false
+    "free" : false,
+    "published" : "2017-07-16"
   }, {
     "id" : "5214",
     "title" : "Understanding ECMAScript 6",
     "subtitle" : "The Definitive Guide for JavaScript Developers",
     "author" : "Nicholas C. Zakas",
     "publisher" : "No Starch Press",
-    "published" : "2016-09-03",
-    "free" : true
+    "free" : true,
+    "published" : "2016-09-03"
   }, {
     "id" : "b969",
     "title" : "Speaking JavaScript",
     "subtitle" : "An In-Depth Guide for Programmers",
     "author" : "Axel Rauschmayer",
     "publisher" : "O'Reilly Media",
-    "published" : "2014-04-08",
-    "free" : true
+    "free" : true,
+    "published" : "2014-04-08"
   }, {
     "id" : "152c",
     "title" : "Learning JavaScript Design Patterns",
     "subtitle" : "A JavaScript and jQuery Developer's Guide",
     "author" : "Addy Osmani",
     "publisher" : "O'Reilly Media",
-    "published" : "2012-08-30",
-    "free" : true
+    "free" : true,
+    "published" : "2012-08-30"
   }, {
     "id" : "f20a",
     "title" : "You Don't Know JS Yet",
     "subtitle" : "Get Started",
     "author" : "Kyle Simpson",
     "publisher" : "Independently published",
-    "published" : "2020-01-28",
-    "free" : true
+    "free" : true,
+    "published" : "2020-01-28"
   }, {
     "id" : "68f6",
     "title" : "Pro Git",
     "subtitle" : "Everything you neeed to know about Git",
     "author" : "Scott Chacon and Ben Straub",
     "publisher" : "Apress; 2nd edition",
-    "published" : "2014-11-18",
-    "free" : true
+    "free" : true,
+    "published" : "2014-11-18"
   }, {
     "id" : "71dc",
     "title" : "Rethinking Productivity in Software Engineering",
     "subtitle" : "",
     "author" : "Caitlin Sadowski, Thomas Zimmermann",
     "publisher" : "Apress",
-    "published" : "2019-05-11",
-    "free" : true
+    "free" : true,
+    "published" : "2019-05-11"
   } ],
   "clients" : [ {
     "id" : "00aa",
