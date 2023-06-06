@@ -42,31 +42,24 @@ public class Book implements Serializable, HaveId {
 
     private String publisher;
 
-    @JsonProperty("isFree")
-    private boolean isFree;
+    private boolean free;
 
     public Book(final String id, final String title, final String subtitle, final String author,
                 final String publishedDate, final String publisher,
-                final boolean isFree) {
+                final boolean free) {
         this.id = id;
         this.title = title;
         this.subtitle = subtitle;
         this.author = author;
         this.publishedDate = publishedDate;
         this.publisher = publisher;
-        this.isFree = isFree;
+        this.free = free;
     }
 
     public Book(final String title, final String subtitle, final String author,
                 final String publishedDate, final String publisher,
-                final boolean isFree) {
-        this.id = IdUtils.generateId();
-        this.title = title;
-        this.subtitle = subtitle;
-        this.author = author;
-        this.publishedDate = publishedDate;
-        this.publisher = publisher;
-        this.isFree = isFree;
+                final boolean free) {
+        this(IdUtils.generateId(), title, subtitle, author, publishedDate, publisher, free);
     }
 
     public Book() {
@@ -97,10 +90,10 @@ public class Book implements Serializable, HaveId {
     }
 
     public boolean isFree() {
-        return isFree;
+        return free;
     }
 
     public void setFree(final boolean free) {
-        isFree = free;
+        this.free = free;
     }
 }

@@ -6,7 +6,7 @@
     "author" : "Marijn Haverbeke",
     "publisher" : "No Starch Press",
     "published" : "2018-12-04",
-    "isFree" : true
+    "free" : false
   }, {
     "id" : "9d28",
     "title" : "Practical Modern JavaScript",
@@ -14,7 +14,7 @@
     "author" : "Nicolás Bevacqua",
     "publisher" : "O'Reilly Media",
     "published" : "2017-07-16",
-    "isFree" : true
+    "free" : false
   }, {
     "id" : "5214",
     "title" : "Understanding ECMAScript 6",
@@ -22,7 +22,7 @@
     "author" : "Nicholas C. Zakas",
     "publisher" : "No Starch Press",
     "published" : "2016-09-03",
-    "isFree" : true
+    "free" : true
   }, {
     "id" : "b969",
     "title" : "Speaking JavaScript",
@@ -30,7 +30,7 @@
     "author" : "Axel Rauschmayer",
     "publisher" : "O'Reilly Media",
     "published" : "2014-04-08",
-    "isFree" : true
+    "free" : true
   }, {
     "id" : "152c",
     "title" : "Learning JavaScript Design Patterns",
@@ -38,7 +38,7 @@
     "author" : "Addy Osmani",
     "publisher" : "O'Reilly Media",
     "published" : "2012-08-30",
-    "isFree" : true
+    "free" : true
   }, {
     "id" : "f20a",
     "title" : "You Don't Know JS Yet",
@@ -46,7 +46,7 @@
     "author" : "Kyle Simpson",
     "publisher" : "Independently published",
     "published" : "2020-01-28",
-    "isFree" : true
+    "free" : true
   }, {
     "id" : "68f6",
     "title" : "Pro Git",
@@ -54,7 +54,7 @@
     "author" : "Scott Chacon and Ben Straub",
     "publisher" : "Apress; 2nd edition",
     "published" : "2014-11-18",
-    "isFree" : false
+    "free" : true
   }, {
     "id" : "71dc",
     "title" : "Rethinking Productivity in Software Engineering",
@@ -62,7 +62,7 @@
     "author" : "Caitlin Sadowski, Thomas Zimmermann",
     "publisher" : "Apress",
     "published" : "2019-05-11",
-    "isFree" : false
+    "free" : true
   }, {
     "id" : "a136",
     "title" : "test",
@@ -70,7 +70,7 @@
     "author" : "test",
     "publisher" : "test",
     "published" : "test",
-    "isFree" : false
+    "free" : false
   } ],
   "clients" : [ {
     "id" : "1",
