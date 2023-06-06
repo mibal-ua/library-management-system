@@ -73,11 +73,11 @@
     "free" : true
   } ],
   "clients" : [ {
-    "id" : "1",
+    "id" : "54ob",
     "name" : "Mykhailo Balakhon",
     "books" : [ ]
   }, {
-    "id" : "2",
+    "id" : "g6e4",
     "name" : "Alex Bond",
     "books" : [ "0620" ]
   }, {
@@ -96,25 +96,25 @@
   "operations" : [ {
     "id" : "152c",
     "date" : "2023-05-11 03:48",
-    "clientId" : "2",
+    "clientId" : "g6e4",
     "operation" : "TAKE",
     "books" : [ "71dc", "68f6" ]
   }, {
     "id" : "4f25",
     "date" : "2023-05-11 03:49",
-    "clientId" : "2",
+    "clientId" : "g6e4",
     "operation" : "RETURN",
     "books" : [ "a136" ]
   }, {
     "id" : "ak47",
     "date" : "2023-05-12 09:40",
-    "clientId" : "1",
+    "clientId" : "54ob",
     "operation" : "TAKE",
     "books" : [ "a136" ]
   }, {
     "id" : "c902",
     "date" : "2023-05-30 02:44",
-    "clientId" : "1",
+    "clientId" : "54ob",
     "operation" : "RETURN",
     "books" : [ "a136" ]
   }, {
@@ -126,19 +126,19 @@
   }, {
     "id" : "fd52",
     "date" : "2023-05-30 03:38",
-    "clientId" : "1",
+    "clientId" : "54ob",
     "operation" : "TAKE",
     "books" : [ "f20a" ]
   }, {
     "id" : "b950",
     "date" : "2023-05-30 03:42",
-    "clientId" : "1",
+    "clientId" : "54ob",
     "operation" : "RETURN",
     "books" : [ "f20a" ]
   }, {
     "id" : "6b46",
     "date" : "2023-05-30 03:42",
-    "clientId" : "1",
+    "clientId" : "54ob",
     "operation" : "TAKE",
     "books" : [ "f20a" ]
   }, {
@@ -150,7 +150,7 @@
   }, {
     "id" : "47fe",
     "date" : "2023-05-31 10:04",
-    "clientId" : "2",
+    "clientId" : "g6e4",
     "operation" : "RETURN",
     "books" : [ "71dc", "68f6" ]
   }, {
@@ -168,13 +168,13 @@
   }, {
     "id" : "8cbc",
     "date" : "2023-06-01 08:23",
-    "clientId" : "2",
+    "clientId" : "g6e4",
     "operation" : "TAKE",
     "books" : [ "0620" ]
   }, {
     "id" : "c271",
     "date" : "2023-06-05 01:32",
-    "clientId" : "1",
+    "clientId" : "54ob",
     "operation" : "RETURN",
     "books" : [ "f20a" ]
   } ]
