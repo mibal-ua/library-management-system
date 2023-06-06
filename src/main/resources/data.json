@@ -70,7 +70,7 @@
     "author" : "test",
     "publisher" : "test",
     "published" : "test",
-    "free" : false
+    "free" : true
   } ],
   "clients" : [ {
     "id" : "1",
@@ -91,7 +91,7 @@
   }, {
     "id" : "6905",
     "name" : "LongLongLongLongldsfasjdfjhsadjkfhajkshfdksajfhksahf",
-    "books" : [ "4469" ]
+    "books" : [ ]
   } ],
   "operations" : [ {
     "id" : "152c",
@@ -177,11 +177,5 @@
     "clientId" : "1",
     "operation" : "RETURN",
     "books" : [ "f20a" ]
-  }, {
-    "id" : "f626",
-    "date" : "2023-06-05 02:03",
-    "clientId" : "6905",
-    "operation" : "TAKE",
-    "books" : [ "4469" ]
   } ]
 }
