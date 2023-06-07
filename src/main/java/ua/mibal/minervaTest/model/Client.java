@@ -64,6 +64,14 @@ public class Client implements Serializable, HaveId {
     }
 
     public List<String> getBooksIds() {
-        return booksIds;
+        return Collections.unmodifiableList(booksIds);
+    }
+
+    public void addBooks(final List<String> booksIds) {
+        this.booksIds.addAll(booksIds);
+    }
+
+    public void removeBooks(final List<String> bookIdsToReturn) {
+        this.booksIds.removeAll(bookIdsToReturn);
     }
 }

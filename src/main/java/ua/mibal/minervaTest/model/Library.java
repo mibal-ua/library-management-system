@@ -179,7 +179,7 @@ public class Library implements Serializable {
                 .ifPresent(book -> book.setFree(false))
         );
 
-        client.getBooksIds().addAll(bookIdsToTake);
+        client.addBooks(bookIdsToTake);
 
         Operation operation = new Operation(
             client.getId(),
@@ -199,7 +199,7 @@ public class Library implements Serializable {
                 .ifPresent(book -> book.setFree(true))
         );
 
-        client.getBooksIds().removeAll(bookIdsToReturn);
+        client.removeBooks(bookIdsToReturn);
 
         Operation operation = new Operation(
             client.getId(),
