@@ -28,9 +28,7 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
-import static ua.mibal.minervaTest.model.window.State.LOOK_BOOK;
-import static ua.mibal.minervaTest.model.window.State.LOOK_CLIENT;
-import static ua.mibal.minervaTest.model.window.State.LOOK_HISTORY;
+import static ua.mibal.minervaTest.model.window.State.*;
 import static ua.mibal.minervaTest.utils.StringUtils.substringAppend;
 
 /**
@@ -53,23 +51,23 @@ public class ApplicationController {
         this.library = library;
     }
 
-    public void tab1(final String[] args) {
+    public void tab1(final String[] ignored) {
         windowManager.tab1(library);
     }
 
-    public void tab2(final String[] args) {
+    public void tab2(final String[] ignored) {
         windowManager.tab2(library);
     }
 
-    public void tab3(final String[] args) {
+    public void tab3(final String[] ignored) {
         windowManager.tab3(library);
     }
 
-    public void esc(final String[] args) {
+    public void esc(final String[] ignored) {
         windowManager.drawPrevTab();
     }
 
-    public void help(final String[] args) {
+    public void help(final String[] ignored) {
         windowManager.help();
     }
 
@@ -208,7 +206,7 @@ public class ApplicationController {
 
     }
 
-    public void add(final String[] args) {
+    public void add(final String[] ignored) {
         if (windowManager.getCurrentDataType() == HISTORY) {
             windowManager.showToast("You cannot change history manually");
             return;
