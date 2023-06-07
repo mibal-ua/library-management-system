@@ -21,6 +21,8 @@ import ua.mibal.minervaTest.model.Library.HaveId;
 import ua.mibal.minervaTest.utils.IdUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,21 +39,17 @@ public class Client implements Serializable, HaveId {
     private List<String> booksIds;
 
     public Client(final String name, final List<String> booksIds) {
-        this.id = IdUtils.generateId();
-        this.name = name;
-        this.booksIds = booksIds;
+        this(IdUtils.generateId(), name, booksIds);
+    }
+
+    public Client(final String name) {
+        this(IdUtils.generateId(), name, List.of());
     }
 
     public Client(final String id, final String name, final List<String> booksIds) {
         this.id = id;
         this.name = name;
-        this.booksIds = booksIds;
-    }
-
-    public Client(final String name) {
-        this.id = IdUtils.generateId();
-        this.name = name;
-        this.booksIds = List.of();
+        this.booksIds = new ArrayList<>(booksIds);
     }
 
     public Client() {
