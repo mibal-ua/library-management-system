@@ -16,14 +16,15 @@
 
 package ua.mibal.minervaTest.model;
 
-import static java.util.Collections.unmodifiableList;
-import static java.util.Objects.requireNonNull;
-import static ua.mibal.minervaTest.model.OperationType.RETURN;
-import static ua.mibal.minervaTest.model.OperationType.TAKE;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static java.util.Collections.unmodifiableList;
+import static java.util.Objects.requireNonNull;
+import static ua.mibal.minervaTest.model.OperationType.RETURN;
+import static ua.mibal.minervaTest.model.OperationType.TAKE;
 
 /**
  * @author Mykhailo Balakhon
@@ -38,9 +39,9 @@ public class Library implements Serializable {
     private List<Operation> operations;
 
     public Library(final List<Book> books, final List<Client> clients, final List<Operation> operations) {
-        this.books = books;
-        this.clients = clients;
-        this.operations = operations;
+        this.books = new ArrayList<>(books);
+        this.clients = new ArrayList<>(clients);
+        this.operations = new ArrayList<>(operations);
     }
 
     public Library() {
