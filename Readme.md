@@ -53,7 +53,7 @@ through tabs or to act on objects.
 - `take 9abc` – correct 
 - `take Book that writes Marcus Aurelius` – incorrect, but any mention of Marcus Aurelius is definitely correct
 
-## Usage screenshot examples
+## Usage video examples
 
 Imagine a situation where you are Marcus Aurelius and you want to go to the library and take the best book in the world. Let's do it!
 
