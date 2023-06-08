@@ -346,6 +346,7 @@ public class ApplicationController {
                 windowManager.showToast("Oops, all books you are enter not free");
             } else {
                 library.takeBooks(client, booksToTake);
+                windowManager.drawPrevTab();
                 windowManager.clientDetails(
                         client,
                         library.getBooksClientHolds(client)
@@ -378,6 +379,7 @@ public class ApplicationController {
                 windowManager.showToast("Oops, all books you are enter not yours");
             } else {
                 library.returnBooks(client, booksToReturn);
+                windowManager.drawPrevTab();
                 windowManager.clientDetails(
                         client,
                         library.getBooksClientHolds(client)
