@@ -68,8 +68,8 @@ public class Library implements Serializable {
                     break;
                 }
                 if (book.getTitle().contains(arg) ||
-                    book.getAuthor().contains(arg) ||
-                    book.getPublisher().contains(arg)) {
+                        book.getAuthor().contains(arg) ||
+                        book.getPublisher().contains(arg)) {
                     result.add(book);
                 }
             }
@@ -86,7 +86,7 @@ public class Library implements Serializable {
                     break;
                 }
                 if (client.getName().contains(arg) ||
-                    client.getBooksIds().contains(arg)) {
+                        client.getBooksIds().contains(arg)) {
                     result.add(client);
                 }
             }
@@ -103,9 +103,9 @@ public class Library implements Serializable {
                     break;
                 }
                 if (operation.getClientId().equals(arg) ||
-                    operation.getDate().contains(arg) ||
-                    operation.getOperationType().equalsIgnoreCase(arg) ||
-                    operation.getBooksIds().contains(arg)) {
+                        operation.getDate().contains(arg) ||
+                        operation.getOperationType().equalsIgnoreCase(arg) ||
+                        operation.getBooksIds().contains(arg)) {
                     result.add(operation);
                 }
                 // find by username
@@ -141,8 +141,8 @@ public class Library implements Serializable {
         return findById(operations, id);
     }
 
-    private<T extends HaveId> Optional<T> findById(final List<T> list, final String id) {
-        for (T el: list) {
+    private <T extends HaveId> Optional<T> findById(final List<T> list, final String id) {
+        for (T el : list) {
             if (el.getId().equals(id)) {
                 return Optional.of(el);
             }
@@ -162,7 +162,7 @@ public class Library implements Serializable {
         return add(clients, client);
     }
 
-    private<T extends HaveId> boolean add(final List<T> list, final T obj) {
+    private <T extends HaveId> boolean add(final List<T> list, final T obj) {
         if (findById(list, obj.getId()).isPresent()) {
             return false;
         }
@@ -176,16 +176,16 @@ public class Library implements Serializable {
         }
 
         bookIdsToTake.forEach(
-            bookId -> findBookById(bookId)
-                .ifPresent(book -> book.setFree(false))
+                bookId -> findBookById(bookId)
+                        .ifPresent(book -> book.setFree(false))
         );
 
         client.addBooks(bookIdsToTake);
 
         Operation operation = new Operation(
-            client.getId(),
-            TAKE.toString(),
-            bookIdsToTake
+                client.getId(),
+                TAKE.toString(),
+                bookIdsToTake
         );
         addOperation(operation);
     }
@@ -196,16 +196,16 @@ public class Library implements Serializable {
         }
 
         bookIdsToReturn.forEach(
-            bookId -> findBookById(bookId)
-                .ifPresent(book -> book.setFree(true))
+                bookId -> findBookById(bookId)
+                        .ifPresent(book -> book.setFree(true))
         );
 
         client.removeBooks(bookIdsToReturn);
 
         Operation operation = new Operation(
-            client.getId(),
-            RETURN.toString(),
-            bookIdsToReturn
+                client.getId(),
+                RETURN.toString(),
+                bookIdsToReturn
         );
         addOperation(operation);
     }

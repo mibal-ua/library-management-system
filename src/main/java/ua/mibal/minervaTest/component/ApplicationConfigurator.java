@@ -39,8 +39,8 @@ public class ApplicationConfigurator {
 
     public Application configure() {
         return new Application(
-            dataOperator,
-            windowManager
+                dataOperator,
+                windowManager
         );
     }
 }

@@ -29,18 +29,20 @@ import java.util.Stack;
 public class CacheManager {
 
     public final Stack<Tab> stack = new Stack<>();
+
     private Book cachedBook;
+
     private Client cachedClient;
 
-    public void push(final Tab tab){
+    public void push(final Tab tab) {
         stack.push(tab);
     }
 
-    public void push(final Book book){
+    public void push(final Book book) {
         this.cachedBook = book;
     }
 
-    public void push(final Client client){
+    public void push(final Client client) {
         this.cachedClient = client;
     }
 

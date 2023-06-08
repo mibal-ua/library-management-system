@@ -39,14 +39,15 @@ public class StringUtils {
      * substringAppend("hamburger", ".." , 5) returns "ham.."
      * substringAppend("cheeseburger", ".." , 20) returns "cheeseburger"
      * </pre></blockquote>
-     * @param      str   the original string to operate.
-     * @param      toAppend     string that have to append.
-     * @return     the specified substring.
+     *
+     * @param str      the original string to operate.
+     * @param toAppend string that have to append.
+     * @return the specified substring.
      */
     public static String substringAppend(final String str, final String toAppend, final int max) {
         if (str.length() < max) {
             return str;
         }
-        return str.substring(0, max - toAppend.length()) + toAppend ;
+        return str.substring(0, max - toAppend.length()) + toAppend;
     }
 }

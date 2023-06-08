@@ -21,10 +21,12 @@ import ua.mibal.minervaTest.component.ApplicationController;
 import ua.mibal.minervaTest.component.ApplicationController.OwnFunction;
 import ua.mibal.minervaTest.component.DataOperator;
 import ua.mibal.minervaTest.component.WindowManager;
-import static java.lang.String.format;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.lang.String.format;
 
 /**
  * @author Mykhailo Balakhon
@@ -32,7 +34,7 @@ import java.util.Map;
  */
 public class Application {
 
-   private final ApplicationController applicationController;
+    private final ApplicationController applicationController;
 
     private final WindowManager windowManager;
 
@@ -40,9 +42,9 @@ public class Application {
                        final WindowManager windowManager) {
         this.windowManager = windowManager;
         this.applicationController = new ApplicationController(
-            windowManager,
-            dataOperator,
-            dataOperator.getLibrary()
+                windowManager,
+                dataOperator,
+                dataOperator.getLibrary()
         );
     }
 
@@ -71,15 +73,14 @@ public class Application {
 
             if (command.equals("exit")) {
                 final boolean isExit = windowManager.showDialogueToast(
-                    "You really need to exit?", "YES", "NO");
+                        "You really need to exit?", "YES", "NO");
                 if (isExit) {
                     return;
                 }
             } else {
-                commandMap
-                    .getOrDefault(command, ignored ->
-                        windowManager.showToast(format("Unrecognizable command '%s'", command)))
-                    .apply(args);
+                commandMap.getOrDefault(command, ignored ->
+                                windowManager.showToast(format("Unrecognizable command '%s'", command)))
+                        .apply(args);
             }
         }
     }

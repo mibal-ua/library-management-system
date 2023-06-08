@@ -541,7 +541,6 @@ public class ConsoleWindowManager implements WindowManager {
             printQuestion("Click enter to continue...");
             goTo(UPPER_START + 6, WINDOW_WIDTH / 2);
             new Scanner(System.in).nextLine();
-            ;
         }
 
         protected String readInput() {
