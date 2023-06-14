@@ -16,6 +16,7 @@
 
 package ua.mibal.minervaTest.component.console;
 
+import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.component.console.ConsoleWindowManager.Tab;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
@@ -26,6 +27,7 @@ import java.util.Stack;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
+@Component
 public class CacheManager {
 
     public final Stack<Tab> stack = new Stack<>();

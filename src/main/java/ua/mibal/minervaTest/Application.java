@@ -17,9 +17,9 @@
 package ua.mibal.minervaTest;
 
 
+import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.component.ApplicationController;
 import ua.mibal.minervaTest.component.ApplicationController.OwnFunction;
-import ua.mibal.minervaTest.component.DataOperator;
 import ua.mibal.minervaTest.component.WindowManager;
 
 import java.util.Arrays;
@@ -32,20 +32,17 @@ import static java.lang.String.format;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
+@Component
 public class Application {
 
     private final ApplicationController applicationController;
 
     private final WindowManager windowManager;
 
-    public Application(final DataOperator dataOperator,
-                       final WindowManager windowManager) {
+    public Application(final WindowManager windowManager,
+                       final ApplicationController applicationController) {
         this.windowManager = windowManager;
-        this.applicationController = new ApplicationController(
-                windowManager,
-                dataOperator,
-                dataOperator.getLibrary()
-        );
+        this.applicationController = applicationController;
     }
 
     public void start() {

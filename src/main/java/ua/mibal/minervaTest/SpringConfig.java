@@ -16,23 +16,17 @@
 
 package ua.mibal.minervaTest;
 
-
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Launcher {
+@Configuration
+@ComponentScan("ua.mibal.minervaTest")
+@PropertySource("classpath:application.properties")
+public class SpringConfig {
 
-    public static void main(String[] args) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
-                SpringConfig.class
-        );
-
-        final Application application = context.getBean(Application.class);
-        application.start();
-
-        context.close();
-    }
 }

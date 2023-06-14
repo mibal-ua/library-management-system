@@ -16,6 +16,7 @@
 
 package ua.mibal.minervaTest.component.console;
 
+import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.component.DataPrinter;
 import ua.mibal.minervaTest.component.WindowManager;
 import ua.mibal.minervaTest.model.Book;
@@ -52,6 +53,7 @@ import static ua.mibal.minervaTest.model.window.State.TAB_3;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
+@Component
 public class ConsoleWindowManager implements WindowManager {
 
     public final static int WINDOW_WIDTH = 80;

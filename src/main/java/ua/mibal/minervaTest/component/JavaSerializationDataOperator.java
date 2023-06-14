@@ -16,23 +16,21 @@
 
 package ua.mibal.minervaTest.component;
 
+import org.springframework.beans.factory.annotation.Value;
 import ua.mibal.minervaTest.model.Library;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
+// @Component
 public class JavaSerializationDataOperator implements DataOperator {
 
     private final String path;
 
-    public JavaSerializationDataOperator(final String path) {
+    public JavaSerializationDataOperator(@Value("${dataOperator.javaSerPath}") final String path) {
         this.path = path;
     }
 

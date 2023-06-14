@@ -16,6 +16,7 @@
 
 package ua.mibal.minervaTest.component;
 
+import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Library;
@@ -35,6 +36,7 @@ import static ua.mibal.minervaTest.utils.StringUtils.substringAppend;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
+@Component
 public class ApplicationController {
 
     private final WindowManager windowManager;
@@ -44,11 +46,10 @@ public class ApplicationController {
     private final Library library;
 
     public ApplicationController(final WindowManager windowManager,
-                                 final DataOperator dataOperator,
-                                 final Library library) {
+                                 final DataOperator dataOperator) {
         this.windowManager = windowManager;
         this.dataOperator = dataOperator;
-        this.library = library;
+        this.library = dataOperator.getLibrary();
     }
 
     public void tab1(final String[] ignored) {

@@ -20,6 +20,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.model.Library;
 
 import java.io.File;
@@ -31,11 +33,12 @@ import java.util.Scanner;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
+@Component
 public class JsonDataOperator implements DataOperator {
 
     private final String sourcePath;
 
-    public JsonDataOperator(final String path) {
+    public JsonDataOperator(@Value("${dataOperator.jsonPath}") final String path) {
         this.sourcePath = path;
     }
 

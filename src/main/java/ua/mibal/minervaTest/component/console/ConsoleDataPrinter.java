@@ -17,6 +17,7 @@
 
 package ua.mibal.minervaTest.component.console;
 
+import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.component.DataPrinter;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
@@ -37,6 +38,7 @@ import static ua.mibal.minervaTest.utils.StringUtils.substringAppend;
  * @author Michael Balakhon
  * @link t.me/mibal_ua
  */
+@Component
 public class ConsoleDataPrinter implements DataPrinter {
 
     private static final String BOLD = "\033[1m";
