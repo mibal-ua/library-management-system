@@ -72,8 +72,9 @@ https://github.com/mibal-ua/minerva-test/assets/59470968/0c1a8305-6730-47d7-9d69
 ## Technologies
 
 - Java
-- Java
-- Java
+- Maven
+- Spring framework
+- Jackson library (optionally, you can use Java standard serialization)
 
 ## License
 
