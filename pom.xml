@@ -71,6 +71,9 @@
 
         <!-- SQL connectors -->
         <mysql-connector.version>8.0.33</mysql-connector.version>
+
+        <!-- Hibernate -->
+        <hibernate.version>6.2.6.Final</hibernate.version>
     </properties>
 
     <dependencies>
@@ -105,6 +108,14 @@
             <artifactId>mysql-connector-j</artifactId>
             <version>${mysql-connector.version}</version>
         </dependency>
+
+        <!--   Hibernate core    -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
