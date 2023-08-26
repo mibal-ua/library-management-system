@@ -29,7 +29,7 @@ import java.util.List;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Client implements Serializable, HaveId {
+public class Client implements Serializable {
 
     private String id;
 

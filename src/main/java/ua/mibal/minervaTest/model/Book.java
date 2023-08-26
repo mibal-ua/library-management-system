@@ -27,7 +27,7 @@ import static ua.mibal.minervaTest.model.Library.HaveId;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Book implements Serializable, HaveId {
+public class Book implements Serializable {
 
     private String id;
 
