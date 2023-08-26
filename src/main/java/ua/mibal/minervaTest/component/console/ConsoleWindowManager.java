@@ -19,9 +19,9 @@ package ua.mibal.minervaTest.component.console;
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.component.DataPrinter;
 import ua.mibal.minervaTest.component.WindowManager;
+import ua.mibal.minervaTest.dao.Dao;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
-import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
 import ua.mibal.minervaTest.model.window.State;
@@ -69,32 +69,32 @@ public class ConsoleWindowManager implements WindowManager {
     // <<< Tabs >>>
 
     @Override
-    public void tab1(final Library library) {
+    public void tab1(final List<Book> books) {
         new Tab(new String[]{"BOOKS", "CLIENTS", "HISTORY"},
                 0,
-                () -> dataPrinter.printListOfBooks(library.getBooks()),
+                () -> dataPrinter.printListOfBooks(books),
                 TAB_1,
                 true
         ).draw();
     }
 
     @Override
-    public void tab2(final Library library) {
+    public void tab2(final List<Client> clients) {
         new Tab(new String[]{"BOOKS", "CLIENTS", "HISTORY"},
                 1,
-                () -> dataPrinter.printListOfClients(library.getClients()),
+                () -> dataPrinter.printListOfClients(clients),
                 TAB_2,
                 true
         ).draw();
     }
 
     @Override
-    public void tab3(final Library library) {
+    public void tab3(final List<Operation> operations, final Dao<Client> clientDao) {
         new Tab(new String[]{"BOOKS", "CLIENTS", "HISTORY"},
                 2,
                 () -> dataPrinter.printListOfOperations(
-                        library.getOperations(),
-                        library
+                        operations,
+                        clientDao
                 ),
                 TAB_3,
                 true
@@ -170,11 +170,11 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public void searchOperationTab(final List<Operation> operations, final Library library, final String[] args) {
+    public void searchOperationTab(final List<Operation> operations, final Dao<Client> clientDao, final String[] args) {
         final String header = format("SEARCH IN OPERATIONS BY '%s'", join(" ", args));
         new Tab(new String[]{header},
                 0,
-                () -> dataPrinter.printListOfOperations(operations, library),
+                () -> dataPrinter.printListOfOperations(operations, clientDao),
                 SEARCH_HISTORY
         ).draw();
     }
@@ -233,7 +233,7 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public Optional<Book> initBookToAdd(final Library library) {
+    public Optional<Book> initBookToAdd() {
         List<String> questions = of(
                 "Enter book title",
                 "Enter subtitle",
@@ -263,7 +263,7 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public Optional<Client> initClientToAdd(final Library library) {
+    public Optional<Client> initClientToAdd() {
         List<String> questions = of(
                 "Enter client name"
         );
@@ -529,6 +529,32 @@ public class ConsoleWindowManager implements WindowManager {
 
         protected void printMessage(final String message) {
             // TODO add multiline feature
+//            if (message.length() > TOAST_WIDTH - 4) {
+//                final String[] messageWords = message.split(" ");
+//                final int linesCount = message.length() / (TOAST_WIDTH - 4) + 1;
+//
+//                final List<String> lines = new ArrayList<>();
+//
+//                int indexes = messageWords.length / linesCount;
+//
+//                int from = 0;
+//                int to = indexes;
+//                for (int i = 0; i < linesCount; i++) {
+//                    final String line = String.join(
+//                            " ", Arrays.copyOfRange(
+//                                    messageWords, from, to)
+//                    );
+//                    lines.add(line);
+//                    from += indexes;
+//                    to += indexes;
+//                }
+//                for (int i = lines.size() - 1; i >= 0; i--) {
+//                    String line = lines.get(i);
+//                    goTo(UPPER_START + 2 + i, (WINDOW_WIDTH - line.length()) / 2);
+//                    System.out.print(line);
+//                }
+//                return;
+//            }
             goTo(UPPER_START + 3, (WINDOW_WIDTH - message.length()) / 2);
             System.out.print(message);
         }

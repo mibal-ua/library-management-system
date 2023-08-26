@@ -19,9 +19,9 @@ package ua.mibal.minervaTest.component.console;
 
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.component.DataPrinter;
+import ua.mibal.minervaTest.dao.Dao;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
-import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
 
 import java.util.LinkedHashMap;
@@ -79,7 +79,7 @@ public class ConsoleDataPrinter implements DataPrinter {
     }
 
     @Override
-    public void printListOfOperations(final List<Operation> operations, final Library library) {
+    public void printListOfOperations(final List<Operation> operations, final Dao<Client> clientDao) {
         final List<String> tableHeaders = List.of(" ID ", "Date", "Client name", "Operation", "Books");
         final int dateLength = 10;
         final int nameLength = 26;
@@ -88,8 +88,8 @@ public class ConsoleDataPrinter implements DataPrinter {
         final List<Function<Operation, String>> getters = List.of(
                 operation -> operation.getId(),
                 operation -> operation.getDate().substring(0, dateLength),
-                operation -> library
-                        .findClientById(operation.getClientId())
+                operation -> clientDao
+                        .findById(operation.getClientId())
                         .map(client -> substringAppend(client.getName(), "..", nameLength))
                         .orElse("NONE"),
                 operation -> operation.getOperationType(),

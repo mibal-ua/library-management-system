@@ -16,9 +16,9 @@
 
 package ua.mibal.minervaTest.component;
 
+import ua.mibal.minervaTest.dao.Dao;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
-import ua.mibal.minervaTest.model.Library;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
 import ua.mibal.minervaTest.model.window.State;
@@ -32,11 +32,11 @@ import java.util.Optional;
  */
 public interface WindowManager {
 
-    void tab1(Library library);
+    void tab1(List<Book> books);
 
-    void tab2(Library library);
+    void tab2(List<Client> clients);
 
-    void tab3(Library library);
+    void tab3(List<Operation> operations, Dao<Client> clientDao);
 
     void help();
 
@@ -50,11 +50,11 @@ public interface WindowManager {
 
     void searchClientTab(List<Client> clients, String[] args);
 
-    void searchOperationTab(List<Operation> operations, Library library, String[] args);
+    void searchOperationTab(List<Operation> operations, Dao<Client> clientDao, String[] args);
 
-    Optional<Book> initBookToAdd(Library library);
+    Optional<Book> initBookToAdd();
 
-    Optional<Client> initClientToAdd(Library library);
+    Optional<Client> initClientToAdd();
 
     DataType getCurrentDataType();
 

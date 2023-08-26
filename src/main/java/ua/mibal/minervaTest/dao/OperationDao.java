@@ -14,32 +14,48 @@
  * limitations under the License.
  */
 
-package ua.mibal.minervaTest.component;
+package ua.mibal.minervaTest.dao;
 
-import ua.mibal.minervaTest.dao.Dao;
-import ua.mibal.minervaTest.model.Book;
-import ua.mibal.minervaTest.model.Client;
+import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.model.Operation;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public interface DataPrinter {
+@Component
+public class OperationDao implements Dao<Operation> {
 
-    void printListOfBooks(List<Book> books);
+    @Override
+    public Optional<Operation> findById(String id) {
+        return Optional.empty();
+    }
 
-    void printListOfClients(List<Client> clients);
+    @Override
+    public List<Operation> find(String[] args) {
+        return null;
+    }
 
-    void printListOfOperations(List<Operation> operations, Dao<Client> clientDao);
+    @Override
+    public List<Operation> findAll() {
+        return null;
+    }
 
-    void printBookDetails(Book book);
+    @Override
+    public void update(Operation e) {
 
-    void printClientDetails(Client client, List<Book> booksThatClientHolds);
+    }
 
-    void printOperationDetails(Operation operation, Client clientInOperation, List<Book> booksInOperation);
+    @Override
+    public boolean save(Operation e) {
+        return false;
+    }
 
-    void clear();
+    @Override
+    public boolean delete(Operation e) {
+        return false;
+    }
 }

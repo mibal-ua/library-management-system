@@ -74,4 +74,8 @@ public class Client implements Serializable, HaveId {
     public void removeBooks(final List<String> bookIdsToReturn) {
         this.booksIds.removeAll(bookIdsToReturn);
     }
+
+    public boolean doesHoldBook() {
+        return !booksIds.isEmpty();
+    }
 }
