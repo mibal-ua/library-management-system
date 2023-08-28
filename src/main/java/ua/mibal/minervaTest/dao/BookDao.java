@@ -18,10 +18,11 @@ package ua.mibal.minervaTest.dao;
 
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.model.Book;
-import ua.mibal.minervaTest.model.Client;
-import ua.mibal.minervaTest.model.Operation;
+import ua.mibal.minervaTest.model.exception.DaoException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -39,44 +40,76 @@ public class BookDao implements Dao<Book> {
 
     @Override
     public Optional<Book> findById(Long id) {
-        return null;
+        return Optional.ofNullable(helper.readWithinTx(
+                em -> em.find(Book.class, id),
+                "Exception while retrieving Book by id")
+        );
     }
 
     @Override
     public List<Book> find(String[] args) {
-        return null;
+        List<Book> result = new ArrayList<>();
+        for (String arg : args) {
+            for (Book book : findAll()) {
+                if (book.getId().toString().equals(arg)) {
+                    result.add(book);
+                    break;
+                }
+                // TODO add search by Date
+                if (book.getTitle().contains(arg) ||
+                    book.getAuthor().contains(arg) ||
+                    book.getPublisher().contains(arg)) {
+                    result.add(book);
+                }
+            }
+        }
+        return result;
     }
 
     @Override
     public List<Book> findAll() {
-        return null;
+        return helper.readWithinTx(
+                em -> em.createQuery("select b from Book b", Book.class)
+                        .getResultList(),
+                "Exception while retrieving all Books"
+        );
     }
 
     @Override
     public boolean update(Book updated) {
-        return false;
-
+        Objects.requireNonNull(updated);
+        try {
+            helper.performWithinTx(em -> em.merge(updated),
+                    "Exception while updating Book");
+            return true;
+        } catch (DaoException e) {
+            return false;
+        }
     }
 
     @Override
-    public boolean save(Book e) {
-        return false;
+    public boolean save(Book book) {
+        Objects.requireNonNull(book);
+        try {
+            helper.performWithinTx(em -> em.persist(book),
+                    "Exception while saving Book");
+            return true;
+        } catch (DaoException e) {
+            return false;
+        }
     }
 
     @Override
-    public boolean delete(Book e) {
-        return false;
-    }
-
-    public List<Book> getBooksClientHolds(Client client) {
-        return null;
-    }
-
-    public List<Book> getBooksInOperation(Operation operation) {
-        return null;
-    }
-
-    public boolean isContainBookId(String id) {
-        return false;
+    public boolean delete(Book book) {
+        Objects.requireNonNull(book);
+        try {
+            helper.performWithinTx(em -> {
+                Book managedBook = em.merge(book);
+                em.remove(managedBook);
+            }, "Exception while deleting Book");
+            return true;
+        } catch (DaoException e) {
+            return false;
+        }
     }
 }
