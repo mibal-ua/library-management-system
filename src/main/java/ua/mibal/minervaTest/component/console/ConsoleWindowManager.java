@@ -26,6 +26,7 @@ import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
 import ua.mibal.minervaTest.model.window.State;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -256,7 +257,8 @@ public class ConsoleWindowManager implements WindowManager {
                 iterator.next(),
                 iterator.next(),
                 iterator.next(),
-                iterator.next(),
+                // TODO FIXME stub
+                LocalDateTime.MIN, // iterator.next(),
                 iterator.next(),
                 true
         ));
@@ -279,7 +281,8 @@ public class ConsoleWindowManager implements WindowManager {
 
         Iterator<String> iterator = answers.get().listIterator();
         return Optional.of(new Client(
-                iterator.next()
+                // TODO FIXME stub
+//                iterator.next()
         ));
     }
 
@@ -319,7 +322,8 @@ public class ConsoleWindowManager implements WindowManager {
                         : answers.get(2),
                 answers.get(3).equals("")
                         ? originalBook.getPublishedDate()
-                        : answers.get(3),
+                        // TODO FIXME stub
+                        : LocalDateTime.MAX, // answers.get(3),
                 answers.get(4).equals("")
                         ? originalBook.getPublisher()
                         : answers.get(4),
@@ -346,13 +350,15 @@ public class ConsoleWindowManager implements WindowManager {
 
         List<String> answers = answersOptional.get();
 
-        return Optional.of(new Client(
+        Client client = new Client(
                 originalClient.getId(),
                 answers.get(0).equals("")
                         ? originalClient.getName()
-                        : answers.get(0),
-                originalClient.getBooksIds()
-        ));
+                        : answers.get(0)
+        );
+        // TODO FIXME stub
+        client.addBooks(originalClient.getBooks());
+        return Optional.of(client);
     }
 
     // <<< Cached Tabs drawing >>>
@@ -383,12 +389,14 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public String getCachedBookId() {
-        return cache.getBook().getId();
+        // TODO FIXME stub
+        return cache.getBook().getId().toString();
     }
 
     @Override
     public String getCachedClientId() {
-        return cache.getClient().getId();
+        // TODO FIXME stub
+        return cache.getClient().getId().toString();
     }
 
     // <<< Console esc-sequences >>>

@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.component.console.ConsoleWindowManager.WINDOW_WIDTH;
@@ -55,8 +56,9 @@ public class ConsoleDataPrinter implements DataPrinter {
         final int titleLength = 36;
         final int authorLength = 23;
         final List<Integer> sizes = List.of(4, titleLength, authorLength, 4);
+        // TODO FIXME stub
         final List<Function<Book, String>> getters = List.of(
-                book -> book.getId(),
+                book -> book.getId().toString(),
                 book -> substringAppend(book.getTitle(), "..", titleLength),
                 book -> substringAppend(book.getAuthor(), "..", authorLength),
                 book -> book.isFree() ? "Yes" : "No"
@@ -70,10 +72,13 @@ public class ConsoleDataPrinter implements DataPrinter {
         final int nameLength = 35;
         final int booksLength = 31;
         final List<Integer> sizes = List.of(4, nameLength, booksLength);
+        // TODO FIXME stub
         final List<Function<Client, String>> getters = List.of(
-                client -> client.getId(),
+                client -> client.getId().toString(),
                 client -> substringAppend(client.getName(), "..", nameLength),
-                client -> substringAppend(String.join(" ", client.getBooksIds()), "..", booksLength)
+                client -> substringAppend(String.join(" ", client.getBooks()
+                        .stream().map(book -> book.toString())
+                        .collect(Collectors.joining())), "..", booksLength)
         );
         printListTable(tableHeaders, sizes, getters, clients);
     }
@@ -85,15 +90,19 @@ public class ConsoleDataPrinter implements DataPrinter {
         final int nameLength = 26;
         final int booksLength = 15;
         final List<Integer> sizes = List.of(4, dateLength, nameLength, 9, booksLength);
+        // TODO FIXME stub
         final List<Function<Operation, String>> getters = List.of(
-                operation -> operation.getId(),
-                operation -> operation.getDate().substring(0, dateLength),
+                operation -> operation.getId().toString(),
+                operation -> operation.getDate().toString().substring(0, dateLength),
                 operation -> clientDao
-                        .findById(operation.getClientId())
+                        .findById(operation.getClient().getId().toString())
                         .map(client -> substringAppend(client.getName(), "..", nameLength))
                         .orElse("NONE"),
-                operation -> operation.getOperationType(),
-                operation -> substringAppend(String.join(" ", operation.getBooksIds()), "..", booksLength)
+                operation -> operation.getOperationType().toString(),
+                // TODO FIXME stub
+                operation -> substringAppend(String.join(" ", operation.getBooks()
+                        .stream().map(book -> book.toString())
+                        .collect(Collectors.joining())), "..", booksLength)
         );
         printListTable(tableHeaders, sizes, getters, operations);
     }
@@ -142,12 +151,12 @@ public class ConsoleDataPrinter implements DataPrinter {
     @Override
     public void printBookDetails(final Book book) {
         Map<String, String> valuesMap = new LinkedHashMap<>();
-        valuesMap.put("ID", book.getId());
+        valuesMap.put("ID", book.getId().toString());
         valuesMap.put("Title", book.getTitle());
         valuesMap.put("Subtitle", book.getSubtitle());
         valuesMap.put("Author", book.getAuthor());
         valuesMap.put("Publisher", book.getPublisher());
-        valuesMap.put("Publish date", book.getPublishedDate());
+        valuesMap.put("Publish date", book.getPublishedDate().toString());
         valuesMap.put("Free", book.isFree() ? "YES" : "NO");
         printDetailsTable(valuesMap);
     }
@@ -155,7 +164,7 @@ public class ConsoleDataPrinter implements DataPrinter {
     @Override
     public void printClientDetails(final Client client, final List<Book> booksThatClientHolds) {
         Map<String, String> valuesMap = new LinkedHashMap<>();
-        valuesMap.put("ID", client.getId());
+        valuesMap.put("ID", client.getId().toString());
         valuesMap.put("Name", client.getName());
         printDetailsTable(valuesMap);
 
@@ -169,10 +178,12 @@ public class ConsoleDataPrinter implements DataPrinter {
     @Override
     public void printOperationDetails(final Operation operation, final Client clientInOperation, final List<Book> booksInOperation) {
         Map<String, String> valuesMap = new LinkedHashMap<>();
-        valuesMap.put("ID", operation.getId());
-        valuesMap.put("Date", operation.getDate());
+        // TODO FIXME stub
+        valuesMap.put("ID", operation.getId().toString());
+        valuesMap.put("Date", operation.getDate().toString());
         valuesMap.put("Client", clientInOperation.getName());
-        valuesMap.put("Type", operation.getOperationType());
+        // TODO FIXME stub
+        valuesMap.put("Type", operation.getOperationType().toString());
         printDetailsTable(valuesMap);
 
         System.out.println("""

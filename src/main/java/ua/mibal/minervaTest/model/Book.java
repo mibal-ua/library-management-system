@@ -16,36 +16,57 @@
 
 package ua.mibal.minervaTest.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import ua.mibal.minervaTest.utils.IdUtils;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 import java.io.Serializable;
-
-import static ua.mibal.minervaTest.model.Library.HaveId;
+import java.time.LocalDateTime;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
+@Entity
+@Table(name = "book")
 public class Book implements Serializable {
 
-    private String id;
+    @Id @GeneratedValue
+    private Long id;
 
+    @Column(name = "title", nullable = false)
     private String title;
 
+    @Column(name = "subtitle", nullable = false)
     private String subtitle;
 
+    @Column(name = "author", nullable = false)
     private String author;
 
-    @JsonProperty("published")
-    private String publishedDate;
+    @Column(name = "published", nullable = false)
+    private LocalDateTime publishedDate;
 
+    @Column(name = "publisher", nullable = false)
     private String publisher;
 
+    @Column(name = "free", nullable = false)
     private boolean free;
 
-    public Book(final String id, final String title, final String subtitle, final String author,
-                final String publishedDate, final String publisher,
+    @JoinColumn(name = "client_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Client client;
+
+    public Book(final Long id,
+                final String title,
+                final String subtitle,
+                final String author,
+                final LocalDateTime publishedDate,
+                final String publisher,
                 final boolean free) {
         this.id = id;
         this.title = title;
@@ -56,44 +77,85 @@ public class Book implements Serializable {
         this.free = free;
     }
 
-    public Book(final String title, final String subtitle, final String author,
-                final String publishedDate, final String publisher,
+    public Book(final String title,
+                final String subtitle,
+                final String author,
+                final LocalDateTime publishedDate,
+                final String publisher,
                 final boolean free) {
-        this(IdUtils.generateId(), title, subtitle, author, publishedDate, publisher, free);
+        this.title = title;
+        this.subtitle = subtitle;
+        this.author = author;
+        this.publishedDate = publishedDate;
+        this.publisher = publisher;
+        this.free = free;
     }
 
     public Book() {
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getSubtitle() {
         return subtitle;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
     }
 
     public String getAuthor() {
         return author;
     }
 
-    public String getPublishedDate() {
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public LocalDateTime getPublishedDate() {
         return publishedDate;
+    }
+
+    public void setPublishedDate(LocalDateTime publishedDate) {
+        this.publishedDate = publishedDate;
     }
 
     public String getPublisher() {
         return publisher;
     }
 
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
     public boolean isFree() {
         return free;
     }
 
-    public void setFree(final boolean free) {
+    public void setFree(boolean free) {
         this.free = free;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+        this.free = client == null;
     }
 }

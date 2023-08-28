@@ -129,12 +129,12 @@ public class ApplicationController {
                     break;
                 }
                 Operation operation = optionalOperation.get();
-                Optional<Client> optionalClient = clientDao.findById(operation.getClientId());
+                Optional<Client> optionalClient = clientDao.findById(operation.getClient().getId().toString());
 
                 if (optionalClient.isEmpty()) {
                     windowManager.showToast(format(
                             "Oops, there are no clients with id '%s' that specialized in operation",
-                            operation.getClientId()));
+                            operation.getClient().getId()));
                     break;
                 }
                 Client client = optionalClient.get();
@@ -373,7 +373,8 @@ public class ApplicationController {
 
             final List<String> booksToReturn = Arrays.stream(args)
                     .filter(bookId -> bookDao.findById(bookId).isPresent() &&
-                                      client.getBooksIds().contains(bookId))
+                                      // TODO FIXME stub
+                                      client.getBooks().contains(bookId))
                     .toList();
 
             if (booksToReturn.isEmpty()) {

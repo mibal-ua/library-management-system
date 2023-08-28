@@ -16,66 +16,109 @@
 
 package ua.mibal.minervaTest.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import ua.mibal.minervaTest.model.Library.HaveId;
-import ua.mibal.minervaTest.utils.IdUtils;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class Operation implements Serializable, HaveId {
+@Entity
+@Table(name = "operation")
+public class Operation implements Serializable {
 
-    private String id;
+    @Id @GeneratedValue
+    private Long id;
 
-    private String date;
+    @Column(name = "date", nullable = false)
+    private LocalDateTime date;
 
-    private String clientId;
+    @JoinColumn(name = "client_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Client client;
 
-    @JsonProperty("operation")
-    private String operationType;
+    @Column(name = "operation_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OperationType operationType;
 
-    @JsonProperty("books")
-    private List<String> booksIds;
+    @OneToMany
+    @JoinTable(
+            name = "operations_books",
+            joinColumns = @JoinColumn(name = "operation_id"),
+            inverseJoinColumns = @JoinColumn(name = "book_id")
+    )
+    private List<Book> books = new ArrayList<>();
 
-    public Operation(final String clientId, final String operationType,
-                     final List<String> booksIds) {
-        this.id = IdUtils.generateId();
-        Date date = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        this.date = dateFormat.format(date);
-        this.clientId = clientId;
+    public Operation(Long id, LocalDateTime date, Client client, OperationType operationType, List<Book> books) {
+        this.id = id;
+        this.date = date;
+        this.client = client;
         this.operationType = operationType;
-        this.booksIds = booksIds;
+        this.books = books;
+    }
+
+    public Operation(LocalDateTime date, Client client, OperationType operationType, List<Book> books) {
+        this.date = date;
+        this.client = client;
+        this.operationType = operationType;
+        this.books = books;
     }
 
     public Operation() {
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public String getDate() {
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDateTime getDate() {
         return date;
     }
 
-    public String getClientId() {
-        return clientId;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
-    public String getOperationType() {
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public OperationType getOperationType() {
         return operationType;
     }
 
-    public List<String> getBooksIds() {
-        return booksIds;
+    public void setOperationType(OperationType operationType) {
+        this.operationType = operationType;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    private void setBooks(List<Book> books) {
+        this.books = books;
     }
 }

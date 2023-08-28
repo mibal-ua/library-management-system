@@ -16,66 +16,100 @@
 
 package ua.mibal.minervaTest.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import ua.mibal.minervaTest.model.Library.HaveId;
-import ua.mibal.minervaTest.utils.IdUtils;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
+@Entity
+@Table(name = "client")
 public class Client implements Serializable {
 
-    private String id;
+    @Id @GeneratedValue
+    private Long id;
 
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @JsonProperty("books")
-    private List<String> booksIds;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Book> books = new HashSet<>();
 
-    public Client(final String name, final List<String> booksIds) {
-        this(IdUtils.generateId(), name, booksIds);
-    }
+    @OneToMany(mappedBy = "client")
+    private List<Operation> operations = new ArrayList<>();
 
     public Client(final String name) {
-        this(IdUtils.generateId(), name, List.of());
+        this.name = name;
     }
 
-    public Client(final String id, final String name, final List<String> booksIds) {
+    public Client(final Long id, final String name) {
         this.id = id;
         this.name = name;
-        this.booksIds = new ArrayList<>(booksIds);
     }
 
     public Client() {
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public List<String> getBooksIds() {
-        return Collections.unmodifiableList(booksIds);
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void addBooks(final List<String> booksIds) {
-        this.booksIds.addAll(booksIds);
+    public Set<Book> getBooks() {
+        return books;
     }
 
-    public void removeBooks(final List<String> bookIdsToReturn) {
-        this.booksIds.removeAll(bookIdsToReturn);
+    private void setBooks(Set<Book> books) {
+        this.books = books;
+    }
+
+    public List<Operation> getOperations() {
+        return operations;
+    }
+
+    private void setOperations(List<Operation> operations) {
+        this.operations = operations;
+    }
+
+    public void addBooks(final Collection<Book> books) {
+        books.forEach(book -> {
+            this.books.add(book);
+            book.setClient(this);
+        });
+    }
+
+    public void removeBooks(final Collection <Book> books) {
+        books.forEach(book -> {
+            this.books.remove(book);
+            book.setClient(null);
+        });
     }
 
     public boolean doesHoldBook() {
-        return !booksIds.isEmpty();
+        return !books.isEmpty();
     }
 }
