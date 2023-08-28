@@ -16,6 +16,9 @@
 
 package ua.mibal.minervaTest;
 
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -28,5 +31,10 @@ import org.springframework.context.annotation.PropertySource;
 @ComponentScan("ua.mibal.minervaTest")
 @PropertySource("classpath:application.properties")
 public class SpringConfig {
+
+    @Bean
+    public EntityManagerFactory entityManagerFactory() {
+        return Persistence.createEntityManagerFactory("Library");
+    }
 
 }

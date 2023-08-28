@@ -19,6 +19,7 @@ package ua.mibal.minervaTest.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.Session;
+import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.model.exception.DaoException;
 
 import java.util.function.Consumer;
@@ -28,6 +29,7 @@ import java.util.function.Function;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
+@Component
 public class QueryHelper {
 
     private final EntityManagerFactory entityManagerFactory;
