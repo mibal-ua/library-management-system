@@ -95,7 +95,7 @@ public class ConsoleDataPrinter implements DataPrinter {
                 operation -> operation.getId().toString(),
                 operation -> operation.getDate().toString().substring(0, dateLength),
                 operation -> clientDao
-                        .findById(operation.getClient().getId().toString())
+                        .findById(operation.getClient().getId())
                         .map(client -> substringAppend(client.getName(), "..", nameLength))
                         .orElse("NONE"),
                 operation -> operation.getOperationType().toString(),

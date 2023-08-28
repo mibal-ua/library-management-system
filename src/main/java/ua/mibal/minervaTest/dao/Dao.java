@@ -25,13 +25,13 @@ import java.util.Optional;
  */
 public interface Dao<T> {
 
-    Optional<T> findById(String id);
+    Optional<T> findById(Long id);
 
     List<T> find(String[] args);
 
     List<T> findAll();
 
-    void update(T e);
+    boolean update(T e);
 
     boolean save(T e);
 

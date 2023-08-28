@@ -31,8 +31,14 @@ import java.util.Optional;
 @Component
 public class BookDao implements Dao<Book> {
 
+    private final QueryHelper helper;
+
+    public BookDao(QueryHelper queryHelper) {
+        this.helper = queryHelper;
+    }
+
     @Override
-    public Optional<Book> findById(String id) {
+    public Optional<Book> findById(Long id) {
         return null;
     }
 
@@ -47,7 +53,8 @@ public class BookDao implements Dao<Book> {
     }
 
     @Override
-    public void update(Book e) {
+    public boolean update(Book updated) {
+        return false;
 
     }
 

@@ -30,7 +30,7 @@ import java.util.Optional;
 public class ClientDao implements Dao<Client> {
 
     @Override
-    public Optional<Client> findById(String id) {
+    public Optional<Client> findById(Long id) {
         return null;
     }
 
@@ -45,8 +45,8 @@ public class ClientDao implements Dao<Client> {
     }
 
     @Override
-    public void update(Client e) {
-
+    public boolean update(Client e) {
+        return false;
     }
 
     @Override

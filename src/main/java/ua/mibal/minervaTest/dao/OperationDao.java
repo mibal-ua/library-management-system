@@ -30,7 +30,7 @@ import java.util.Optional;
 public class OperationDao implements Dao<Operation> {
 
     @Override
-    public Optional<Operation> findById(String id) {
+    public Optional<Operation> findById(Long id) {
         return Optional.empty();
     }
 
@@ -45,8 +45,8 @@ public class OperationDao implements Dao<Operation> {
     }
 
     @Override
-    public void update(Operation e) {
-
+    public boolean update(Operation e) {
+        return false;
     }
 
     @Override
