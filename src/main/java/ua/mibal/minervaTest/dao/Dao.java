@@ -16,24 +16,91 @@
 
 package ua.mibal.minervaTest.dao;
 
+import ua.mibal.minervaTest.model.exception.DaoException;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public interface Dao<T> {
+public abstract class Dao<T> {
 
-    Optional<T> findById(Long id);
+    protected final QueryHelper queryHelper;
+    private final Class<T> type;
+    private final String entityName;
 
-    List<T> find(String[] args);
+    protected Dao(QueryHelper queryHelper, Class<T> type) {
+        this.queryHelper = queryHelper;
+        this.type = type;
+        this.entityName = type.getSimpleName();
+    }
 
-    List<T> findAll();
+    public final Optional<T> findById(Long id) {
+        return Optional.ofNullable(queryHelper.readWithinTx(
+                em -> em.find(type, id),
+                "Exception while retrieving " + entityName + " by id"
+        ));
+    }
 
-    boolean update(T e);
+    public final List<T> find(String[] args) {
+        List<T> result = new ArrayList<>();
+        for (String arg : args) {
+            for (T e : findAll()) {
+                if (!appropriateSelectingAddingLogic(e, arg, result)) {
+                    break;
+                }
+            }
+        }
+        return result;
+    }
 
-    boolean save(T e);
+    // returns true if continue, false if break
+    protected abstract boolean appropriateSelectingAddingLogic(T e, String arg, List<T> result);
 
-    boolean delete(T e);
+    public final List<T> findAll() {
+        return queryHelper.readWithinTx(
+                entityManager -> entityManager.createQuery("select e from " + entityName + " e", type)
+                        .getResultList(),
+                "Exception while retrieving all " + entityName + "s"
+        );
+    }
+
+    public final boolean update(T e) {
+        Objects.requireNonNull(e);
+        try {
+            queryHelper.performWithinTx(entityManager -> entityManager.merge(e),
+                    "Exception while updating " + entityName);
+            return true;
+        } catch (DaoException ex) {
+            return false;
+        }
+    }
+
+    public final boolean save(T e) {
+        Objects.requireNonNull(e);
+        try {
+            queryHelper.performWithinTx(entityManager -> entityManager.persist(e),
+                    "Exception while saving " + entityName);
+            return true;
+        } catch (DaoException ex) {
+            return false;
+        }
+    }
+
+    public final boolean delete(T e) {
+        Objects.requireNonNull(e);
+        try {
+            queryHelper.performWithinTx(entityManager -> {
+                T managedEntity = entityManager.merge(e);
+                entityManager.remove(managedEntity);
+            }, "Exception while deleting " + entityName);
+            return true;
+        } catch (DaoException ex) {
+            return false;
+        }
+    }
 }

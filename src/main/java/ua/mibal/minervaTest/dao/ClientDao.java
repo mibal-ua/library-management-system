@@ -27,36 +27,10 @@ import java.util.Optional;
  * @link t.me/mibal_ua
  */
 @Component
-public class ClientDao implements Dao<Client> {
+public class ClientDao extends Dao<Client> {
 
-    @Override
-    public Optional<Client> findById(Long id) {
-        return null;
-    }
-
-    @Override
-    public List<Client> find(String[] args) {
-        return null;
-    }
-
-    @Override
-    public List<Client> findAll() {
-        return null;
-    }
-
-    @Override
-    public boolean update(Client e) {
-        return false;
-    }
-
-    @Override
-    public boolean save(Client e) {
-        return false;
-    }
-
-    @Override
-    public boolean delete(Client e) {
-        return false;
+    public ClientDao(QueryHelper queryHelper) {
+        super(queryHelper, Client.class);
     }
 
     public void returnBooks(Client client, List<String> booksToReturn) {
@@ -72,6 +46,12 @@ public class ClientDao implements Dao<Client> {
     }
 
     public boolean isContainClientId(String id) {
+        return false;
+    }
+
+    @Override
+    protected boolean appropriateSelectingAddingLogic(Client e, String arg, List<Client> result) {
+        // TODO
         return false;
     }
 }

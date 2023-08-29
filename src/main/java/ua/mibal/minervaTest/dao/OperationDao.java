@@ -20,42 +20,22 @@ import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.model.Operation;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
 @Component
-public class OperationDao implements Dao<Operation> {
+public class OperationDao extends Dao<Operation> {
 
-    @Override
-    public Optional<Operation> findById(Long id) {
-        return Optional.empty();
+
+    protected OperationDao(QueryHelper queryHelper) {
+        super(queryHelper, Operation.class);
     }
 
     @Override
-    public List<Operation> find(String[] args) {
-        return null;
-    }
-
-    @Override
-    public List<Operation> findAll() {
-        return null;
-    }
-
-    @Override
-    public boolean update(Operation e) {
-        return false;
-    }
-
-    @Override
-    public boolean save(Operation e) {
-        return false;
-    }
-
-    @Override
-    public boolean delete(Operation e) {
+    protected boolean appropriateSelectingAddingLogic(Operation e, String arg, List<Operation> result) {
+        // TODO
         return false;
     }
 }
