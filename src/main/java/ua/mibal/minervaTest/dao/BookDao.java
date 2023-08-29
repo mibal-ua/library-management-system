@@ -42,8 +42,8 @@ public class BookDao implements Dao<Book> {
     public Optional<Book> findById(Long id) {
         return Optional.ofNullable(helper.readWithinTx(
                 em -> em.find(Book.class, id),
-                "Exception while retrieving Book by id")
-        );
+                "Exception while retrieving Book by id"
+        ));
     }
 
     @Override
