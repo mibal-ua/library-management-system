@@ -25,10 +25,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -49,7 +47,7 @@ public class Client implements Serializable {
     private Set<Book> books = new HashSet<>();
 
     @OneToMany(mappedBy = "client")
-    private List<Operation> operations = new ArrayList<>();
+    private Set<Operation> operations = new HashSet<>();
 
     public Client(final String name) {
         this.name = name;
@@ -87,11 +85,11 @@ public class Client implements Serializable {
         this.books = books;
     }
 
-    public List<Operation> getOperations() {
+    public Set<Operation> getOperations() {
         return operations;
     }
 
-    private void setOperations(List<Operation> operations) {
+    private void setOperations(Set<Operation> operations) {
         this.operations = operations;
     }
 

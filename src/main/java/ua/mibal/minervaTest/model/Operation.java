@@ -25,14 +25,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Mykhailo Balakhon
@@ -62,9 +62,9 @@ public class Operation implements Serializable {
             joinColumns = @JoinColumn(name = "operation_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
-    private List<Book> books = new ArrayList<>();
+    private Set<Book> books = new HashSet<>();
 
-    public Operation(Long id, LocalDateTime date, Client client, OperationType operationType, List<Book> books) {
+    public Operation(Long id, LocalDateTime date, Client client, OperationType operationType, Set<Book> books) {
         this.id = id;
         this.date = date;
         this.client = client;
@@ -72,7 +72,7 @@ public class Operation implements Serializable {
         this.books = books;
     }
 
-    public Operation(LocalDateTime date, Client client, OperationType operationType, List<Book> books) {
+    public Operation(LocalDateTime date, Client client, OperationType operationType, Set<Book> books) {
         this.date = date;
         this.client = client;
         this.operationType = operationType;
@@ -114,11 +114,11 @@ public class Operation implements Serializable {
         this.operationType = operationType;
     }
 
-    public List<Book> getBooks() {
+    public Set<Book> getBooks() {
         return books;
     }
 
-    private void setBooks(List<Book> books) {
+    private void setBooks(Set<Book> books) {
         this.books = books;
     }
 }

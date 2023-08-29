@@ -138,7 +138,7 @@ public class ApplicationController {
                     break;
                 }
                 Client client = optionalClient.get();
-                List<Book> booksInOperation = operation.getBooks();
+                List<Book> booksInOperation = operation.getBooks().stream().toList();
                 windowManager.operationDetails(operation, client, booksInOperation);
             }
             case NULL -> windowManager.showToast("You can not use command 'look' in this tab.");
