@@ -34,8 +34,17 @@ public class OperationDao extends Dao<Operation> {
     }
 
     @Override
-    protected boolean appropriateSelectingAddingLogic(Operation e, String arg, List<Operation> result) {
-        // TODO
-        return false;
+    protected boolean appropriateSelectingAddingLogic(Operation operation, String arg, List<Operation> result) {
+        if (operation.getId().equals(Long.valueOf(arg))) {
+            result.add(operation);
+            return false;
+        }
+        if (operation.getClient().getId().toString().equals(arg) ||
+            operation.getDate().toString().contains(arg) ||
+            operation.getOperationType().toString().equalsIgnoreCase(arg) ||
+            operation.getClient().getName().contains(arg)) {
+            result.add(operation);
+        }
+        return true;
     }
 }
