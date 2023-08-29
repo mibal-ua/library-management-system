@@ -56,7 +56,7 @@ public class Operation implements Serializable {
     @Enumerated(EnumType.STRING)
     private OperationType operationType;
 
-    @OneToMany
+    @ManyToMany
     @JoinTable(
             name = "operations_books",
             joinColumns = @JoinColumn(name = "operation_id"),
