@@ -49,7 +49,7 @@ public class Operation implements Serializable {
     private LocalDateTime date;
 
     @JoinColumn(name = "client_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Client client;
 
     @Column(name = "operation_type", nullable = false)
