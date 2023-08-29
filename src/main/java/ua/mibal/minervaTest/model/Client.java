@@ -43,7 +43,7 @@ public class Client implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "client")
     private Set<Book> books = new HashSet<>();
 
     @OneToMany(mappedBy = "client")
