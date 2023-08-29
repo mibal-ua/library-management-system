@@ -46,7 +46,7 @@ public class Client implements Serializable {
     @OneToMany(mappedBy = "client")
     private Set<Book> books = new HashSet<>();
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client", cascade = CascadeType.REMOVE)
     private Set<Operation> operations = new HashSet<>();
 
     public Client(final String name) {
