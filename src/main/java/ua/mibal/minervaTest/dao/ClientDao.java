@@ -17,10 +17,10 @@
 package ua.mibal.minervaTest.dao;
 
 import org.springframework.stereotype.Component;
+import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Mykhailo Balakhon
@@ -33,25 +33,29 @@ public class ClientDao extends Dao<Client> {
         super(queryHelper, Client.class);
     }
 
-    public void returnBooks(Client client, List<String> booksToReturn) {
-
+    public void returnBooks(Client client, List<Book> booksToReturn) {
+        queryHelper.performWithinTx(entityManager -> {
+            Client managedClient = entityManager.getReference(Client.class, client.getId());
+            managedClient.removeBooks(booksToReturn);
+        }, "Error while returning Books");
     }
 
-    public void takeBooks(Client client, List<String> booksToTake) {
-
-    }
-
-    public Optional<Client> findClientByBookId(String bookId) {
-        return null;
-    }
-
-    public boolean isContainClientId(String id) {
-        return false;
+    public void takeBooks(Client client, List<Book> booksToTake) {
+        queryHelper.performWithinTx(entityManager -> {
+            Client managedClient = entityManager.getReference(Client.class, client.getId());
+            managedClient.addBooks(booksToTake);
+        }, "Error while taking Books");
     }
 
     @Override
-    protected boolean appropriateSelectingAddingLogic(Client e, String arg, List<Client> result) {
-        // TODO
-        return false;
+    protected boolean appropriateSelectingAddingLogic(Client client, String arg, List<Client> result) {
+        if (client.getId().toString().equals(arg)) {
+            result.add(client);
+            return false;
+        }
+        if (client.getName().contains(arg)) {
+            result.add(client);
+        }
+        return true;
     }
 }

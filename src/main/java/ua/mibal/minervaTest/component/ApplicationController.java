@@ -270,7 +270,7 @@ public class ApplicationController {
                 final Book bookToDelete = bookDao.findById(Long.valueOf(id)).get();
                 final String title = substringAppend(bookToDelete.getTitle(), "..", 14);
 
-                Optional<Client> bookHolder = clientDao.findClientByBookId(id);
+                Optional<Client> bookHolder = Optional.ofNullable(bookToDelete.getClient());
                 if (bookHolder.isPresent()) {
                     String name = substringAppend(bookHolder.get().getName(), "..", 15);
                     windowManager.showToast(format(
@@ -296,7 +296,7 @@ public class ApplicationController {
                         ? windowManager.getCachedClientId()
                         : args[0];
 
-                if (!clientDao.isContainClientId(id)) {
+                if (clientDao.findById(Long.valueOf(id)).isEmpty()) {
                     windowManager.showToast(format(
                             "Oops, there are no clients with this id '%s'", id));
                     break;
@@ -338,12 +338,14 @@ public class ApplicationController {
                     .findById(Long.valueOf(windowManager.getCachedClientId()))
                     .get();
 
-            final List<String> booksToTake = Arrays.stream(args)
+            // TODO optimize stub
+            final List<Book> booksToTake = Arrays.stream(args)
                     .filter(bookId -> {
-                                Optional<Book> optionalBook = bookDao.findById(Long.valueOf(bookId));
-                                return optionalBook.isPresent() && optionalBook.get().isFree();
-                            }
-                    ).toList();
+                        Optional<Book> optionalBook = bookDao.findById(Long.valueOf(bookId));
+                        return optionalBook.isPresent() && optionalBook.get().isFree();
+                    })
+                    .map(bookId -> bookDao.findById(Long.valueOf(bookId)).get())
+                    .toList();
             if (booksToTake.isEmpty()) {
                 windowManager.showToast("Oops, all books you are enter not free");
             } else {
@@ -371,10 +373,12 @@ public class ApplicationController {
                     .findById(Long.valueOf(windowManager.getCachedClientId()))
                     .get();
 
-            final List<String> booksToReturn = Arrays.stream(args)
+            // TODO optimize stub
+            final List<Book> booksToReturn = Arrays.stream(args)
                     .filter(bookId -> bookDao.findById(Long.valueOf(bookId)).isPresent() &&
                                       // TODO FIXME stub
                                       client.getBooks().contains(bookId))
+                    .map(bookId -> bookDao.findById(Long.valueOf(bookId)).get())
                     .toList();
 
             if (booksToReturn.isEmpty()) {
