@@ -28,8 +28,7 @@ import java.util.List;
 @Component
 public class OperationDao extends Dao<Operation> {
 
-
-    protected OperationDao(QueryHelper queryHelper) {
+    public OperationDao(QueryHelper queryHelper) {
         super(queryHelper, Operation.class);
     }
 
