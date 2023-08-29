@@ -33,17 +33,19 @@ public class ClientDao extends Dao<Client> {
         super(queryHelper, Client.class);
     }
 
-    public void returnBooks(Client client, List<Book> booksToReturn) {
+    public void returnBook(Client client, Book book) {
         queryHelper.performWithinTx(entityManager -> {
-            Client managedClient = entityManager.getReference(Client.class, client.getId());
-            managedClient.removeBooks(booksToReturn);
+            Client managedClient = entityManager.merge(client);
+            Book managedBook = entityManager.merge(book);
+            managedClient.removeBook(managedBook);
         }, "Error while returning Books");
     }
 
-    public void takeBooks(Client client, List<Book> booksToTake) {
+    public void takeBook(Client client, Book book) {
         queryHelper.performWithinTx(entityManager -> {
-            Client managedClient = entityManager.getReference(Client.class, client.getId());
-            managedClient.addBooks(booksToTake);
+            Client managedClient = entityManager.merge(client);
+            Book managedBook = entityManager.merge(book);
+            managedClient.addBook(managedBook);
         }, "Error while taking Books");
     }
 

@@ -357,7 +357,7 @@ public class ConsoleWindowManager implements WindowManager {
                         : answers.get(0)
         );
         // TODO FIXME stub
-        client.addBooks(originalClient.getBooks());
+        client.addBook(originalClient.getBooks().iterator().next());
         return Optional.of(client);
     }
 

@@ -330,6 +330,7 @@ public class ApplicationController {
     public void take(final String[] args) {
         if (windowManager.getCurrentTabState() == LOOK_CLIENT) {
             if (args.length == 0) {
+                // TODO fix message
                 windowManager.showToast("You need to enter 'take' with '${id1} ${id2}..' of books");
                 return;
             }
@@ -349,7 +350,7 @@ public class ApplicationController {
             if (booksToTake.isEmpty()) {
                 windowManager.showToast("Oops, all books you are enter not free");
             } else {
-                clientDao.takeBooks(client, booksToTake);
+                clientDao.takeBook(client, booksToTake.get(0));
                 windowManager.drawPrevTab();
                 windowManager.clientDetails(
                         client,
@@ -384,7 +385,8 @@ public class ApplicationController {
             if (booksToReturn.isEmpty()) {
                 windowManager.showToast("Oops, all books you are enter not yours");
             } else {
-                clientDao.returnBooks(client, booksToReturn);
+                // TODO fixme stub
+                clientDao.returnBook(client, booksToReturn.get(0));
                 windowManager.drawPrevTab();
                 windowManager.clientDetails(
                         client,

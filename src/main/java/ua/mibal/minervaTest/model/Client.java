@@ -25,7 +25,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -93,18 +92,14 @@ public class Client implements Serializable {
         this.operations = operations;
     }
 
-    public void addBooks(final Collection<Book> books) {
-        books.forEach(book -> {
-            this.books.add(book);
-            book.setClient(this);
-        });
+    public void addBook(Book book) {
+        this.books.add(book);
+        book.setClient(this);
     }
 
-    public void removeBooks(final Collection <Book> books) {
-        books.forEach(book -> {
-            this.books.remove(book);
-            book.setClient(null);
-        });
+    public void removeBook(Book book) {
+        this.books.remove(book);
+        book.setClient(null);
     }
 
     public boolean doesHoldBook() {
