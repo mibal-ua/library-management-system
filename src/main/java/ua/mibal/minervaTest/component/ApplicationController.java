@@ -17,10 +17,10 @@
 package ua.mibal.minervaTest.component;
 
 import org.springframework.stereotype.Component;
-import ua.mibal.minervaTest.dao.BookDao;
-import ua.mibal.minervaTest.dao.ClientDao;
-import ua.mibal.minervaTest.dao.OperationDao;
+import ua.mibal.minervaTest.dao.Dao;
+import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
+import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.service.LibraryService;
 import ua.mibal.minervaTest.utils.StringUtils;
 
@@ -37,15 +37,15 @@ public class ApplicationController {
 
     private final WindowManager windowManager;
 
-    private final BookDao bookDao;
-    private final OperationDao operationDao;
-    private final ClientDao clientDao;
+    private final Dao<Book> bookDao;
+    private final Dao<Operation> operationDao;
+    private final Dao<Client> clientDao;
     private final LibraryService libraryService;
 
-    public ApplicationController(final WindowManager windowManager,
-                                 final BookDao bookDao,
-                                 final OperationDao operationDao,
-                                 final ClientDao clientDao,
+    public ApplicationController(WindowManager windowManager,
+                                 Dao<Book> bookDao,
+                                 Dao<Operation> operationDao,
+                                 Dao<Client> clientDao,
                                  LibraryService libraryService) {
         this.windowManager = windowManager;
         this.bookDao = bookDao;

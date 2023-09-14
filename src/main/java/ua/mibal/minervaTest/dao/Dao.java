@@ -50,9 +50,7 @@ public abstract class Dao<T> {
         List<T> result = new ArrayList<>();
         for (String arg : args) {
             for (T e : findAll()) {
-                if (!appropriateSelectingAddingLogic(e, arg, result)) {
-                    break;
-                }
+                if (!appropriateSelectingAddingLogic(e, arg, result)) break;
             }
         }
         return result;
@@ -102,5 +100,11 @@ public abstract class Dao<T> {
         } catch (DaoException ex) {
             return false;
         }
+    }
+
+    public final T getReference(Long id) {
+        return queryHelper.readWithinTx(
+                em -> em.getReference(type, id),
+                "Exception while retrieving reference on " + entityName + " by id");
     }
 }

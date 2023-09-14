@@ -17,7 +17,6 @@
 package ua.mibal.minervaTest.dao;
 
 import org.springframework.stereotype.Component;
-import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 
 import java.util.List;
@@ -31,22 +30,6 @@ public class ClientDao extends Dao<Client> {
 
     public ClientDao(QueryHelper queryHelper) {
         super(queryHelper, Client.class);
-    }
-
-    public void returnBook(Client client, Book book) {
-        queryHelper.performWithinTx(entityManager -> {
-            Client managedClient = entityManager.merge(client);
-            Book managedBook = entityManager.merge(book);
-            managedClient.removeBook(managedBook);
-        }, "Error while returning Books");
-    }
-
-    public void takeBook(Client client, Book book) {
-        queryHelper.performWithinTx(entityManager -> {
-            Client managedClient = entityManager.merge(client);
-            Book managedBook = entityManager.merge(book);
-            managedClient.addBook(managedBook);
-        }, "Error while taking Books");
     }
 
     @Override
