@@ -18,11 +18,18 @@ package ua.mibal.minervaTest.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import ua.mibal.minervaTest.dao.BookDao;
-import ua.mibal.minervaTest.dao.ClientDao;
-import ua.mibal.minervaTest.dao.OperationDao;
+import ua.mibal.minervaTest.dao.Dao;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
+import ua.mibal.minervaTest.model.Operation;
+import ua.mibal.minervaTest.model.OperationType;
+
+import java.time.LocalDateTime;
+import java.util.Set;
+import java.util.function.BiConsumer;
+
+import static ua.mibal.minervaTest.model.OperationType.RETURN;
+import static ua.mibal.minervaTest.model.OperationType.TAKE;
 
 /**
  * @author Mykhailo Balakhon
@@ -32,23 +39,38 @@ import ua.mibal.minervaTest.model.Client;
 @Transactional
 public class LibraryService {
 
-    private final BookDao bookDao;
-    private final OperationDao operationDao;
-    private final ClientDao clientDao;
+    private final Dao<Book> bookDao;
+    private final Dao<Operation> operationDao;
+    private final Dao<Client> clientDao;
 
-    public LibraryService(final BookDao bookDao,
-                          final OperationDao operationDao,
-                          final ClientDao clientDao) {
+    public LibraryService(Dao<Book> bookDao,
+                          Dao<Operation> operationDao,
+                          Dao<Client> clientDao) {
         this.bookDao = bookDao;
         this.operationDao = operationDao;
         this.clientDao = clientDao;
     }
 
-    public void takeBook(Client client, Book bookToTake) {
-        // TODO
+    public void takeBook(Client client, Book book) {
+        operationWrapper((cl, b) -> b.setClient(cl), client, book, TAKE);
     }
 
-    public void returnBook(Client client, Book bookToReturn) {
-        // TODO
+    public void returnBook(Client client, Book book) {
+        operationWrapper((ign, b) -> b.setClient(null), client, book, RETURN);
+    }
+
+    private void operationWrapper(BiConsumer<Client, Book> clientBookConsumer,
+                                  Client client,
+                                  Book book,
+                                  OperationType operationType) {
+        Book managedBook = bookDao.getReference(book.getId());
+        Client managedClient = clientDao.getReference(client.getId());
+        clientBookConsumer.accept(managedClient, managedBook);
+        operationDao.save(new Operation(
+                LocalDateTime.now(),
+                managedClient,
+                operationType,
+                Set.of(managedBook)
+        ));
     }
 }
