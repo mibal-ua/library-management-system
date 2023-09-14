@@ -50,4 +50,9 @@ public class StringUtils {
         }
         return str.substring(0, max - toAppend.length()) + toAppend;
     }
+
+    public static String min(String name, int n) {
+        // TODO
+        return null;
+    }
 }

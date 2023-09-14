@@ -27,6 +27,7 @@ import jakarta.persistence.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * @author Mykhailo Balakhon
@@ -150,8 +151,8 @@ public class Book implements Serializable {
         this.free = free;
     }
 
-    public Client getClient() {
-        return client;
+    public Optional<Client> getClient() {
+        return Optional.ofNullable(client);
     }
 
     public void setClient(Client client) {

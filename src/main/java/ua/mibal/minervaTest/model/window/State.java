@@ -56,4 +56,11 @@ public enum State {
     public DataType getDataType() {
         return dataType;
     }
+
+    public boolean isDetailsTab() {
+        return this == LOOK_BOOK ||
+               this == LOOK_CLIENT ||
+               this == LOOK_HISTORY;
+    }
+
 }
