@@ -18,6 +18,7 @@ package ua.mibal.minervaTest.dao;
 
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.model.Book;
+import ua.mibal.minervaTest.model.Client;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class BookDao extends Dao<Book> {
         super(queryHelper, Book.class);
     }
 
-    @Override
+    @Override // TODO Separate into service
     protected boolean appropriateSelectingAddingLogic(Book book, String arg, List<Book> result) {
         if (book.getId().toString().equals(arg)) {
             result.add(book);
@@ -44,5 +45,21 @@ public class BookDao extends Dao<Book> {
             result.add(book);
         }
         return true;
+    }
+
+    public void takeBook(Long clientId, Long bookId) {
+        queryHelper.performWithinTx(entityManager -> {
+            Book managedBook = entityManager.getReference(Book.class, bookId);
+            Client managedClient = entityManager.getReference(Client.class, clientId);
+            managedBook.setClient(managedClient);
+        }, "Error while taking by client_id=" + clientId + " book_id=" + bookId);
+    }
+
+    public void returnBook(Long clientId, Long bookId) {
+        queryHelper.performWithinTx(entityManager -> {
+                    Book managedBook = entityManager.getReference(Book.class, bookId);
+                    managedBook.setClient(null);
+                }, "Error while returning by client_id=" + clientId + " book_id=" + bookId
+        );
     }
 }
