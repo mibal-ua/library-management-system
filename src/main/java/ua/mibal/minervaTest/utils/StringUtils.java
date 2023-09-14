@@ -23,9 +23,7 @@ package ua.mibal.minervaTest.utils;
 public class StringUtils {
 
     public static String substring(final String str, final int max) {
-        if (str.length() < max) {
-            return str;
-        }
+        if (str.length() < max) return str;
         return str.substring(0, max);
     }
 
@@ -45,9 +43,7 @@ public class StringUtils {
      * @return the specified substring.
      */
     public static String substringAppend(final String str, final String toAppend, final int max) {
-        if (str.length() < max) {
-            return str;
-        }
+        if (str.length() < max) return str;
         return str.substring(0, max - toAppend.length()) + toAppend;
     }
 
