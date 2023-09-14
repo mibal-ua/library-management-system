@@ -110,7 +110,7 @@ public class Operation implements Serializable {
         return book;
     }
 
-    private void setBooks(Book book) {
+    private void setBook(Book book) {
         this.book = book;
     }
 }

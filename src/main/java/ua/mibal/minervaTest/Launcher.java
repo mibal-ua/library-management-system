@@ -29,10 +29,8 @@ public class Launcher {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
                 SpringConfig.class
         );
-
         final Application application = context.getBean(Application.class);
         application.start();
-
         context.close();
     }
 }
