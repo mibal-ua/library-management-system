@@ -96,11 +96,7 @@ public class ConsoleDataPrinter implements DataPrinter {
                 operation -> operation.getDate().toString().substring(0, dateLength),
                 operation -> StringUtils.min(operation.getClient().getName(), nameLength),
                 operation -> operation.getOperationType().toString(),
-                operation -> StringUtils.min(
-                        operation.getBooks().stream()
-                                .map(book -> book.getId().toString())
-                                .reduce("", (str1, str2) -> str1 + str2),
-                        booksLength)
+                operation -> StringUtils.min(operation.getBook().getTitle(), booksLength)
         );
         printListTable(tableHeaders, sizes, getters, operations);
     }
@@ -188,7 +184,7 @@ public class ConsoleDataPrinter implements DataPrinter {
                                                   
                                                Books in operation
                 """);
-        printListOfBooks(operation.getBooks());
+        printListOfBooks(List.of(operation.getBook())); // TODO FIXME
     }
 
     @Override

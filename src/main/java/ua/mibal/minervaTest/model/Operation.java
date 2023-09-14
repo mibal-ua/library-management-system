@@ -24,15 +24,11 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author Mykhailo Balakhon
@@ -56,27 +52,23 @@ public class Operation implements Serializable {
     @Enumerated(EnumType.STRING)
     private OperationType operationType;
 
-    @ManyToMany
-    @JoinTable(
-            name = "operations_books",
-            joinColumns = @JoinColumn(name = "operation_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_id")
-    )
-    private Set<Book> books = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "book_id")
+    private Book book;
 
-    public Operation(Long id, LocalDateTime date, Client client, OperationType operationType, Set<Book> books) {
+    public Operation(Long id, LocalDateTime date, Client client, OperationType operationType, Book book) {
         this.id = id;
         this.date = date;
         this.client = client;
         this.operationType = operationType;
-        this.books = books;
+        this.book = book;
     }
 
-    public Operation(LocalDateTime date, Client client, OperationType operationType, Set<Book> books) {
+    public Operation(LocalDateTime date, Client client, OperationType operationType, Book book) {
         this.date = date;
         this.client = client;
         this.operationType = operationType;
-        this.books = books;
+        this.book = book;
     }
 
     public Operation() {
@@ -114,11 +106,11 @@ public class Operation implements Serializable {
         this.operationType = operationType;
     }
 
-    public Set<Book> getBooks() {
-        return books;
+    public Book getBook() {
+        return book;
     }
 
-    private void setBooks(Set<Book> books) {
-        this.books = books;
+    private void setBooks(Book book) {
+        this.book = book;
     }
 }

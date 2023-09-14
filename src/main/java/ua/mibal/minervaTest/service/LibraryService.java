@@ -25,7 +25,6 @@ import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.OperationType;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.function.BiConsumer;
 
 import static ua.mibal.minervaTest.model.OperationType.RETURN;
@@ -70,7 +69,7 @@ public class LibraryService {
                 LocalDateTime.now(),
                 managedClient,
                 operationType,
-                Set.of(managedBook)
+                managedBook
         ));
     }
 }
