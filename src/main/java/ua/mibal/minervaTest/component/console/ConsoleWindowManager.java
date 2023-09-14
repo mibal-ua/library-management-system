@@ -19,7 +19,6 @@ package ua.mibal.minervaTest.component.console;
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.component.DataPrinter;
 import ua.mibal.minervaTest.component.WindowManager;
-import ua.mibal.minervaTest.dao.Dao;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
@@ -90,13 +89,10 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public void tab3(final List<Operation> operations, final Dao<Client> clientDao) {
+    public void tab3(final List<Operation> operations) {
         new Tab(new String[]{"BOOKS", "CLIENTS", "HISTORY"},
                 2,
-                () -> dataPrinter.printListOfOperations(
-                        operations,
-                        clientDao
-                ),
+                () -> dataPrinter.printListOfOperations(operations),
                 TAB_3,
                 true
         ).draw();
@@ -171,11 +167,11 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public void searchOperationTab(final List<Operation> operations, final Dao<Client> clientDao, final String[] args) {
+    public void searchOperationTab(final List<Operation> operations, final String[] args) {
         final String header = format("SEARCH IN OPERATIONS BY '%s'", join(" ", args));
         new Tab(new String[]{header},
                 0,
-                () -> dataPrinter.printListOfOperations(operations, clientDao),
+                () -> dataPrinter.printListOfOperations(operations),
                 SEARCH_HISTORY
         ).draw();
     }
@@ -191,20 +187,20 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public void clientDetails(final Client client, final List<Book> books) {
+    public void clientDetails(final Client client) {
         new Tab(new String[]{"CLIENT DETAILS"},
                 0,
-                () -> dataPrinter.printClientDetails(client, books),
+                () -> dataPrinter.printClientDetails(client),
                 LOOK_CLIENT
         ).draw();
         cache.push(client);
     }
 
     @Override
-    public void operationDetails(final Operation operation, final Client client, final List<Book> books) {
+    public void operationDetails(final Operation operation) {
         new Tab(new String[]{"OPERATION DETAILS"},
                 0,
-                () -> dataPrinter.printOperationDetails(operation, client, books),
+                () -> dataPrinter.printOperationDetails(operation),
                 LOOK_HISTORY
         ).draw();
     }

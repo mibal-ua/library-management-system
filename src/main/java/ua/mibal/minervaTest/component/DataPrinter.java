@@ -16,12 +16,11 @@
 
 package ua.mibal.minervaTest.component;
 
-import ua.mibal.minervaTest.dao.Dao;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author Mykhailo Balakhon
@@ -29,17 +28,17 @@ import java.util.List;
  */
 public interface DataPrinter {
 
-    void printListOfBooks(List<Book> books);
+    void printListOfBooks(Collection<Book> books);
 
-    void printListOfClients(List<Client> clients);
+    void printListOfClients(Collection<Client> clients);
 
-    void printListOfOperations(List<Operation> operations, Dao<Client> clientDao);
+    void printListOfOperations(Collection<Operation> operations);
 
     void printBookDetails(Book book);
 
-    void printClientDetails(Client client, List<Book> booksThatClientHolds);
+    void printClientDetails(Client client);
 
-    void printOperationDetails(Operation operation, Client clientInOperation, List<Book> booksInOperation);
+    void printOperationDetails(Operation operation);
 
     void clear();
 }

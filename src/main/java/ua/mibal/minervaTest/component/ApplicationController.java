@@ -63,7 +63,7 @@ public class ApplicationController {
     }
 
     public void tab3(final String[] ignored) {
-        windowManager.tab3(operationDao.findAll(), clientDao);
+        windowManager.tab3(operationDao.findAll());
     }
 
     public void esc(final String[] ignored) {
@@ -82,7 +82,7 @@ public class ApplicationController {
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> windowManager.searchBookTab(bookDao.find(args), args);
             case CLIENT -> windowManager.searchClientTab(clientDao.find(args), args);
-            case HISTORY -> windowManager.searchOperationTab(operationDao.find(args), clientDao, args);
+            case HISTORY -> windowManager.searchOperationTab(operationDao.find(args), args);
             case NULL -> windowManager.showToast("You can not use command 'search' in this tab.");
         }
     }
@@ -99,11 +99,11 @@ public class ApplicationController {
                     () -> windowManager.showToast("Oops, there are no books with this id=" + id)
             );
             case CLIENT -> clientDao.findById(id).ifPresentOrElse(
-                    client -> windowManager.clientDetails(client, client.getBooks().stream().toList()), //FIXME
+                    windowManager::clientDetails,
                     () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
             );
             case HISTORY -> operationDao.findById(id).ifPresentOrElse(
-                    operation -> windowManager.operationDetails(operation, operation.getClient(), operation.getBooks().stream().toList()), //FIXME
+                    windowManager::operationDetails,
                     () -> windowManager.showToast("Oops, there are no operations with this id=" + id)
             );
             case NULL -> windowManager.showToast("You can not use command 'look' in this tab.");
@@ -152,7 +152,7 @@ public class ApplicationController {
                                     clientDao.update(client);
                                     if (isDetailsTab) {
                                         windowManager.drawPrevTab(); // FIXME
-                                        windowManager.clientDetails(client, client.getBooks().stream().toList()); //FIXME // FIXME
+                                        windowManager.clientDetails(client);
                                     }
                                     windowManager.showToast("Client successfully updated!");
                                 },
@@ -282,7 +282,7 @@ public class ApplicationController {
                 bookToTake -> {
                     libraryService.takeBook(client, bookToTake);
                     windowManager.drawPrevTab();
-                    windowManager.clientDetails(client, client.getBooks().stream().toList()); //FIXME
+                    windowManager.clientDetails(client);
                     windowManager.showToast("Books successfully taken!");
                 },
                 () -> windowManager.showToast("Oops, all books you are enter not free")
@@ -309,7 +309,7 @@ public class ApplicationController {
                 bookToReturn -> {
                     libraryService.returnBook(client, bookToReturn);
                     windowManager.drawPrevTab();
-                    windowManager.clientDetails(client, client.getBooks().stream().toList()); //FIXME
+                    windowManager.clientDetails(client);
                     windowManager.showToast("Books successfully returned!");
                 },
                 () -> windowManager.showToast("Oops, all books you are enter not yours")

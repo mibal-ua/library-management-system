@@ -16,7 +16,6 @@
 
 package ua.mibal.minervaTest.component;
 
-import ua.mibal.minervaTest.dao.Dao;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
@@ -36,7 +35,7 @@ public interface WindowManager {
 
     void tab2(List<Client> clients);
 
-    void tab3(List<Operation> operations, Dao<Client> clientDao);
+    void tab3(List<Operation> operations);
 
     void help();
 
@@ -50,7 +49,7 @@ public interface WindowManager {
 
     void searchClientTab(List<Client> clients, String[] args);
 
-    void searchOperationTab(List<Operation> operations, Dao<Client> clientDao, String[] args);
+    void searchOperationTab(List<Operation> operations, String[] args);
 
     Optional<Book> initBookToAdd();
 
@@ -64,9 +63,9 @@ public interface WindowManager {
 
     void bookDetails(Book book);
 
-    void clientDetails(Client client, List<Book> books);
+    void clientDetails(Client client);
 
-    void operationDetails(Operation operation, Client client, List<Book> books);
+    void operationDetails(Operation operation);
 
     String getCachedBookId();
 

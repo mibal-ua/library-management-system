@@ -19,16 +19,16 @@ package ua.mibal.minervaTest.component.console;
 
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.component.DataPrinter;
-import ua.mibal.minervaTest.dao.Dao;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
+import ua.mibal.minervaTest.utils.StringUtils;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.component.console.ConsoleWindowManager.WINDOW_WIDTH;
@@ -51,12 +51,11 @@ public class ConsoleDataPrinter implements DataPrinter {
     }
 
     @Override
-    public void printListOfBooks(final List<Book> books) {
+    public void printListOfBooks(final Collection<Book> books) {
         final List<String> tableHeaders = List.of(" ID ", "Title", "Author", "Free");
         final int titleLength = 36;
         final int authorLength = 23;
         final List<Integer> sizes = List.of(4, titleLength, authorLength, 4);
-        // TODO FIXME stub
         final List<Function<Book, String>> getters = List.of(
                 book -> book.getId().toString(),
                 book -> substringAppend(book.getTitle(), "..", titleLength),
@@ -67,7 +66,7 @@ public class ConsoleDataPrinter implements DataPrinter {
     }
 
     @Override
-    public void printListOfClients(final List<Client> clients) {
+    public void printListOfClients(final Collection<Client> clients) {
         final List<String> tableHeaders = List.of(" ID ", "Name", "Books");
         final int nameLength = 35;
         final int booksLength = 31;
@@ -76,33 +75,32 @@ public class ConsoleDataPrinter implements DataPrinter {
         final List<Function<Client, String>> getters = List.of(
                 client -> client.getId().toString(),
                 client -> substringAppend(client.getName(), "..", nameLength),
-                client -> substringAppend(String.join(" ", client.getBooks()
-                        .stream().map(book -> book.toString())
-                        .collect(Collectors.joining())), "..", booksLength)
+                client -> StringUtils.min(
+                        client.getBooks().stream()
+                                .map(book -> book.getId().toString())
+                                .reduce("", (str1, str2) -> str1 + str2),
+                        booksLength)
         );
         printListTable(tableHeaders, sizes, getters, clients);
     }
 
     @Override
-    public void printListOfOperations(final List<Operation> operations, final Dao<Client> clientDao) {
+    public void printListOfOperations(final Collection<Operation> operations) {
         final List<String> tableHeaders = List.of(" ID ", "Date", "Client name", "Operation", "Books");
         final int dateLength = 10;
         final int nameLength = 26;
         final int booksLength = 15;
         final List<Integer> sizes = List.of(4, dateLength, nameLength, 9, booksLength);
-        // TODO FIXME stub
         final List<Function<Operation, String>> getters = List.of(
                 operation -> operation.getId().toString(),
                 operation -> operation.getDate().toString().substring(0, dateLength),
-                operation -> clientDao
-                        .findById(operation.getClient().getId())
-                        .map(client -> substringAppend(client.getName(), "..", nameLength))
-                        .orElse("NONE"),
+                operation -> StringUtils.min(operation.getClient().getName(), nameLength),
                 operation -> operation.getOperationType().toString(),
-                // TODO FIXME stub
-                operation -> substringAppend(String.join(" ", operation.getBooks()
-                        .stream().map(book -> book.toString())
-                        .collect(Collectors.joining())), "..", booksLength)
+                operation -> StringUtils.min(
+                        operation.getBooks().stream()
+                                .map(book -> book.getId().toString())
+                                .reduce("", (str1, str2) -> str1 + str2),
+                        booksLength)
         );
         printListTable(tableHeaders, sizes, getters, operations);
     }
@@ -110,7 +108,7 @@ public class ConsoleDataPrinter implements DataPrinter {
     private <T> void printListTable(final List<String> tableHeaders,
                                     final List<Integer> sizes,
                                     final List<Function<T, String>> getters,
-                                    final List<T> data) {
+                                    final Collection<T> data) {
         if (data.size() == 0) {
             System.out.format("+------------------------------------------------------------------------------+%n");
             System.out.format("|                                List is empty                                 |%n");
@@ -162,7 +160,7 @@ public class ConsoleDataPrinter implements DataPrinter {
     }
 
     @Override
-    public void printClientDetails(final Client client, final List<Book> booksThatClientHolds) {
+    public void printClientDetails(final Client client) {
         Map<String, String> valuesMap = new LinkedHashMap<>();
         valuesMap.put("ID", client.getId().toString());
         valuesMap.put("Name", client.getName());
@@ -172,16 +170,16 @@ public class ConsoleDataPrinter implements DataPrinter {
                                                   
                                             Books that client holds
                 """);
-        printListOfBooks(booksThatClientHolds);
+        printListOfBooks(client.getBooks());
     }
 
     @Override
-    public void printOperationDetails(final Operation operation, final Client clientInOperation, final List<Book> booksInOperation) {
+    public void printOperationDetails(final Operation operation) {
         Map<String, String> valuesMap = new LinkedHashMap<>();
         // TODO FIXME stub
         valuesMap.put("ID", operation.getId().toString());
         valuesMap.put("Date", operation.getDate().toString());
-        valuesMap.put("Client", clientInOperation.getName());
+        valuesMap.put("Client", operation.getClient().getName());
         // TODO FIXME stub
         valuesMap.put("Type", operation.getOperationType().toString());
         printDetailsTable(valuesMap);
@@ -190,7 +188,7 @@ public class ConsoleDataPrinter implements DataPrinter {
                                                   
                                                Books in operation
                 """);
-        printListOfBooks(booksInOperation);
+        printListOfBooks(operation.getBooks());
     }
 
     @Override
