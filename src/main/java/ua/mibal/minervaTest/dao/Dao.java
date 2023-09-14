@@ -59,7 +59,7 @@ public abstract class Dao<T> {
     // returns true if continue, false if break
     protected abstract boolean appropriateSelectingAddingLogic(T e, String arg, List<T> result);
 
-    public final List<T> findAll() throws DaoException {
+    public List<T> findAll() throws DaoException {
         return queryHelper.readWithinTx(
                 entityManager -> entityManager.createQuery("select e from " + entityName + " e", type)
                         .getResultList(),

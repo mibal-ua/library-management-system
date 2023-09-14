@@ -18,6 +18,7 @@ package ua.mibal.minervaTest.dao;
 
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.model.Operation;
+import ua.mibal.minervaTest.model.exception.DaoException;
 
 import java.util.List;
 
@@ -45,5 +46,16 @@ public class OperationDao extends Dao<Operation> {
             result.add(operation);
         }
         return true;
+    }
+
+    @Override
+    public List<Operation> findAll() throws DaoException {
+        return queryHelper.readWithinTx(
+                entityManager -> entityManager.createQuery("select o from Operation o " +
+                                                           "left join fetch o.book " +
+                                                           "left join fetch o.client", Operation.class)
+                        .getResultList(),
+                "Exception while retrieving all Operations"
+        );
     }
 }
