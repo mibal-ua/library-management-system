@@ -17,11 +17,10 @@
 package ua.mibal.minervaTest.component;
 
 import org.springframework.stereotype.Component;
+import ua.mibal.minervaTest.dao.BookDao;
 import ua.mibal.minervaTest.dao.Dao;
-import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
-import ua.mibal.minervaTest.service.LibraryService;
 import ua.mibal.minervaTest.utils.StringUtils;
 
 import static java.lang.String.format;
@@ -37,21 +36,18 @@ public class ApplicationController {
 
     private final WindowManager windowManager;
 
-    private final Dao<Book> bookDao;
+    private final BookDao bookDao;
     private final Dao<Operation> operationDao;
     private final Dao<Client> clientDao;
-    private final LibraryService libraryService;
 
     public ApplicationController(WindowManager windowManager,
-                                 Dao<Book> bookDao,
+                                 BookDao bookDao,
                                  Dao<Operation> operationDao,
-                                 Dao<Client> clientDao,
-                                 LibraryService libraryService) {
+                                 Dao<Client> clientDao) {
         this.windowManager = windowManager;
         this.bookDao = bookDao;
         this.operationDao = operationDao;
         this.clientDao = clientDao;
-        this.libraryService = libraryService;
     }
 
     public void tab1(final String[] ignored) {
@@ -280,7 +276,7 @@ public class ApplicationController {
         final Long bookId = Long.valueOf(args[0]);
         bookDao.findById(bookId).ifPresentOrElse(
                 bookToTake -> {
-                    libraryService.takeBook(client, bookToTake);
+                    bookDao.takeBook(clientId, bookId);
                     windowManager.drawPrevTab();
                     windowManager.clientDetails(client);
                     windowManager.showToast("Books successfully taken!");
@@ -307,7 +303,7 @@ public class ApplicationController {
         final Long bookId = Long.valueOf(args[0]);
         bookDao.findById(bookId).ifPresentOrElse(
                 bookToReturn -> {
-                    libraryService.returnBook(client, bookToReturn);
+                    bookDao.returnBook(clientId, bookId);
                     windowManager.drawPrevTab();
                     windowManager.clientDetails(client);
                     windowManager.showToast("Books successfully returned!");
