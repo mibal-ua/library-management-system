@@ -52,7 +52,6 @@ public class StringUtils {
     }
 
     public static String min(String name, int n) {
-        // TODO
-        return null;
+        return substringAppend(name, "..", n);
     }
 }
