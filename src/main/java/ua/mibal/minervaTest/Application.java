@@ -19,7 +19,7 @@ package ua.mibal.minervaTest;
 
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.component.ApplicationController;
-import ua.mibal.minervaTest.component.ApplicationController.OwnFunction;
+import ua.mibal.minervaTest.component.ApplicationController.ArrayConsumer;
 import ua.mibal.minervaTest.component.WindowManager;
 
 import java.util.Arrays;
@@ -46,7 +46,7 @@ public class Application {
     }
 
     public void start() {
-        Map<String, OwnFunction> commandMap = new HashMap<>();
+        Map<String, ArrayConsumer<String>> commandMap = new HashMap<>();
         commandMap.put("1", applicationController::tab1);
         commandMap.put("2", applicationController::tab2);
         commandMap.put("3", applicationController::tab3);
@@ -62,7 +62,7 @@ public class Application {
         commandMap.put("take", applicationController::take);
         commandMap.put("return", applicationController::returnn);
 
-        commandMap.get("1").apply(null);
+        commandMap.get("1").apply();
         while (true) {
             String[] input = windowManager.readCommandLine();
             final String command = input[0];

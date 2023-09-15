@@ -310,8 +310,8 @@ public class ApplicationController {
     }
 
     @FunctionalInterface
-    public interface OwnFunction {
+    public interface ArrayConsumer<T> {
 
-        void apply(String[] args);
+        void apply(T... args);
     }
 }
