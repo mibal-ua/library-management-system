@@ -25,7 +25,7 @@ import static ua.mibal.minervaTest.model.window.DataType.NULL;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public enum State {
+public enum TabType {
 
     TAB_1(BOOK),
 
@@ -49,7 +49,7 @@ public enum State {
 
     private final DataType dataType;
 
-    State(final DataType dataType) {
+    TabType(final DataType dataType) {
         this.dataType = dataType;
     }
 
@@ -63,4 +63,9 @@ public enum State {
                this == LOOK_HISTORY;
     }
 
+    public boolean isRootTab() {
+        return this == TAB_1 ||
+               this == TAB_2 ||
+               this == TAB_3;
+    }
 }
