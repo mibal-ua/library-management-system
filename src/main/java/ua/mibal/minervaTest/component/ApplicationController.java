@@ -165,18 +165,14 @@ public class ApplicationController {
             return;
         }
         switch (windowManager.getCurrentDataType()) {
-            case BOOK -> windowManager.initBookToAdd().ifPresent(book -> {
-                if (bookDao.save(book))
-                    windowManager.showToast("Book successfully added!");
-                else
-                    windowManager.showToast("Book doesnt added(");
-            });
-            case CLIENT -> windowManager.initClientToAdd().ifPresent(client -> {
-                if (clientDao.save(client))
-                    windowManager.showToast("Client successfully added!");
-                else
-                    windowManager.showToast("Client doesnt added(");
-            });
+            case BOOK -> windowManager.initBookToAdd().ifPresent(
+                    book -> windowManager.showToast(bookDao.save(book)
+                            ? "Book successfully added!"
+                            : "Book doesnt added("));
+            case CLIENT -> windowManager.initClientToAdd().ifPresent(
+                    client -> windowManager.showToast(clientDao.save(client)
+                            ? "Client successfully added!"
+                            : "Client doesnt added("));
             case NULL -> windowManager.showToast("You can not use command 'add' in this tab.");
         }
     }
@@ -230,8 +226,8 @@ public class ApplicationController {
                         clientToDel -> {
                             final String name = StringUtils.min(clientToDel.getName(), 15);
                             if (clientToDel.doesHoldBook()) {
-                                windowManager.showToast(format(
-                                        "Oops, but client '%s' is holding books, we can't delete him(", name));
+                                windowManager.showToast(
+                                        "Oops, but client " + name + " is holding books, we can't delete him(");
                                 return;
                             }
                             final boolean isConfirmed = windowManager.showDialogueToast(
