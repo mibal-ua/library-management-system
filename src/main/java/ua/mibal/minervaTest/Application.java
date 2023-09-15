@@ -26,8 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.lang.String.format;
-
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
@@ -46,7 +44,7 @@ public class Application {
     }
 
     public void start() {
-        Map<String, ArrayConsumer<String>> commandMap = new HashMap<>();
+        final Map<String, ArrayConsumer<String>> commandMap = new HashMap<>();
         commandMap.put("1", applicationController::tab1);
         commandMap.put("2", applicationController::tab2);
         commandMap.put("3", applicationController::tab3);
@@ -68,17 +66,13 @@ public class Application {
             final String command = input[0];
             final String[] args = Arrays.copyOfRange(input, 1, input.length);
 
-            if (command.equals("exit")) {
-                final boolean isExit = windowManager.showDialogueToast(
-                        "You really need to exit?", "YES", "NO");
-                if (isExit) {
-                    return;
-                }
-            } else {
-                commandMap.getOrDefault(command, ignored ->
-                                windowManager.showToast(format("Unrecognizable command '%s'", command)))
-                        .apply(args);
-            }
+            if (command.equals("exit") && windowManager.showDialogueToast(
+                    "You really need to exit?", "YES", "NO"))
+                return;
+
+            commandMap.getOrDefault(command, ign -> windowManager.showToast(
+                            "Unrecognizable command '" + command + "'"))
+                    .apply(args);
         }
     }
 }
