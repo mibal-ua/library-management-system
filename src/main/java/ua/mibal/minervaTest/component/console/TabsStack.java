@@ -16,10 +16,7 @@
 
 package ua.mibal.minervaTest.component.console;
 
-import org.springframework.stereotype.Component;
-import ua.mibal.minervaTest.component.console.ConsoleWindowManager.Tab;
-import ua.mibal.minervaTest.model.Book;
-import ua.mibal.minervaTest.model.Client;
+import ua.mibal.minervaTest.component.console.NewConsoleWindowManager.Tab;
 
 import java.util.Stack;
 
@@ -27,32 +24,15 @@ import java.util.Stack;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-@Component
-public class CacheManager {
+public class TabsStack extends Stack<Tab> {
 
-    public final Stack<Tab> stack = new Stack<>();
-
-    private Book cachedBook;
-
-    private Client cachedClient;
-
-    public void push(final Tab tab) {
-        stack.push(tab);
-    }
-
-    public void push(final Book book) {
-        this.cachedBook = book;
-    }
-
-    public void push(final Client client) {
-        this.cachedClient = client;
-    }
-
-    public Book getBook() {
-        return cachedBook;
-    }
-
-    public Client getClient() {
-        return cachedClient;
+    @Override
+    public Tab push(Tab tab) {
+        if (tab.getCurrentTabState().isRootTab() &&
+            !this.isEmpty() &&
+            this.peek().getCurrentTabState().isRootTab()) {
+            this.pop();
+        }
+        return super.push(tab);
     }
 }

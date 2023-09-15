@@ -23,7 +23,7 @@ import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
-import ua.mibal.minervaTest.model.window.State;
+import ua.mibal.minervaTest.model.window.TabType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,75 +32,106 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.Stack;
+import java.util.function.Supplier;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.util.List.of;
 import static java.util.Objects.requireNonNull;
 import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.bold;
-import static ua.mibal.minervaTest.model.window.State.HELP_TAB;
-import static ua.mibal.minervaTest.model.window.State.LOOK_BOOK;
-import static ua.mibal.minervaTest.model.window.State.LOOK_CLIENT;
-import static ua.mibal.minervaTest.model.window.State.LOOK_HISTORY;
-import static ua.mibal.minervaTest.model.window.State.SEARCH_BOOK;
-import static ua.mibal.minervaTest.model.window.State.SEARCH_CLIENT;
-import static ua.mibal.minervaTest.model.window.State.SEARCH_HISTORY;
-import static ua.mibal.minervaTest.model.window.State.TAB_1;
-import static ua.mibal.minervaTest.model.window.State.TAB_2;
-import static ua.mibal.minervaTest.model.window.State.TAB_3;
+import static ua.mibal.minervaTest.model.window.TabType.HELP_TAB;
+import static ua.mibal.minervaTest.model.window.TabType.LOOK_BOOK;
+import static ua.mibal.minervaTest.model.window.TabType.LOOK_CLIENT;
+import static ua.mibal.minervaTest.model.window.TabType.LOOK_HISTORY;
+import static ua.mibal.minervaTest.model.window.TabType.SEARCH_BOOK;
+import static ua.mibal.minervaTest.model.window.TabType.SEARCH_CLIENT;
+import static ua.mibal.minervaTest.model.window.TabType.SEARCH_HISTORY;
+import static ua.mibal.minervaTest.model.window.TabType.TAB_1;
+import static ua.mibal.minervaTest.model.window.TabType.TAB_2;
+import static ua.mibal.minervaTest.model.window.TabType.TAB_3;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
 @Component
-public class ConsoleWindowManager implements WindowManager {
+public class NewConsoleWindowManager implements WindowManager {
 
     public final static int WINDOW_WIDTH = 80;
-    private final static int WINDOW_HEIGHT = 25;
+    public final static int WINDOW_HEIGHT = 25;
+
     private final DataPrinter dataPrinter;
+    private final Stack<Tab> tabStack = new TabsStack();
 
-    private final CacheManager cache = new CacheManager();
-
-    public ConsoleWindowManager(final DataPrinter dataPrinter) {
+    public NewConsoleWindowManager(DataPrinter dataPrinter) {
         this.dataPrinter = dataPrinter;
     }
 
-    // <<< Tabs >>>
-
     @Override
-    public void tab1(final List<Book> books) {
-        new Tab(new String[]{"BOOKS", "CLIENTS", "HISTORY"},
+    public void tab1(Supplier<List<Book>> booksSupplier) {
+        tabStack.push(new Tab(
+                new String[]{"BOOKS", "CLIENTS", "HISTORY"},
                 0,
-                () -> dataPrinter.printListOfBooks(books),
-                TAB_1,
-                true
-        ).draw();
+                () -> dataPrinter.printListOfBooks(booksSupplier.get()),
+                TAB_1
+        )).draw();
     }
 
     @Override
-    public void tab2(final List<Client> clients) {
-        new Tab(new String[]{"BOOKS", "CLIENTS", "HISTORY"},
+    public void tab2(Supplier<List<Client>> clientsSupplier) {
+        tabStack.push(new Tab(
+                new String[]{"BOOKS", "CLIENTS", "HISTORY"},
                 1,
-                () -> dataPrinter.printListOfClients(clients),
-                TAB_2,
-                true
-        ).draw();
+                () -> dataPrinter.printListOfClients(clientsSupplier.get()),
+                TAB_2
+        )).draw();
     }
 
     @Override
-    public void tab3(final List<Operation> operations) {
-        new Tab(new String[]{"BOOKS", "CLIENTS", "HISTORY"},
+    public void tab3(Supplier<List<Operation>> operationsSupplier) {
+        tabStack.push(new Tab(
+                new String[]{"BOOKS", "CLIENTS", "HISTORY"},
                 2,
-                () -> dataPrinter.printListOfOperations(operations),
-                TAB_3,
-                true
-        ).draw();
+                () -> dataPrinter.printListOfOperations(operationsSupplier.get()),
+                TAB_3
+        )).draw();
+    }
+
+    @Override
+    public void searchBookTab(final Supplier<List<Book>> booksSupplier, final String[] args) {
+        final String header = format("SEARCH IN BOOKS BY '%s'", join(" ", args));
+        tabStack.push(new Tab(new String[]{header},
+                0,
+                () -> dataPrinter.printListOfBooks(booksSupplier.get()),
+                SEARCH_BOOK
+        )).draw();
+    }
+
+    @Override
+    public void searchClientTab(final Supplier<List<Client>> clientsSupplier, final String[] args) {
+        final String header = format("SEARCH IN CLIENTS BY '%s'", join(" ", args));
+        tabStack.push(new Tab(new String[]{header},
+                0,
+                () -> dataPrinter.printListOfClients(clientsSupplier.get()),
+                SEARCH_CLIENT
+        )).draw();
+    }
+
+    @Override
+    public void searchOperationTab(final Supplier<List<Operation>> operationsSupplier, final String[] args) {
+        final String header = format("SEARCH IN OPERATIONS BY '%s'", join(" ", args));
+        tabStack.push(new Tab(new String[]{header},
+                0,
+                () -> dataPrinter.printListOfOperations(operationsSupplier.get()),
+                SEARCH_HISTORY
+        )).draw();
     }
 
     @Override
     public void help() {
-        new Tab(new String[]{"HELP"},
+        tabStack.push(new Tab(
+                new String[]{"HELP"},
                 0,
                 () -> System.out.println("""
 
@@ -143,69 +174,8 @@ public class ConsoleWindowManager implements WindowManager {
 
                          """),
                 HELP_TAB
-        ).draw();
+        )).draw();
     }
-
-    @Override
-    public void searchBookTab(final List<Book> books, final String[] args) {
-        final String header = format("SEARCH IN BOOKS BY '%s'", join(" ", args));
-        new Tab(new String[]{header},
-                0,
-                () -> dataPrinter.printListOfBooks(books),
-                SEARCH_BOOK
-        ).draw();
-    }
-
-    @Override
-    public void searchClientTab(final List<Client> clients, final String[] args) {
-        final String header = format("SEARCH IN CLIENTS BY '%s'", join(" ", args));
-        new Tab(new String[]{header},
-                0,
-                () -> dataPrinter.printListOfClients(clients),
-                SEARCH_CLIENT
-        ).draw();
-    }
-
-    @Override
-    public void searchOperationTab(final List<Operation> operations, final String[] args) {
-        final String header = format("SEARCH IN OPERATIONS BY '%s'", join(" ", args));
-        new Tab(new String[]{header},
-                0,
-                () -> dataPrinter.printListOfOperations(operations),
-                SEARCH_HISTORY
-        ).draw();
-    }
-
-    @Override
-    public void bookDetails(final Book book) {
-        new Tab(new String[]{"BOOK DETAILS"},
-                0,
-                () -> dataPrinter.printBookDetails(book),
-                LOOK_BOOK
-        ).draw();
-        cache.push(book);
-    }
-
-    @Override
-    public void clientDetails(final Client client) {
-        new Tab(new String[]{"CLIENT DETAILS"},
-                0,
-                () -> dataPrinter.printClientDetails(client),
-                LOOK_CLIENT
-        ).draw();
-        cache.push(client);
-    }
-
-    @Override
-    public void operationDetails(final Operation operation) {
-        new Tab(new String[]{"OPERATION DETAILS"},
-                0,
-                () -> dataPrinter.printOperationDetails(operation),
-                LOOK_HISTORY
-        ).draw();
-    }
-
-    // <<< Read >>>
 
     @Override
     public String[] readCommandLine() {
@@ -215,19 +185,23 @@ public class ConsoleWindowManager implements WindowManager {
         return input.split(" ");
     }
 
-    // <<< Toasts >>>
+    private void goTo(final int row, final int column) {
+        char escCode = 0x1B;
+        System.out.printf("%c[%d;%df", escCode, row, column);
+    }
 
     @Override
-    public void showToast(final String message) {
+    public void showToast(String message) {
         new InfoToast(message).draw();
     }
 
     @Override
-    public boolean showDialogueToast(final String question, final String answer1, final String answer2) {
+    public boolean showDialogueToast(String question, String answer1, String answer2) {
         return new DialogueToast(question, answer1, answer2)
                 .draw()
                 .getAnswer();
     }
+
 
     @Override
     public Optional<Book> initBookToAdd() {
@@ -244,7 +218,7 @@ public class ConsoleWindowManager implements WindowManager {
         ).draw().getAnswers();
 
         if (answers.isEmpty()) {
-            drawBackground();
+            refresh();
             return Optional.empty();
         }
 
@@ -254,7 +228,7 @@ public class ConsoleWindowManager implements WindowManager {
                 iterator.next(),
                 iterator.next(),
                 // TODO FIXME stub
-                LocalDateTime.MIN, // iterator.next(),
+                LocalDateTime.now(), // iterator.next(),
                 iterator.next(),
                 true
         ));
@@ -271,19 +245,73 @@ public class ConsoleWindowManager implements WindowManager {
         ).draw().getAnswers();
 
         if (answers.isEmpty()) {
-            drawBackground();
+            refresh();
             return Optional.empty();
         }
 
         Iterator<String> iterator = answers.get().listIterator();
         return Optional.of(new Client(
                 // TODO FIXME stub
-//                iterator.next()
+                iterator.next()
         ));
     }
 
     @Override
-    public Optional<Book> editBook(final Book originalBook) {
+    public DataType getCurrentDataType() {
+        return getCurrentTabState().getDataType();
+    }
+
+    @Override
+    public TabType getCurrentTabState() {
+        return this.tabStack.peek().getCurrentTabState();
+    }
+
+    @Override
+    public void drawPrevTab() {
+        dataPrinter.clear();
+        if (this.tabStack.size() > 1)
+            this.tabStack.pop();
+        this.tabStack.peek().draw();
+    }
+
+    @Override
+    public void bookDetails(Supplier<Optional<Book>> bookOptionalSupplier) {
+        tabStack.push(new Tab(new String[]{"BOOK DETAILS"},
+                0,
+                () -> bookOptionalSupplier.get().ifPresentOrElse(
+                        dataPrinter::printBookDetails,
+                        this::drawPrevTab
+                ),
+                LOOK_BOOK
+        )).draw();
+    }
+
+    @Override
+    public void clientDetails(Supplier<Optional<Client>> clientOptionalSupplier) {
+        tabStack.push(new Tab(new String[]{"CLIENT DETAILS"},
+                0,
+                () -> clientOptionalSupplier.get().ifPresentOrElse(
+                        dataPrinter::printClientDetails,
+                        this::drawPrevTab
+                ),
+                LOOK_CLIENT
+        )).draw();
+    }
+
+    @Override
+    public void operationDetails(Supplier<Optional<Operation>> operationOptionalSupplier) {
+        tabStack.push(new Tab(new String[]{"OPERATION DETAILS"},
+                0,
+                () -> operationOptionalSupplier.get().ifPresentOrElse(
+                        dataPrinter::printOperationDetails,
+                        this::drawPrevTab
+                ),
+                LOOK_HISTORY
+        )).draw();
+    }
+
+    @Override
+    public Optional<Book> editBook(Book originalBook) {
         List<String> messages = of(
                 format("prev book title: '%s'", originalBook.getTitle()),
                 format("prev book subtitle: '%s'", originalBook.getSubtitle()),
@@ -299,7 +327,7 @@ public class ConsoleWindowManager implements WindowManager {
         ).draw().getAnswers();
 
         if (answersOptional.isEmpty()) {
-            drawBackground();
+            refresh();
             return Optional.empty();
         }
 
@@ -319,7 +347,7 @@ public class ConsoleWindowManager implements WindowManager {
                 answers.get(3).equals("")
                         ? originalBook.getPublishedDate()
                         // TODO FIXME stub
-                        : LocalDateTime.MAX, // answers.get(3),
+                        : LocalDateTime.now(), // answers.get(3),
                 answers.get(4).equals("")
                         ? originalBook.getPublisher()
                         : answers.get(4),
@@ -340,7 +368,7 @@ public class ConsoleWindowManager implements WindowManager {
         ).draw().getAnswers();
 
         if (answersOptional.isEmpty()) {
-            drawBackground();
+            refresh();
             return Optional.empty();
         }
 
@@ -352,57 +380,16 @@ public class ConsoleWindowManager implements WindowManager {
                         ? originalClient.getName()
                         : answers.get(0)
         );
-        // TODO FIXME stub
-        client.addBook(originalClient.getBooks().iterator().next());
+        originalClient.getBooks().forEach(client::addBook);
         return Optional.of(client);
     }
 
-    // <<< Cached Tabs drawing >>>
-
     @Override
-    public void drawPrevTab() {
-        if (cache.stack.size() > 1) {
-            cache.stack.pop();
-        }
-        cache.stack.peek().draw();
+    public WindowManager refresh() {
+        dataPrinter.clear();
+        this.tabStack.peek().draw();
+        return this;
     }
-
-    public void drawBackground() {
-        cache.stack.peek().draw();
-    }
-
-    // <<< Cached data Getters >>>
-
-    @Override
-    public DataType getCurrentDataType() {
-        return cache.stack.peek().getDataType();
-    }
-
-    @Override
-    public State getCurrentTabState() {
-        return cache.stack.peek().getCurrentTabState();
-    }
-
-    @Override
-    public String getCachedBookId() {
-        // TODO FIXME stub
-        return cache.getBook().getId().toString();
-    }
-
-    @Override
-    public String getCachedClientId() {
-        // TODO FIXME stub
-        return cache.getClient().getId().toString();
-    }
-
-    // <<< Console esc-sequences >>>
-
-    private void goTo(final int row, final int column) {
-        char escCode = 0x1B;
-        System.out.printf("%c[%d;%df", escCode, row, column);
-    }
-
-    // <<< Tabs >>>
 
     /**
      * @author Mykhailo Balakhon
@@ -411,42 +398,25 @@ public class ConsoleWindowManager implements WindowManager {
     public class Tab {
 
         private final String[] tabsNames;
-
         private final int boldTab;
-
         private final Runnable body;
+        private final TabType currentTabState;
 
-        private final State currentTabState;
-
-        public Tab(final String[] tabsNames,
-                   final int boldTab,
-                   final Runnable body,
-                   final State currentTabState) {
-            this(tabsNames, boldTab, body, currentTabState, false);
-        }
-
-        public Tab(final String[] tabsNames,
-                   final int boldTab,
-                   final Runnable body,
-                   final State currentTabState,
-                   final boolean isRootTab) {
+        public Tab(String[] tabsNames,
+                   int boldTabIndex,
+                   Runnable body,
+                   TabType currentTabState) {
             this.tabsNames = tabsNames;
-            if (-1 < boldTab && boldTab < tabsNames.length) {
-                this.boldTab = boldTab;
-            } else {
-                this.boldTab = -1;
-            }
+            this.boldTab = -1 < boldTabIndex && boldTabIndex < tabsNames.length
+                    ? boldTabIndex
+                    : -1;
             this.body = body;
             this.currentTabState = currentTabState;
-            if (isRootTab) {
-                cache.stack.clear();
-            }
-            cache.push(this);
         }
 
-
+// TODO FIX
         public void draw() {
-            // beforeAll
+//            // beforeAll
             dataPrinter.clear();
 
             // header
@@ -472,24 +442,17 @@ public class ConsoleWindowManager implements WindowManager {
             System.out.println();
 
             // body
-            requireNonNull(body);
-            body.run();
+            requireNonNull(body).run();
 
             // margin afterAll
             System.out.println();
             System.out.println();
         }
 
-        public DataType getDataType() {
-            return currentTabState.getDataType();
-        }
-
-        public State getCurrentTabState() {
+        public TabType getCurrentTabState() {
             return currentTabState;
         }
     }
-
-    // <<< Toasts >>>
 
     /**
      * @author Mykhailo Balakhon
@@ -514,7 +477,7 @@ public class ConsoleWindowManager implements WindowManager {
             printMessage(message);
 
             appropriateBody();
-            drawBackground();
+            refresh();
             return this;
         }
 

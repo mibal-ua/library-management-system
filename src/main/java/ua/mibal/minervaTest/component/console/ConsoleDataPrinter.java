@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static java.lang.String.format;
-import static ua.mibal.minervaTest.component.console.ConsoleWindowManager.WINDOW_WIDTH;
+import static ua.mibal.minervaTest.component.console.NewConsoleWindowManager.WINDOW_WIDTH;
 import static ua.mibal.minervaTest.utils.StringUtils.substringAppend;
 
 

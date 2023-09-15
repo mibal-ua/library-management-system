@@ -20,10 +20,11 @@ import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
-import ua.mibal.minervaTest.model.window.State;
+import ua.mibal.minervaTest.model.window.TabType;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * @author Mykhailo Balakhon
@@ -31,11 +32,11 @@ import java.util.Optional;
  */
 public interface WindowManager {
 
-    void tab1(List<Book> books);
+    void tab1(Supplier<List<Book>> books);
 
-    void tab2(List<Client> clients);
+    void tab2(Supplier<List<Client>> clients);
 
-    void tab3(List<Operation> operations);
+    void tab3(Supplier<List<Operation>> operations);
 
     void help();
 
@@ -45,11 +46,11 @@ public interface WindowManager {
 
     boolean showDialogueToast(String question, String answer1, String answer2);
 
-    void searchBookTab(List<Book> books, String[] args);
+    void searchBookTab(Supplier<List<Book>> books, String[] args);
 
-    void searchClientTab(List<Client> clients, String[] args);
+    void searchClientTab(Supplier<List<Client>> clients, String[] args);
 
-    void searchOperationTab(List<Operation> operations, String[] args);
+    void searchOperationTab(Supplier<List<Operation>> operations, String[] args);
 
     Optional<Book> initBookToAdd();
 
@@ -57,22 +58,20 @@ public interface WindowManager {
 
     DataType getCurrentDataType();
 
-    State getCurrentTabState();
+    TabType getCurrentTabState();
 
     void drawPrevTab();
 
-    void bookDetails(Book book);
+    void bookDetails(Supplier<Optional<Book>> book);
 
-    void clientDetails(Client client);
+    void clientDetails(Supplier<Optional<Client>> client);
 
-    void operationDetails(Operation operation);
-
-    String getCachedBookId();
-
-    String getCachedClientId();
+    void operationDetails(Supplier<Optional<Operation>> operation);
 
     Optional<Book> editBook(Book book);
 
     Optional<Client> editClient(Client client);
+
+    WindowManager refresh();
 }
 

@@ -23,9 +23,7 @@ import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.utils.StringUtils;
 
-import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
-import static ua.mibal.minervaTest.model.window.State.LOOK_CLIENT;
 import static ua.mibal.minervaTest.utils.StringUtils.isNumber;
 
 /**
@@ -52,15 +50,15 @@ public class ApplicationController {
     }
 
     public void tab1(final String[] ignored) {
-        windowManager.tab1(bookDao.findAll());
+        windowManager.tab1(bookDao::findAll);
     }
 
     public void tab2(final String[] ignored) {
-        windowManager.tab2(clientDao.findAll());
+        windowManager.tab2(clientDao::findAll);
     }
 
     public void tab3(final String[] ignored) {
-        windowManager.tab3(operationDao.findAll());
+        windowManager.tab3(operationDao::findAll);
     }
 
     public void esc(final String[] ignored) {
@@ -77,9 +75,9 @@ public class ApplicationController {
             return;
         }
         switch (windowManager.getCurrentDataType()) {
-            case BOOK -> windowManager.searchBookTab(bookDao.find(args), args);
-            case CLIENT -> windowManager.searchClientTab(clientDao.find(args), args);
-            case HISTORY -> windowManager.searchOperationTab(operationDao.find(args), args);
+            case BOOK -> windowManager.searchBookTab(() -> bookDao.find(args), args);
+            case CLIENT -> windowManager.searchClientTab(() -> clientDao.find(args), args);
+            case HISTORY -> windowManager.searchOperationTab(() -> operationDao.find(args), args);
             case NULL -> windowManager.showToast("You can not use command 'search' in this tab.");
         }
     }
@@ -91,18 +89,9 @@ public class ApplicationController {
         }
         final Long id = Long.valueOf(args[0]);
         switch (windowManager.getCurrentDataType()) {
-            case BOOK -> bookDao.findById(id).ifPresentOrElse(
-                    windowManager::bookDetails,
-                    () -> windowManager.showToast("Oops, there are no books with this id=" + id)
-            );
-            case CLIENT -> clientDao.findById(id).ifPresentOrElse(
-                    windowManager::clientDetails,
-                    () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
-            );
-            case HISTORY -> operationDao.findById(id).ifPresentOrElse(
-                    windowManager::operationDetails,
-                    () -> windowManager.showToast("Oops, there are no operations with this id=" + id)
-            );
+            case BOOK -> windowManager.bookDetails(() -> bookDao.findById(id));
+            case CLIENT -> windowManager.clientDetails(() -> clientDao.findById(id));
+            case HISTORY -> windowManager.operationDetails(() -> operationDao.findById(id));
             case NULL -> windowManager.showToast("You can not use command 'look' in this tab.");
         }
     }
@@ -112,51 +101,32 @@ public class ApplicationController {
             windowManager.showToast("You cannot change history manually");
             return;
         }
-        final boolean isDetailsTab = windowManager.getCurrentTabState().isDetailsTab();
-        if (!isDetailsTab && (args.length == 0 || !isNumber(args[0]))) {
+        if (args.length == 0 || !isNumber(args[0])) {
             windowManager.showToast("You need to enter 'edit' with ${id}");
             return;
         }
+        final Long id = Long.valueOf(args[0]);
         switch (windowManager.getCurrentDataType()) {
-            case BOOK -> {
-                final Long id = Long.valueOf(isDetailsTab
-                        ? windowManager.getCachedBookId()
-                        : args[0]
-                );
-                bookDao.findById(id)
-                        .flatMap(windowManager::editBook).ifPresentOrElse(
-                                book -> {
-                                    bookDao.update(book);
-                                    if (isDetailsTab) {
-                                        windowManager.drawPrevTab(); // FIXME
-                                        windowManager.bookDetails(book);
-                                    }
-                                    windowManager.showToast("Book successfully updated!");
-                                },
-                                () -> windowManager.showToast("Oops, there are no books with this id=" + id)
-                        );
-            }
-            case CLIENT -> {
-                final Long id = Long.valueOf(isDetailsTab
-                        ? windowManager.getCachedClientId()
-                        : args[0]
-                );
-                clientDao.findById(id)
-                        .flatMap(windowManager::editClient).ifPresentOrElse(
-                                client -> {
-                                    clientDao.update(client);
-                                    if (isDetailsTab) {
-                                        windowManager.drawPrevTab(); // FIXME
-                                        windowManager.clientDetails(client);
-                                    }
-                                    windowManager.showToast("Client successfully updated!");
-                                },
-                                () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
-                        );
-            }
+            case BOOK -> bookDao.findById(id)
+                    .flatMap(windowManager::editBook).ifPresentOrElse(
+                            book -> {
+                                bookDao.update(book);
+                                windowManager.refresh()
+                                        .showToast("Book successfully updated!");
+                            },
+                            () -> windowManager.showToast("Oops, there are no books with this id=" + id)
+                    );
+            case CLIENT -> clientDao.findById(id)
+                    .flatMap(windowManager::editClient).ifPresentOrElse(
+                            client -> {
+                                clientDao.update(client);
+                                windowManager.refresh()
+                                        .showToast("Client successfully updated!");
+                            },
+                            () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
+                    );
             case NULL -> windowManager.showToast("You can not use command 'edit' in this tab.");
         }
-
     }
 
     public void add(final String[] ignored) {
@@ -187,121 +157,100 @@ public class ApplicationController {
             windowManager.showToast("You need to enter 'delete' with ${id}");
             return;
         }
+        final Long id = Long.valueOf(args[0]);
         switch (windowManager.getCurrentDataType()) {
-            case BOOK -> {
-                final Long id = Long.valueOf(isDetailsTab
-                        ? windowManager.getCachedBookId()
-                        : args[0]
-                );
-                bookDao.findById(id).ifPresentOrElse(
-                        bookToDel -> {
-                            final String title = StringUtils.min(bookToDel.getTitle(), 14);
-                            if (!bookToDel.isFree()) {
-                                windowManager.showToast("Oops, but book " + title + " isn't free");
-                                return;
+            case BOOK -> bookDao.findById(id).ifPresentOrElse(
+                    bookToDel -> {
+                        final String title = StringUtils.min(bookToDel.getTitle(), 14);
+                        if (!bookToDel.isFree()) {
+                            windowManager.showToast("Oops, but book " + title + " isn't free");
+                            return;
+                        }
+                        final boolean isConfirmed = windowManager.showDialogueToast(
+                                "You really need to delete book '" + title + "'?",
+                                "YES", "NO");
+                        if (isConfirmed) {
+                            if (bookDao.delete(bookToDel))
+                                windowManager.refresh()
+                                        .showToast("Book successfully deleted.");
+                            else
+                                windowManager.showToast("Book isn't deleted.");
+                        }
+                    },
+                    () -> windowManager.showToast("Oops, there are no books with this id=" + id)
+            );
+            case CLIENT -> clientDao.findById(id).ifPresentOrElse(
+                    clientToDel -> {
+                        final String name = StringUtils.min(clientToDel.getName(), 15);
+                        if (clientToDel.doesHoldBook()) {
+                            windowManager.showToast(
+                                    "Oops, but client " + name + " is holding books, we can't delete him(");
+                            return;
+                        }
+                        final boolean isConfirmed = windowManager.showDialogueToast(
+                                "You really need to delete client '" + name + "'?",
+                                "YES", "NO");
+                        if (isConfirmed) {
+                            if (clientDao.delete(clientToDel)) {
+                                windowManager.refresh()
+                                        .showToast("Client successfully deleted.");
+                            } else {
+                                windowManager.showToast("Client isn't deleted.");
                             }
-                            final boolean isConfirmed = windowManager.showDialogueToast(
-                                    "You really need to delete book '" + title + "'?",
-                                    "YES", "NO");
-                            if (isConfirmed) {
-                                if (bookDao.delete(bookToDel)) {
-                                    windowManager.showToast("Book successfully deleted.");
-                                    if (isDetailsTab) { // TODO FIXME
-                                        windowManager.drawPrevTab();
-                                    }
-                                } else {
-                                    windowManager.showToast("Book isn't deleted.");
-                                }
-                            }
-                        },
-                        () -> windowManager.showToast("Oops, there are no books with this id=" + id)
-                );
-            }
-            case CLIENT -> {
-                final Long id = Long.valueOf(isDetailsTab
-                        ? windowManager.getCachedClientId()
-                        : args[0]
-                );
-                clientDao.findById(id).ifPresentOrElse(
-                        clientToDel -> {
-                            final String name = StringUtils.min(clientToDel.getName(), 15);
-                            if (clientToDel.doesHoldBook()) {
-                                windowManager.showToast(
-                                        "Oops, but client " + name + " is holding books, we can't delete him(");
-                                return;
-                            }
-                            final boolean isConfirmed = windowManager.showDialogueToast(
-                                    "You really need to delete client '" + name + "'?",
-                                    "YES", "NO");
-                            if (isConfirmed) {
-                                if (clientDao.delete(clientToDel)) {
-                                    windowManager.showToast("Client successfully deleted.");
-                                    if (isDetailsTab) { // TODO FIXME
-                                        windowManager.drawPrevTab();
-                                    }
-                                } else {
-                                    windowManager.showToast("Client isn't deleted.");
-                                }
-                            }
-                        },
-                        () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
-                );
-            }
+                        }
+                    },
+                    () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
+            );
             case NULL -> windowManager.showToast("You can not use command 'delete' in this tab.");
         }
     }
 
     public void take(final String[] args) {
-        if (windowManager.getCurrentTabState() != LOOK_CLIENT) {
-            windowManager.showToast("You can not use command 'take' in this tab");
-            return;
-        }
-        if (args.length == 0 || !isNumber(args[0])) {
-            windowManager.showToast("You need to enter 'take' with ${id} of book");
+        if (args.length != 2 || !isNumber(args[1]) || !isNumber(args[0])) {
+            windowManager.showToast("You need to enter 'take ${client_id} ${book_id}'");
             return;
         }
 
-        final Long clientId = Long.valueOf(windowManager.getCachedClientId());
-        final Client client = clientDao.findById(clientId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Internal error: client by cached id=" + clientId + " not found"));
-
-        final Long bookId = Long.valueOf(args[0]);
+        final Long clientId = Long.valueOf(args[0]);
+        clientDao.findById(clientId).orElseThrow(
+                () -> new IllegalArgumentException("Client with id=" + clientId + " not found"));
+        final Long bookId = Long.valueOf(args[1]);
         bookDao.findById(bookId).ifPresentOrElse(
                 bookToTake -> {
+                    if (!bookToTake.isFree()) {
+                        windowManager.showToast("Oops, but book with id=" + bookId + " isn't free(");
+                        return;
+                    }
                     bookDao.takeBook(clientId, bookId);
-                    windowManager.drawPrevTab();
-                    windowManager.clientDetails(client);
-                    windowManager.showToast("Books successfully taken!");
+                    windowManager.refresh()
+                            .showToast("Book successfully taken!");
                 },
-                () -> windowManager.showToast("Oops, all books you are enter not free")
+                () -> windowManager.showToast("Oops, but book with id=" + bookId + " doesn't exists")
         );
     }
 
     public void returnn(final String[] args) {
-        if (windowManager.getCurrentTabState() != LOOK_CLIENT) {
-            windowManager.showToast("You can not use command 'return' in this tab");
+        if (args.length != 2 || !isNumber(args[1]) || !isNumber(args[0])) {
+            windowManager.showToast("You need to enter 'return ${client_id} ${book_id}'");
             return;
         }
-        if (args.length == 0 || !isNumber(args[0])) {
-            windowManager.showToast("You need to enter 'return' with ${id} of book");
-            return;
-        }
-
-        final Long clientId = Long.valueOf(windowManager.getCachedClientId());
+        final Long clientId = Long.valueOf(args[0]);
         final Client client = clientDao.findById(clientId)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "Internal error: client by cached id=" + clientId + " not found"));
-
-        final Long bookId = Long.valueOf(args[0]);
+                        "Client with id=" + clientId + " not found"));
+        final Long bookId = Long.valueOf(args[1]);
         bookDao.findById(bookId).ifPresentOrElse(
                 bookToReturn -> {
+                    if (!client.getBooks().contains(bookToReturn)) {
+                        windowManager.showToast("Oops, but user with id=" + client +
+                                                " doesn't hold this book with id=" + bookId);
+                        return;
+                    }
                     bookDao.returnBook(clientId, bookId);
-                    windowManager.drawPrevTab();
-                    windowManager.clientDetails(client);
-                    windowManager.showToast("Books successfully returned!");
+                    windowManager.refresh()
+                            .showToast("Books successfully returned!");
                 },
-                () -> windowManager.showToast("Oops, all books you are enter not yours")
+                () -> windowManager.showToast("Oops, but book with id=" + bookId + " doesn't exists")
         );
     }
 
