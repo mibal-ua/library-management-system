@@ -50,4 +50,16 @@ public class StringUtils {
     public static String min(String name, int n) {
         return substringAppend(name, "..", n);
     }
+
+    /**
+     * Returns boolean value if {@code str} matches regexp. Regexp {@code "^[0-9]+$"}
+     * checks is this string a positive integer number.
+     *
+     * @param str the original string
+     * @return {@code true} if string matches regexp,
+     *         {@code false} if string doesn't match regexp
+     */
+    public static boolean isNumber(String str) {
+        return str.trim().matches("^[0-9]+$");
+    }
 }

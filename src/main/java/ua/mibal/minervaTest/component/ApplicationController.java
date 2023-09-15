@@ -26,6 +26,7 @@ import ua.mibal.minervaTest.utils.StringUtils;
 import static java.lang.String.format;
 import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
 import static ua.mibal.minervaTest.model.window.State.LOOK_CLIENT;
+import static ua.mibal.minervaTest.utils.StringUtils.isNumber;
 
 /**
  * @author Mykhailo Balakhon
@@ -84,8 +85,8 @@ public class ApplicationController {
     }
 
     public void look(final String[] args) {
-        if (args.length == 0) {
-            windowManager.showToast("You need to enter 'look' with ${query}");
+        if (args.length == 0 || !isNumber(args[0])) {
+            windowManager.showToast("You need to enter 'look' with ${id}");
             return;
         }
         final Long id = Long.valueOf(args[0]);
@@ -111,13 +112,11 @@ public class ApplicationController {
             windowManager.showToast("You cannot change history manually");
             return;
         }
-
         final boolean isDetailsTab = windowManager.getCurrentTabState().isDetailsTab();
-        if (!isDetailsTab && args.length == 0) {
+        if (!isDetailsTab && (args.length == 0 || !isNumber(args[0]))) {
             windowManager.showToast("You need to enter 'edit' with ${id}");
             return;
         }
-
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> {
                 final Long id = Long.valueOf(isDetailsTab
@@ -187,13 +186,11 @@ public class ApplicationController {
             windowManager.showToast("You cannot change history manually");
             return;
         }
-
         final boolean isDetailsTab = windowManager.getCurrentTabState().isDetailsTab();
-        if (!isDetailsTab && args.length == 0) {
+        if (!isDetailsTab && (args.length == 0 || !isNumber(args[0]))) {
             windowManager.showToast("You need to enter 'delete' with ${id}");
             return;
         }
-
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> {
                 final Long id = Long.valueOf(isDetailsTab
@@ -263,7 +260,7 @@ public class ApplicationController {
             windowManager.showToast("You can not use command 'take' in this tab");
             return;
         }
-        if (args.length == 0) {
+        if (args.length == 0 || !isNumber(args[0])) {
             windowManager.showToast("You need to enter 'take' with ${id} of book");
             return;
         }
@@ -290,7 +287,7 @@ public class ApplicationController {
             windowManager.showToast("You can not use command 'return' in this tab");
             return;
         }
-        if (args.length == 0) {
+        if (args.length == 0 || !isNumber(args[0])) {
             windowManager.showToast("You need to enter 'return' with ${id} of book");
             return;
         }
