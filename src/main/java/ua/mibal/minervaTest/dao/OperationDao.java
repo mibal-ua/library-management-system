@@ -36,7 +36,7 @@ public class OperationDao extends Dao<Operation> {
 
     @Override
     protected boolean appropriateSelectingAddingLogic(Operation operation, String arg, List<Operation> result) {
-        if (operation.getId().equals(Long.valueOf(arg))) {
+        if (operation.getId().toString().equals(arg)) {
             result.add(operation);
             return false;
         }
