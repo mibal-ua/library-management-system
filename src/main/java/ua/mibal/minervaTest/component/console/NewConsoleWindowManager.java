@@ -254,7 +254,7 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public TabType getCurrentTabState() {
-        return this.tabStack.peek().getCurrentTabState();
+        return this.tabStack.peek().getTabType();
     }
 
     @Override

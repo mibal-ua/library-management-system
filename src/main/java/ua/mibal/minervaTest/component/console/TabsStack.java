@@ -28,9 +28,9 @@ public class TabsStack extends Stack<Tab> {
 
     @Override
     public Tab push(Tab tab) {
-        if (tab.getCurrentTabState().isRootTab() &&
+        if (tab.getTabType().isRootTab() &&
             !this.isEmpty() &&
-            this.peek().getCurrentTabState().isRootTab()) {
+            this.peek().getTabType().isRootTab()) {
             this.pop();
         }
         return super.push(tab);

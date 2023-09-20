@@ -15,63 +15,53 @@ import static ua.mibal.minervaTest.component.console.ConsoleDataPrinter.bold;
  */
 public class Tab {
 
-    private final String[] tabsNames;
-    private final int boldTab;
+    private final String[] headerWords;
+    private final int boldWordIndex;
     private final Runnable body;
-    private final TabType currentTabState;
+    private final TabType tabType;
 
     public Tab(Runnable body,
-               TabType currentTabState,
-               int boldTabIndex,
-               String... tabsNames) {
-        this.tabsNames = tabsNames;
-        this.boldTab = -1 < boldTabIndex && boldTabIndex < tabsNames.length
-                ? boldTabIndex
-                : -1;
+               TabType tabType,
+               int boldWordIndex,
+               String... headerWords) {
+        this.headerWords = headerWords;
+        this.boldWordIndex = boldWordIndex;
         this.body = body;
-        this.currentTabState = currentTabState;
+        this.tabType = tabType;
     }
 
     public Tab(Runnable body,
-               TabType currentTabState,
-               String... tabsNames) {
-        this(body, currentTabState, 0, tabsNames);
+               TabType tabType,
+               String... headerWords) {
+        this(body, tabType, 0, headerWords);
     }
 
     public void draw() {
         ConsoleUtils.clear();
-
-        // header
-        final int allWordsLength = Arrays
-                .stream(tabsNames)
-                .reduce(0,
-                        (acc, str) -> acc + str.length(),
-                        Integer::sum);
-        final int spaceLength = (WINDOW_WIDTH - allWordsLength) / (tabsNames.length + 1);
-        final String space = " ".repeat(spaceLength);
-
-        final StringBuilder message = new StringBuilder(space);
-        for (int i = 0; i < tabsNames.length; i++) {
-            String tabsName = i == boldTab
-                    ? bold(tabsNames[i])
-                    : tabsNames[i];
-            message.append(tabsName)
-                    .append(space);
-        }
-
-        System.out.println();
-        System.out.println(message);
-        System.out.println();
-
-        // body
+        System.out.println("\n" + implementHeaderWithSpaces() + "\n");
         requireNonNull(body).run();
-
-        // margin afterAll
-        System.out.println();
-        System.out.println();
+        System.out.print("\n\n");
     }
 
-    public TabType getCurrentTabState() {
-        return currentTabState;
+    public TabType getTabType() {
+        return tabType;
+    }
+
+    private String implementHeaderWithSpaces() {
+        final int symbolCount = Arrays.stream(headerWords)
+                .map(String::length)
+                .reduce(0, Integer::sum, Integer::sum);
+
+        final int spaceLength = (WINDOW_WIDTH - symbolCount) / (headerWords.length + 1);
+        final String space = " ".repeat(spaceLength);
+
+        final StringBuilder header = new StringBuilder(space);
+        for (int i = 0; i < headerWords.length; i++) {
+            header.append(i == boldWordIndex
+                            ? bold(headerWords[i])
+                            : headerWords[i])
+                    .append(space);
+        }
+        return header.toString();
     }
 }
