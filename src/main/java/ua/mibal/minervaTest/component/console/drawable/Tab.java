@@ -1,5 +1,6 @@
 package ua.mibal.minervaTest.component.console.drawable;
 
+import ua.mibal.minervaTest.component.console.ConsoleUtils;
 import ua.mibal.minervaTest.model.window.TabType;
 
 import java.util.Arrays;
@@ -31,11 +32,15 @@ public class Tab {
         this.currentTabState = currentTabState;
     }
 
-    // TODO FIX
+    public Tab(Runnable body,
+               TabType currentTabState,
+               String... tabsNames) {
+        this(body, currentTabState, 0, tabsNames);
+    }
+
     public void draw() {
-//            // beforeAll
-//        dataPrinter.clear();
-//
+        ConsoleUtils.clear();
+
         // header
         final int allWordsLength = Arrays
                 .stream(tabsNames)

@@ -69,7 +69,6 @@ public class NewConsoleWindowManager implements WindowManager {
         tabStack.push(new Tab(
                 () -> dataPrinter.printListOfBooks(booksSupplier.get()),
                 TAB_1,
-                0,
                 "BOOKS", "CLIENTS", "HISTORY"
         )).draw();
     }
@@ -100,7 +99,6 @@ public class NewConsoleWindowManager implements WindowManager {
         tabStack.push(new Tab(
                 () -> dataPrinter.printListOfBooks(booksSupplier.get()),
                 SEARCH_BOOK,
-                0,
                 header
         )).draw();
     }
@@ -111,7 +109,6 @@ public class NewConsoleWindowManager implements WindowManager {
         tabStack.push(new Tab(
                 () -> dataPrinter.printListOfClients(clientsSupplier.get()),
                 SEARCH_CLIENT,
-                0,
                 header
         )).draw();
     }
@@ -122,7 +119,6 @@ public class NewConsoleWindowManager implements WindowManager {
         tabStack.push(new Tab(
                 () -> dataPrinter.printListOfOperations(operationsSupplier.get()),
                 SEARCH_HISTORY,
-                0,
                 header
         )).draw();
     }
@@ -277,7 +273,6 @@ public class NewConsoleWindowManager implements WindowManager {
                         this::drawPrevTab
                 ),
                 LOOK_BOOK,
-                0,
                 "BOOK DETAILS"
         )).draw();
     }
@@ -290,7 +285,6 @@ public class NewConsoleWindowManager implements WindowManager {
                         this::drawPrevTab
                 ),
                 LOOK_CLIENT,
-                0,
                 "CLIENT DETAILS"
         )).draw();
     }
@@ -303,7 +297,6 @@ public class NewConsoleWindowManager implements WindowManager {
                         this::drawPrevTab
                 ),
                 LOOK_HISTORY,
-                0,
                 "OPERATION DETAILS"
         )).draw();
     }

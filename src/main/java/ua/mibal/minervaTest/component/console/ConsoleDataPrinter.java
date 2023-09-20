@@ -189,8 +189,7 @@ public class ConsoleDataPrinter implements DataPrinter {
 
     @Override
     public void clear() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        ConsoleUtils.clear();
     }
 
     private void printDetailsTable(final Map<String, String> valuesMap) {
