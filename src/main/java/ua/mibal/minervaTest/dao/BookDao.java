@@ -33,20 +33,6 @@ public class BookDao extends Dao<Book> {
         super(queryHelper, Book.class);
     }
 
-    @Override // TODO Separate into service
-    protected boolean appropriateSelectingAddingLogic(Book book, String arg, List<Book> result) {
-        if (book.getId().toString().equals(arg)) {
-            result.add(book);
-            return false;
-        }
-        if (book.getTitle().contains(arg) || // TODO add search by Date
-            book.getAuthor().contains(arg) ||
-            book.getPublisher().contains(arg)) {
-            result.add(book);
-        }
-        return true;
-    }
-
     public void takeBook(Long clientId, Long bookId) {
         queryHelper.performWithinTx(entityManager -> {
             Book managedBook = entityManager.getReference(Book.class, bookId);
@@ -61,5 +47,20 @@ public class BookDao extends Dao<Book> {
                     managedBook.setClient(null);
                 }, "Error while returning by client_id=" + clientId + " book_id=" + bookId
         );
+    }
+
+    public List<Book> find(String... args) {
+        return findAll().stream()
+                .filter(book -> {
+                    for (String arg : args) {
+                        if (book.getId().toString().equals(arg) ||
+                            book.getTitle().contains(arg) || // TODO add search by Date
+                            book.getAuthor().contains(arg) ||
+                            book.getPublisher().contains(arg))
+                            return true;
+                    }
+                    return false;
+                })
+                .toList();
     }
 }

@@ -34,18 +34,6 @@ public class ClientDao extends Dao<Client> {
         super(queryHelper, Client.class);
     }
 
-    @Override
-    protected boolean appropriateSelectingAddingLogic(Client client, String arg, List<Client> result) {
-        if (client.getId().toString().equals(arg)) {
-            result.add(client);
-            return false;
-        }
-        if (client.getName().contains(arg)) {
-            result.add(client);
-        }
-        return true;
-    }
-
     public List<Client> findAllFetchBooks() throws DaoException {
         return queryHelper.readWithinTx(
                 entityManager -> entityManager.createQuery("select c from Client c " +
@@ -64,5 +52,18 @@ public class ClientDao extends Dao<Client> {
                         .getSingleResult(),
                 "Exception while retrieving Client"
         ));
+    }
+
+    public List<Client> findFetchBooks(String... args) {
+        return findAllFetchBooks().stream()
+                .filter(client -> {
+                    for (String arg : args) {
+                        if (client.getId().toString().equals(arg) ||
+                            client.getName().contains(arg))
+                            return true;
+                    }
+                    return false;
+                })
+                .toList();
     }
 }

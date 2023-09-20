@@ -76,8 +76,8 @@ public class ApplicationController {
         }
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> windowManager.searchBookTab(() -> bookDao.find(args), args);
-            case CLIENT -> windowManager.searchClientTab(() -> clientDao.find(args), args);
-            case HISTORY -> windowManager.searchOperationTab(() -> operationDao.find(args), args);
+            case CLIENT -> windowManager.searchClientTab(() -> clientDao.findFetchBooks(args), args);
+            case HISTORY -> windowManager.searchOperationTab(() -> operationDao.findFetchBookClient(args), args);
             case NULL -> windowManager.showToast("You can not use command 'search' in this tab.");
         }
     }

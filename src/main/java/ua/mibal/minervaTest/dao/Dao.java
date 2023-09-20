@@ -18,7 +18,6 @@ package ua.mibal.minervaTest.dao;
 
 import ua.mibal.minervaTest.model.exception.DaoException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -46,20 +45,6 @@ public abstract class Dao<T> {
         ));
     }
 
-    public final List<T> find(String[] args) {
-        List<T> result = new ArrayList<>();
-        for (String arg : args) {
-            for (T e : findAll()) {
-                if (!appropriateSelectingAddingLogic(e, arg, result)) break;
-            }
-        }
-        return result;
-    }
-
-    // returns true if continue, false if break
-    protected abstract boolean appropriateSelectingAddingLogic(T e, String arg, List<T> result);
-
-    // add fetch option
     public final List<T> findAll() throws DaoException {
         return queryHelper.readWithinTx(
                 entityManager -> entityManager.createQuery("select e from " + entityName + " e", type)

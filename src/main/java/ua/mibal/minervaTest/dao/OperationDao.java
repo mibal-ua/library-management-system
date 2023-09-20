@@ -34,21 +34,6 @@ public class OperationDao extends Dao<Operation> {
         super(queryHelper, Operation.class);
     }
 
-    @Override
-    protected boolean appropriateSelectingAddingLogic(Operation operation, String arg, List<Operation> result) {
-        if (operation.getId().toString().equals(arg)) {
-            result.add(operation);
-            return false;
-        }
-        if (operation.getClient().getId().toString().equals(arg) ||
-            operation.getDate().toString().contains(arg) ||
-            operation.getOperationType().toString().equalsIgnoreCase(arg) ||
-            operation.getClient().getName().contains(arg)) {
-            result.add(operation);
-        }
-        return true;
-    }
-
     public List<Operation> findAllFetchBookClient() throws DaoException {
         return queryHelper.readWithinTx(
                 entityManager -> entityManager.createQuery("select o from Operation o " +
@@ -69,5 +54,21 @@ public class OperationDao extends Dao<Operation> {
                         .getSingleResult(),
                 "Exception while retrieving Operation"
         ));
+    }
+
+    public List<Operation> findFetchBookClient(String... args) {
+        return findAllFetchBookClient().stream()
+                .filter(operation -> {
+                    for (String arg : args) {
+                        if (operation.getId().toString().equals(arg) ||
+                            operation.getClient().getId().toString().equals(arg) ||
+                            operation.getDate().toString().contains(arg) ||
+                            operation.getOperationType().toString().equalsIgnoreCase(arg) ||
+                            operation.getClient().getName().contains(arg))
+                            return true;
+                    }
+                    return false;
+                })
+                .toList();
     }
 }
