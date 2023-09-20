@@ -18,9 +18,9 @@ package ua.mibal.minervaTest.component;
 
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.dao.BookDao;
-import ua.mibal.minervaTest.dao.Dao;
+import ua.mibal.minervaTest.dao.ClientDao;
+import ua.mibal.minervaTest.dao.OperationDao;
 import ua.mibal.minervaTest.model.Client;
-import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.utils.StringUtils;
 
 import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
@@ -36,13 +36,13 @@ public class ApplicationController {
     private final WindowManager windowManager;
 
     private final BookDao bookDao;
-    private final Dao<Operation> operationDao;
-    private final Dao<Client> clientDao;
+    private final OperationDao operationDao;
+    private final ClientDao clientDao;
 
     public ApplicationController(WindowManager windowManager,
                                  BookDao bookDao,
-                                 Dao<Operation> operationDao,
-                                 Dao<Client> clientDao) {
+                                 OperationDao operationDao,
+                                 ClientDao clientDao) {
         this.windowManager = windowManager;
         this.bookDao = bookDao;
         this.operationDao = operationDao;
@@ -54,11 +54,11 @@ public class ApplicationController {
     }
 
     public void tab2(final String[] ignored) {
-        windowManager.tab2(clientDao::findAll);
+        windowManager.tab2(clientDao::findAllFetchBooks);
     }
 
     public void tab3(final String[] ignored) {
-        windowManager.tab3(operationDao::findAll);
+        windowManager.tab3(operationDao::findAllFetchBookClient);
     }
 
     public void esc(final String[] ignored) {
@@ -90,8 +90,8 @@ public class ApplicationController {
         final Long id = Long.valueOf(args[0]);
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> windowManager.bookDetails(() -> bookDao.findById(id));
-            case CLIENT -> windowManager.clientDetails(() -> clientDao.findById(id));
-            case HISTORY -> windowManager.operationDetails(() -> operationDao.findById(id));
+            case CLIENT -> windowManager.clientDetails(() -> clientDao.findByIdFetchBooks(id));
+            case HISTORY -> windowManager.operationDetails(() -> operationDao.findByIdFetchBookClient(id));
             case NULL -> windowManager.showToast("You can not use command 'look' in this tab.");
         }
     }
@@ -179,7 +179,7 @@ public class ApplicationController {
                     },
                     () -> windowManager.showToast("Oops, there are no books with this id=" + id)
             );
-            case CLIENT -> clientDao.findById(id).ifPresentOrElse(
+            case CLIENT -> clientDao.findByIdFetchBooks(id).ifPresentOrElse(
                     clientToDel -> {
                         final String name = StringUtils.min(clientToDel.getName(), 15);
                         if (clientToDel.doesHoldBook()) {
@@ -235,7 +235,7 @@ public class ApplicationController {
             return;
         }
         final Long clientId = Long.valueOf(args[0]);
-        final Client client = clientDao.findById(clientId)
+        final Client client = clientDao.findByIdFetchBooks(clientId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Client with id=" + clientId + " not found"));
         final Long bookId = Long.valueOf(args[1]);

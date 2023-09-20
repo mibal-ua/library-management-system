@@ -21,6 +21,7 @@ import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.exception.DaoException;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Mykhailo Balakhon
@@ -48,8 +49,7 @@ public class OperationDao extends Dao<Operation> {
         return true;
     }
 
-    @Override
-    public List<Operation> findAll() throws DaoException {
+    public List<Operation> findAllFetchBookClient() throws DaoException {
         return queryHelper.readWithinTx(
                 entityManager -> entityManager.createQuery("select o from Operation o " +
                                                            "left join fetch o.book " +
@@ -57,5 +57,17 @@ public class OperationDao extends Dao<Operation> {
                         .getResultList(),
                 "Exception while retrieving all Operations"
         );
+    }
+
+    public Optional<Operation> findByIdFetchBookClient(Long id) throws DaoException {
+        return Optional.ofNullable(queryHelper.readWithinTx(
+                entityManager -> entityManager.createQuery("select o from Operation o " +
+                                                           "left join fetch o.book " +
+                                                           "left join fetch o.client " +
+                                                           "where o.id = :id", Operation.class)
+                        .setParameter("id", id)
+                        .getSingleResult(),
+                "Exception while retrieving Operation"
+        ));
     }
 }
