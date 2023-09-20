@@ -87,10 +87,4 @@ public abstract class Dao<T> {
             return false;
         }
     }
-
-    public final T getReference(Long id) throws DaoException {
-        return queryHelper.readWithinTx(
-                em -> em.getReference(type, id),
-                "Exception while retrieving reference on " + entityName + " by id");
-    }
 }
