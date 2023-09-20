@@ -16,7 +16,7 @@
 
 package ua.mibal.minervaTest.component.console;
 
-import ua.mibal.minervaTest.component.console.NewConsoleWindowManager.Tab;
+import ua.mibal.minervaTest.component.console.drawable.Tab;
 
 import java.util.Stack;
 
