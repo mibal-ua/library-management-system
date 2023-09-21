@@ -12,5 +12,5 @@ public class ConsoleConstants {
 
     public static final int TOAST_HEIGHT = 11;
     public static final int UPPER_START = (WINDOW_HEIGHT - TOAST_HEIGHT) / 2;
-    private static final int TOAST_WIDTH = 60;
+    public static final int TOAST_WIDTH = 60;
 }
