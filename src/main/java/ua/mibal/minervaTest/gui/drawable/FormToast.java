@@ -1,4 +1,4 @@
-package ua.mibal.minervaTest.component.console.drawable;
+package ua.mibal.minervaTest.gui.drawable;
 
 import java.util.ArrayList;
 import java.util.Iterator;

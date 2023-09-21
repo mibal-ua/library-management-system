@@ -1,11 +1,11 @@
-package ua.mibal.minervaTest.component.console.drawable;
+package ua.mibal.minervaTest.gui.drawable;
 
 import java.util.Scanner;
 
-import static ua.mibal.minervaTest.component.console.ConsoleConstants.TOAST_HEIGHT;
-import static ua.mibal.minervaTest.component.console.ConsoleConstants.UPPER_START;
-import static ua.mibal.minervaTest.component.console.ConsoleConstants.WINDOW_WIDTH;
-import static ua.mibal.minervaTest.component.console.ConsoleUtils.goTo;
+import static ua.mibal.minervaTest.gui.ConsoleConstants.TOAST_HEIGHT;
+import static ua.mibal.minervaTest.gui.ConsoleConstants.UPPER_START;
+import static ua.mibal.minervaTest.gui.ConsoleConstants.WINDOW_WIDTH;
+import static ua.mibal.minervaTest.gui.ConsoleUtils.goTo;
 
 /**
  * @author Mykhailo Balakhon

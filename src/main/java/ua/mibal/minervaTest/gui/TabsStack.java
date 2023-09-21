@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package ua.mibal.minervaTest.component.console;
+package ua.mibal.minervaTest.gui;
 
-import ua.mibal.minervaTest.component.console.drawable.Tab;
+import ua.mibal.minervaTest.gui.drawable.Tab;
 
 import java.util.Stack;
 

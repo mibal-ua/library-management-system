@@ -15,10 +15,9 @@
  *
  */
 
-package ua.mibal.minervaTest.component.console;
+package ua.mibal.minervaTest.gui;
 
 import org.springframework.stereotype.Component;
-import ua.mibal.minervaTest.component.DataPrinter;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
@@ -31,7 +30,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static java.lang.String.format;
-import static ua.mibal.minervaTest.component.console.ConsoleConstants.WINDOW_WIDTH;
 import static ua.mibal.minervaTest.utils.StringUtils.substringAppend;
 
 
@@ -205,7 +203,7 @@ public class ConsoleDataPrinter implements DataPrinter {
             }
         }
 
-        int valueMaxLength = (WINDOW_WIDTH - keyMaxLength - 7);
+        int valueMaxLength = (ConsoleConstants.WINDOW_WIDTH - keyMaxLength - 7);
         final String template = "| %-" + keyMaxLength + "s | %-" + valueMaxLength + "s |%n";
         final String divider = format("+-%s-+-%s-+%n", "-".repeat(keyMaxLength), "-".repeat(valueMaxLength));
 

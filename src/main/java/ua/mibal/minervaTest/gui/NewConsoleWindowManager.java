@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package ua.mibal.minervaTest.component.console;
+package ua.mibal.minervaTest.gui;
 
 import org.springframework.stereotype.Component;
-import ua.mibal.minervaTest.component.DataPrinter;
-import ua.mibal.minervaTest.component.WindowManager;
-import ua.mibal.minervaTest.component.console.drawable.DialogueToast;
-import ua.mibal.minervaTest.component.console.drawable.FormToast;
-import ua.mibal.minervaTest.component.console.drawable.InfoToast;
-import ua.mibal.minervaTest.component.console.drawable.Tab;
+import ua.mibal.minervaTest.gui.drawable.DialogueToast;
+import ua.mibal.minervaTest.gui.drawable.FormToast;
+import ua.mibal.minervaTest.gui.drawable.InfoToast;
+import ua.mibal.minervaTest.gui.drawable.Tab;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;

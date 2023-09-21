@@ -1,4 +1,4 @@
-package ua.mibal.minervaTest.component.console;
+package ua.mibal.minervaTest.gui;
 
 /**
  * @author Mykhailo Balakhon

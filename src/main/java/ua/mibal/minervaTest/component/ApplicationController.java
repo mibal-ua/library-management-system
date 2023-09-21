@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.dao.BookDao;
 import ua.mibal.minervaTest.dao.ClientDao;
 import ua.mibal.minervaTest.dao.OperationDao;
+import ua.mibal.minervaTest.gui.WindowManager;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.utils.StringUtils;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package ua.mibal.minervaTest.component;
+package ua.mibal.minervaTest.gui;
 
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
