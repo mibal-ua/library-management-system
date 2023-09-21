@@ -71,13 +71,13 @@ public class StringUtils {
         if (lineLength < 2)
             throw new IllegalArgumentException("Parameter lineLength must be greater than 1. Actual is " + lineLength);
 
-        if (str.length() < lineLength)
-            return List.of(str);
-
         if (str.contains("\n"))
             return Arrays.stream(str.split("\n"))
                     .flatMap(string -> divideStrToLines(string, lineLength).stream())
                     .toList();
+
+        if (str.length() < lineLength)
+            return List.of(str);
 
         return splitIntoLines(str, lineLength);
     }
