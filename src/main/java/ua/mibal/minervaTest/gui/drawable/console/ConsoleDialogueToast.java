@@ -15,10 +15,11 @@ public class ConsoleDialogueToast extends ConsoleToast {
      * trueAnswer: true;
      * falseAnswer: false.
      */
-    public ConsoleDialogueToast(final String question,
+    public ConsoleDialogueToast(final String header,
+                                final String question,
                                 final String trueAnswer,
                                 final String falseAnswer) {
-        super(question);
+        super(header, question);
         this.trueAnswer = trueAnswer;
         this.falseAnswer = falseAnswer;
     }
@@ -31,13 +32,13 @@ public class ConsoleDialogueToast extends ConsoleToast {
 
     @Override
     protected void printAppropriateBody() {
-        printQuestion("1 - " + trueAnswer + ", 2 - " + falseAnswer);
+        printBody(body + "\n" +
+                  "1 - " + trueAnswer + ", 2 - " + falseAnswer);
         final String input = readInput();
-        if (input.equals("1") || input.equals("2")) {
+        if (input.equals("1") || input.equals("2"))
             userAnswer = input.equals("1");
-        } else {
+        else
             draw();
-        }
     }
 
     public boolean getAnswer() {

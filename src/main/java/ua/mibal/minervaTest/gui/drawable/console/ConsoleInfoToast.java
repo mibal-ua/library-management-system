@@ -6,12 +6,18 @@ package ua.mibal.minervaTest.gui.drawable.console;
  */
 public class ConsoleInfoToast extends ConsoleToast {
 
-    public ConsoleInfoToast(final String message) {
-        super(message);
+    public ConsoleInfoToast(final String header,
+                            final String body) {
+        super(header, body);
     }
+
+    public ConsoleInfoToast(final String header) {
+        super(header);
+    }
+
 
     @Override
     protected void printAppropriateBody() {
-        waitToContinue();
+        waitToContinue(body);
     }
 }
