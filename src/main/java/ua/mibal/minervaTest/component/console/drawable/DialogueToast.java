@@ -1,30 +1,26 @@
 package ua.mibal.minervaTest.component.console.drawable;
 
-import static java.lang.String.format;
-
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
 public class DialogueToast extends Toast {
 
-    private final String answer1;
-
-    private final String answer2;
-
+    private final String trueAnswer;
+    private final String falseAnswer;
     private boolean userAnswer;
 
     /**
      * if user select `getAnswer()` return:
-     * answer1: true;
-     * answer2: false.
+     * trueAnswer: true;
+     * falseAnswer: false.
      */
     public DialogueToast(final String question,
-                         final String answer1,
-                         final String answer2) {
+                         final String trueAnswer,
+                         final String falseAnswer) {
         super(question);
-        this.answer1 = answer1;
-        this.answer2 = answer2;
+        this.trueAnswer = trueAnswer;
+        this.falseAnswer = falseAnswer;
     }
 
     @Override
@@ -34,20 +30,14 @@ public class DialogueToast extends Toast {
     }
 
     @Override
-    protected void appropriateBody() {
-        printQuestion(format("1 - %s, 2 - %s", answer1, answer2));
-
+    protected void printAppropriateBody() {
+        printQuestion("1 - " + trueAnswer + ", 2 - " + falseAnswer);
         final String input = readInput();
-
-        if (input.equals("1")) {
-            userAnswer = true;
-            return;
+        if (input.equals("1") || input.equals("2")) {
+            userAnswer = input.equals("1");
+        } else {
+            draw();
         }
-        if (input.equals("2")) {
-            userAnswer = false;
-            return;
-        }
-        draw();
     }
 
     public boolean getAnswer() {

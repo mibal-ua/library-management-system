@@ -22,9 +22,7 @@ abstract class Toast {
     public Toast draw() {
         printWindowBackground();
         printMessage(message);
-
-        appropriateBody();
-
+        printAppropriateBody();
         return this;
     }
 
@@ -90,5 +88,5 @@ abstract class Toast {
         return new Scanner(System.in).nextLine();
     }
 
-    protected abstract void appropriateBody();
+    protected abstract void printAppropriateBody();
 }

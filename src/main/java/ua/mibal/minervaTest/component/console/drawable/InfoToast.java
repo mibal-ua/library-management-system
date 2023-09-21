@@ -11,7 +11,7 @@ public class InfoToast extends Toast {
     }
 
     @Override
-    protected void appropriateBody() {
+    protected void printAppropriateBody() {
         waitToContinue();
     }
 }

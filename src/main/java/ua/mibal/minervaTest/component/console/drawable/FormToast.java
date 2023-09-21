@@ -12,9 +12,7 @@ import java.util.Optional;
 public class FormToast extends Toast {
 
     private final Iterator<String> questions;
-
     private final String stopCommand;
-
     private List<String> answers;
 
     public FormToast(final String info,
@@ -32,16 +30,14 @@ public class FormToast extends Toast {
     }
 
     @Override
-    protected void appropriateBody() {
+    protected void printAppropriateBody() {
         waitToContinue();
 
         final List<String> result = new ArrayList<>();
         while (questions.hasNext()) {
             printWindowBackground();
             printMessage(questions.next());
-
             String input = readInput();
-
             if (input.equals(stopCommand)) return;
             result.add(input);
         }
