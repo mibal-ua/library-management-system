@@ -16,6 +16,10 @@
 
 package ua.mibal.minervaTest.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
@@ -62,4 +66,46 @@ public class StringUtils {
     public static boolean isNumber(String str) {
         return str.trim().matches("^[0-9]+$");
     }
+
+    public static List<String> divideStrToLines(String str, int lineLength) {
+        if (lineLength < 2)
+            throw new IllegalArgumentException("Parameter lineLength must be greater than 1. Actual is " + lineLength);
+
+        if (str.length() < lineLength)
+            return List.of(str);
+
+        if (str.contains("\n"))
+            return Arrays.stream(str.split("\n"))
+                    .flatMap(string -> divideStrToLines(string, lineLength).stream())
+                    .toList();
+
+        return splitIntoLines(str, lineLength);
+    }
+
+    private static List<String> splitIntoLines(String str, int lineLength) {
+        List<String> result = new ArrayList<>();
+
+        int beginIndex = 0;
+        int lastIndexOfSpace = -1;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == ' ') {
+                lastIndexOfSpace = i;
+            }
+
+            if ((i - beginIndex) / lineLength > 0 && (i - beginIndex) % lineLength == 0) {
+                if (beginIndex > lastIndexOfSpace) {
+                    int dividingIndex = beginIndex + lineLength - 1;
+                    String operatedStr = str.substring(beginIndex, dividingIndex) + "-";
+                    result.add(operatedStr);
+                    beginIndex = dividingIndex;
+                } else {
+                    result.add(str.substring(beginIndex, lastIndexOfSpace));
+                    beginIndex = lastIndexOfSpace + 1;
+                }
+            }
+        }
+        result.add(str.substring(beginIndex));
+        return result;
+    }
+
 }
