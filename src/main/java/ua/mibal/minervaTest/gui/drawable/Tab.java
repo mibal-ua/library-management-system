@@ -1,13 +1,13 @@
 package ua.mibal.minervaTest.gui.drawable;
 
-import ua.mibal.minervaTest.gui.ConsoleUtils;
+import ua.mibal.minervaTest.gui.console.ConsoleUtils;
 import ua.mibal.minervaTest.model.window.TabType;
 
 import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
-import static ua.mibal.minervaTest.gui.ConsoleConstants.WINDOW_WIDTH;
-import static ua.mibal.minervaTest.gui.ConsoleDataPrinter.bold;
+import static ua.mibal.minervaTest.gui.console.ConsoleConstants.WINDOW_WIDTH;
+import static ua.mibal.minervaTest.gui.console.ConsoleDataPrinter.bold;
 
 /**
  * @author Mykhailo Balakhon

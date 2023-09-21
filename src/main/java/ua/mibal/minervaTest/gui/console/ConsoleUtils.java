@@ -1,4 +1,4 @@
-package ua.mibal.minervaTest.gui;
+package ua.mibal.minervaTest.gui.console;
 
 import java.util.Scanner;
 

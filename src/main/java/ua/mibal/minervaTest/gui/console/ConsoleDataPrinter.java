@@ -15,9 +15,10 @@
  *
  */
 
-package ua.mibal.minervaTest.gui;
+package ua.mibal.minervaTest.gui.console;
 
 import org.springframework.stereotype.Component;
+import ua.mibal.minervaTest.gui.DataPrinter;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
