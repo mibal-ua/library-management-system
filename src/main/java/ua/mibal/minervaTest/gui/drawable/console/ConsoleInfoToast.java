@@ -1,12 +1,12 @@
-package ua.mibal.minervaTest.gui.drawable;
+package ua.mibal.minervaTest.gui.drawable.console;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class InfoToast extends Toast {
+public class ConsoleInfoToast extends ConsoleToast {
 
-    public InfoToast(final String message) {
+    public ConsoleInfoToast(final String message) {
         super(message);
     }
 

@@ -1,10 +1,10 @@
-package ua.mibal.minervaTest.gui.drawable;
+package ua.mibal.minervaTest.gui.drawable.console;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class DialogueToast extends Toast {
+public class ConsoleDialogueToast extends ConsoleToast {
 
     private final String trueAnswer;
     private final String falseAnswer;
@@ -15,16 +15,16 @@ public class DialogueToast extends Toast {
      * trueAnswer: true;
      * falseAnswer: false.
      */
-    public DialogueToast(final String question,
-                         final String trueAnswer,
-                         final String falseAnswer) {
+    public ConsoleDialogueToast(final String question,
+                                final String trueAnswer,
+                                final String falseAnswer) {
         super(question);
         this.trueAnswer = trueAnswer;
         this.falseAnswer = falseAnswer;
     }
 
     @Override
-    public DialogueToast draw() {
+    public ConsoleDialogueToast draw() {
         super.draw();
         return this;
     }

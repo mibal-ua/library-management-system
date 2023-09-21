@@ -1,4 +1,4 @@
-package ua.mibal.minervaTest.gui.drawable;
+package ua.mibal.minervaTest.gui.drawable.console;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,22 +9,22 @@ import java.util.Optional;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class FormToast extends Toast {
+public class ConsoleFormToast extends ConsoleToast {
 
     private final Iterator<String> questions;
     private final String stopCommand;
     private List<String> answers;
 
-    public FormToast(final String info,
-                     final List<String> questions,
-                     final String stopCommand) {
+    public ConsoleFormToast(final String info,
+                            final List<String> questions,
+                            final String stopCommand) {
         super(info);
         this.questions = questions.iterator();
         this.stopCommand = stopCommand;
     }
 
     @Override
-    public FormToast draw() {
+    public ConsoleFormToast draw() {
         super.draw();
         return this;
     }

@@ -20,10 +20,11 @@ import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.gui.DataPrinter;
 import ua.mibal.minervaTest.gui.TabsStack;
 import ua.mibal.minervaTest.gui.WindowManager;
-import ua.mibal.minervaTest.gui.drawable.DialogueToast;
-import ua.mibal.minervaTest.gui.drawable.FormToast;
-import ua.mibal.minervaTest.gui.drawable.InfoToast;
 import ua.mibal.minervaTest.gui.drawable.Tab;
+import ua.mibal.minervaTest.gui.drawable.console.ConsoleDialogueToast;
+import ua.mibal.minervaTest.gui.drawable.console.ConsoleFormToast;
+import ua.mibal.minervaTest.gui.drawable.console.ConsoleInfoToast;
+import ua.mibal.minervaTest.gui.drawable.console.ConsoleTab;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
@@ -67,7 +68,7 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public void tab1(Supplier<List<Book>> booksSupplier) {
-        tabStack.push(new Tab(
+        tabStack.push(new ConsoleTab(
                 () -> dataPrinter.printListOfBooks(booksSupplier.get()),
                 TAB_1,
                 "BOOKS", "CLIENTS", "HISTORY"
@@ -76,7 +77,7 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public void tab2(Supplier<List<Client>> clientsSupplier) {
-        tabStack.push(new Tab(
+        tabStack.push(new ConsoleTab(
                 () -> dataPrinter.printListOfClients(clientsSupplier.get()),
                 TAB_2,
                 1,
@@ -86,7 +87,7 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public void tab3(Supplier<List<Operation>> operationsSupplier) {
-        tabStack.push(new Tab(
+        tabStack.push(new ConsoleTab(
                 () -> dataPrinter.printListOfOperations(operationsSupplier.get()),
                 TAB_3,
                 2,
@@ -97,7 +98,7 @@ public class NewConsoleWindowManager implements WindowManager {
     @Override
     public void searchBookTab(final Supplier<List<Book>> booksSupplier, final String[] args) {
         final String header = format("SEARCH IN BOOKS BY '%s'", join(" ", args));
-        tabStack.push(new Tab(
+        tabStack.push(new ConsoleTab(
                 () -> dataPrinter.printListOfBooks(booksSupplier.get()),
                 SEARCH_BOOK,
                 header
@@ -107,7 +108,7 @@ public class NewConsoleWindowManager implements WindowManager {
     @Override
     public void searchClientTab(final Supplier<List<Client>> clientsSupplier, final String[] args) {
         final String header = format("SEARCH IN CLIENTS BY '%s'", join(" ", args));
-        tabStack.push(new Tab(
+        tabStack.push(new ConsoleTab(
                 () -> dataPrinter.printListOfClients(clientsSupplier.get()),
                 SEARCH_CLIENT,
                 header
@@ -117,7 +118,7 @@ public class NewConsoleWindowManager implements WindowManager {
     @Override
     public void searchOperationTab(final Supplier<List<Operation>> operationsSupplier, final String[] args) {
         final String header = format("SEARCH IN OPERATIONS BY '%s'", join(" ", args));
-        tabStack.push(new Tab(
+        tabStack.push(new ConsoleTab(
                 () -> dataPrinter.printListOfOperations(operationsSupplier.get()),
                 SEARCH_HISTORY,
                 header
@@ -126,7 +127,7 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public void help() {
-        tabStack.push(new Tab(
+        tabStack.push(new ConsoleTab(
                 () -> System.out.println("""
 
                                                           MAIN CONTROL
@@ -180,13 +181,13 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public void showToast(String message) {
-        new InfoToast(message).draw();
+        new ConsoleInfoToast(message).draw();
         refresh();
     }
 
     @Override
     public boolean showDialogueToast(String question, String answer1, String answer2) {
-        DialogueToast dialogueToast = new DialogueToast(question, answer1, answer2)
+        ConsoleDialogueToast dialogueToast = new ConsoleDialogueToast(question, answer1, answer2)
                 .draw();
         refresh();
         return dialogueToast.getAnswer();
@@ -203,7 +204,7 @@ public class NewConsoleWindowManager implements WindowManager {
                 "Enter book publisher"
         );
 
-        Optional<List<String>> answers = new FormToast(
+        Optional<List<String>> answers = new ConsoleFormToast(
                 "Lets create book! You can stop everywhere by entering '/stop'", questions, "/stop"
         ).draw().getAnswers();
         refresh();
@@ -231,7 +232,7 @@ public class NewConsoleWindowManager implements WindowManager {
                 "Enter client name"
         );
 
-        Optional<List<String>> answers = new FormToast(
+        Optional<List<String>> answers = new ConsoleFormToast(
                 "Lets add client! You can stop everywhere by entering '/stop'", questions, "/stop"
         ).draw().getAnswers();
         refresh();
@@ -268,7 +269,7 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public void bookDetails(Supplier<Optional<Book>> bookOptionalSupplier) {
-        tabStack.push(new Tab(
+        tabStack.push(new ConsoleTab(
                 () -> bookOptionalSupplier.get().ifPresentOrElse(
                         dataPrinter::printBookDetails,
                         this::drawPrevTab
@@ -280,7 +281,7 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public void clientDetails(Supplier<Optional<Client>> clientOptionalSupplier) {
-        tabStack.push(new Tab(
+        tabStack.push(new ConsoleTab(
                 () -> clientOptionalSupplier.get().ifPresentOrElse(
                         dataPrinter::printClientDetails,
                         this::drawPrevTab
@@ -292,7 +293,7 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public void operationDetails(Supplier<Optional<Operation>> operationOptionalSupplier) {
-        tabStack.push(new Tab(
+        tabStack.push(new ConsoleTab(
                 () -> operationOptionalSupplier.get().ifPresentOrElse(
                         dataPrinter::printOperationDetails,
                         this::drawPrevTab
@@ -312,11 +313,11 @@ public class NewConsoleWindowManager implements WindowManager {
                 format("prev book publisher: '%s'", originalBook.getPublisher())
         );
 
-        new InfoToast("Lets edit book! You can stop by entering '/stop'").draw();
+        new ConsoleInfoToast("Lets edit book! You can stop by entering '/stop'").draw();
         refresh();
-        new InfoToast("If you wanna edit this field, enter data").draw();
+        new ConsoleInfoToast("If you wanna edit this field, enter data").draw();
         refresh();
-        Optional<List<String>> answersOptional = new FormToast(
+        Optional<List<String>> answersOptional = new ConsoleFormToast(
                 "If you wanna skip editing, click enter", messages, "/stop"
         ).draw().getAnswers();
         refresh();
@@ -356,11 +357,11 @@ public class NewConsoleWindowManager implements WindowManager {
                 format("prev client name: '%s'", originalClient.getName())
         );
 
-        new InfoToast("Lets edit client! You can stop by entering '/stop'").draw();
+        new ConsoleInfoToast("Lets edit client! You can stop by entering '/stop'").draw();
         refresh();
-        new InfoToast("If you wanna edit this field, enter data").draw();
+        new ConsoleInfoToast("If you wanna edit this field, enter data").draw();
         refresh();
-        Optional<List<String>> answersOptional = new FormToast(
+        Optional<List<String>> answersOptional = new ConsoleFormToast(
                 "If you wanna skip editing, click enter", messages, "/stop"
         ).draw().getAnswers();
         refresh();
