@@ -8,6 +8,10 @@ import java.util.Scanner;
  */
 public class ConsoleUtils {
 
+    private static final String BOLD = "\033[1m";
+
+    private static final String RESET = "\033[0m";
+
     public static String[] readInput() {
         goTo(24, 0);
         System.out.print("> ");
@@ -23,5 +27,9 @@ public class ConsoleUtils {
     public static void clear() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    public static String bold(final String str) {
+        return BOLD + str + RESET;
     }
 }

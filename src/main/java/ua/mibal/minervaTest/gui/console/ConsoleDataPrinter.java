@@ -41,14 +41,6 @@ import static ua.mibal.minervaTest.utils.StringUtils.substringAppend;
 @Component
 public class ConsoleDataPrinter implements DataPrinter {
 
-    private static final String BOLD = "\033[1m";
-
-    private static final String RESET = "\033[0m";
-
-    public static String bold(final String str) {
-        return BOLD + str + RESET;
-    }
-
     @Override
     public void printListOfBooks(final Collection<Book> books) {
         final List<String> tableHeaders = List.of(" ID ", "Title", "Author", "Free");

@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
 import static ua.mibal.minervaTest.gui.console.ConsoleConstants.WINDOW_WIDTH;
-import static ua.mibal.minervaTest.gui.console.ConsoleDataPrinter.bold;
+import static ua.mibal.minervaTest.gui.console.ConsoleUtils.bold;
 
 /**
  * @author Mykhailo Balakhon

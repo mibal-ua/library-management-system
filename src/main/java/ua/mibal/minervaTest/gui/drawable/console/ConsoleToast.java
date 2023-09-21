@@ -7,6 +7,7 @@ import java.util.Scanner;
 import static ua.mibal.minervaTest.gui.console.ConsoleConstants.TOAST_HEIGHT;
 import static ua.mibal.minervaTest.gui.console.ConsoleConstants.UPPER_START;
 import static ua.mibal.minervaTest.gui.console.ConsoleConstants.WINDOW_WIDTH;
+import static ua.mibal.minervaTest.gui.console.ConsoleUtils.bold;
 import static ua.mibal.minervaTest.gui.console.ConsoleUtils.goTo;
 
 /**
