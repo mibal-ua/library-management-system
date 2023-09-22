@@ -30,8 +30,9 @@ import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
 import ua.mibal.minervaTest.model.window.TabType;
+import ua.mibal.minervaTest.utils.Books;
+import ua.mibal.minervaTest.utils.Clients;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,7 +210,6 @@ public class NewConsoleWindowManager implements WindowManager {
                 "Enter publish date (in format '2018-12-04')",
                 "Enter book publisher"
         );
-
         Optional<List<String>> answersOptional = new ConsoleFormToast(
                 "Book adding",
                 questions,
@@ -217,15 +217,7 @@ public class NewConsoleWindowManager implements WindowManager {
                 "Lets create book! You can stop everywhere by entering '/stop'"
         ).draw().getAnswers();
         refresh();
-
-        return answersOptional.map(answers -> new Book(
-                answers.get(0),
-                answers.get(1),
-                answers.get(2),
-                LocalDateTime.now(), // FIXME stub
-                answers.get(4),
-                true
-        ));
+        return answersOptional.map(Books::ofMapping);
     }
 
     @Override
@@ -233,7 +225,6 @@ public class NewConsoleWindowManager implements WindowManager {
         List<String> questions = of(
                 "Enter client name"
         );
-
         Optional<List<String>> answersOptional = new ConsoleFormToast(
                 "Client adding",
                 questions,
@@ -241,11 +232,53 @@ public class NewConsoleWindowManager implements WindowManager {
                 "Lets add client! You can stop everywhere by entering '/stop'"
         ).draw().getAnswers();
         refresh();
+        return answersOptional.map(Clients::ofMapping);
+    }
 
-        return answersOptional.map(answers -> new Client(
-                answers.get(0)
-        ));
 
+    @Override
+    public Optional<Book> editBook(Book originalBook) {
+        Map<String, String> messages = new HashMap<>();
+        messages.put("Enter title", "prev book title: '" + originalBook.getTitle() + "'");
+        messages.put("Enter subtitle", "prev book subtitle: '" + originalBook.getSubtitle() + "'");
+        messages.put("Enter author", "prev book author: '" + originalBook.getAuthor() + "'");
+        messages.put("Enter publish date", "prev book publish date: '" + originalBook.getPublishedDate() + "'");
+        messages.put("Enter book publisher", "prev book publisher: '" + originalBook.getPublisher() + "'");
+
+        Optional<List<String>> answersOptional = new ConsoleFormToast(
+                "Book editing",
+                messages.entrySet().stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getValue, Map.Entry::getKey)),
+                "/stop",
+                "Lets edit book! You can stop by entering '/stop'",
+                "If you wanna edit field, enter data.\nIf you wanna skip editing, click Enter."
+        ).draw().getAnswers();
+        refresh();
+        return answersOptional.map(answers -> {
+            Book editedBook = Books.copyOf(originalBook);
+            return Books.changeByMapping(editedBook, answers);
+        });
+    }
+
+    @Override
+    public Optional<Client> editClient(final Client originalClient) {
+        Map<String, String> messages = new HashMap<>();
+        messages.put("Enter name", "prev client name: '" + originalClient.getName() + "'");
+        Optional<List<String>> answersOptional = new ConsoleFormToast(
+                "Client editing",
+                messages.entrySet().stream()
+                        .collect(Collectors.toMap(
+                                Map.Entry::getValue, Map.Entry::getKey)),
+                "/stop",
+                "Lets edit client! You can stop by entering '/stop'",
+                "If you wanna edit field, enter data.\nIf you wanna skip editing, click Enter."
+        ).draw().getAnswers();
+        refresh();
+        return answersOptional.map(answers -> {
+            Client editedClient = Clients.copyOf(originalClient);
+            return Clients.changeByMapping(editedClient, answers);
+        });
     }
 
     @Override
@@ -300,77 +333,6 @@ public class NewConsoleWindowManager implements WindowManager {
                 LOOK_HISTORY,
                 "OPERATION DETAILS"
         )).draw();
-    }
-
-    @Override
-    public Optional<Book> editBook(Book originalBook) {
-        Map<String, String> messages = new HashMap<>();
-        messages.put("Enter title", "prev book title: '" + originalBook.getTitle() + "'");
-        messages.put("Enter subtitle", "prev book subtitle: '" + originalBook.getSubtitle() + "'");
-        messages.put("Enter author", "prev book author: '" + originalBook.getAuthor() + "'");
-        messages.put("Enter publish date", "prev book publish date: '" + originalBook.getPublishedDate() + "'");
-        messages.put("Enter book publisher", "prev book publisher: '" + originalBook.getPublisher() + "'");
-
-        Optional<List<String>> answersOptional = new ConsoleFormToast(
-                "Book editing",
-                messages.entrySet().stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getValue, Map.Entry::getKey)),
-                "/stop",
-                "Lets edit book! You can stop by entering '/stop'",
-                "If you wanna edit field, enter data.\nIf you wanna skip editing, click Enter."
-        ).draw().getAnswers();
-        refresh();
-
-        return answersOptional.map(answers -> new Book(
-                originalBook.getId(),
-                answers.get(0).equals("")
-                        ? originalBook.getTitle()
-                        : answers.get(0),
-                answers.get(1).equals("")
-                        ? originalBook.getSubtitle()
-                        : answers.get(1),
-                answers.get(2).equals("")
-                        ? originalBook.getAuthor()
-                        : answers.get(2),
-                answers.get(3).equals("")
-                        ? originalBook.getPublishedDate()
-                        // TODO FIXME stub
-                        : LocalDateTime.now(), // answers.get(3),
-                answers.get(4).equals("")
-                        ? originalBook.getPublisher()
-                        : answers.get(4),
-                originalBook.isFree()
-        ));
-    }
-
-    @Override
-    public Optional<Client> editClient(final Client originalClient) {
-        Map<String, String> messages = new HashMap<>();
-        messages.put("Enter name", "prev client name: '" + originalClient.getName() + "'");
-
-        Optional<List<String>> answersOptional = new ConsoleFormToast(
-                "Client editing",
-                messages.entrySet().stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getValue, Map.Entry::getKey)),
-                "/stop",
-                "Lets edit client! You can stop by entering '/stop'",
-                "If you wanna edit field, enter data.\nIf you wanna skip editing, click Enter."
-        ).draw().getAnswers();
-        refresh();
-
-        return answersOptional.map(answers -> {
-            Client editedClient = new Client(
-                    originalClient.getId(),
-                    answers.get(0).isEmpty()
-                            ? originalClient.getName()
-                            : answers.get(0)
-            );
-            originalClient.getBooks()
-                    .forEach(editedClient::addBook);
-            return editedClient;
-        });
     }
 
     @Override

@@ -117,7 +117,7 @@ public class ApplicationController {
                             },
                             () -> windowManager.showToast("Oops, there are no books with this id=" + id)
                     );
-            case CLIENT -> clientDao.findById(id)
+            case CLIENT -> clientDao.findByIdFetchBooks(id)
                     .flatMap(windowManager::editClient).ifPresentOrElse(
                             client -> {
                                 clientDao.update(client);
