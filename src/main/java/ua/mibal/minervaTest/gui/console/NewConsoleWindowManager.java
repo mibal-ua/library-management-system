@@ -33,17 +33,15 @@ import ua.mibal.minervaTest.model.window.TabType;
 import ua.mibal.minervaTest.utils.Books;
 import ua.mibal.minervaTest.utils.Clients;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.lang.String.join;
-import static java.util.List.of;
 import static ua.mibal.minervaTest.model.window.TabType.HELP_TAB;
 import static ua.mibal.minervaTest.model.window.TabType.LOOK_BOOK;
 import static ua.mibal.minervaTest.model.window.TabType.LOOK_CLIENT;
@@ -172,7 +170,6 @@ public class NewConsoleWindowManager implements WindowManager {
 
                          """),
                 HELP_TAB,
-                0,
                 "HELP"
         )).draw();
     }
@@ -200,16 +197,14 @@ public class NewConsoleWindowManager implements WindowManager {
         return dialogueToast.getAnswer();
     }
 
-
     @Override
     public Optional<Book> initBookToAdd() {
-        List<String> questions = of(
-                "Enter book title",
-                "Enter subtitle",
-                "Enter author",
-                "Enter publish date (in format '2018-12-04')",
-                "Enter book publisher"
-        );
+        Map<String, String> questions = new LinkedHashMap<>();
+        questions.put("Enter book title", "");
+        questions.put("Enter subtitle", "");
+        questions.put("Enter author", "");
+        questions.put("Enter publish date in format 2018-12-31", "");
+        questions.put("Enter book publisher", "");
         Optional<List<String>> answersOptional = new ConsoleFormToast(
                 "Book adding",
                 questions,
@@ -222,9 +217,8 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public Optional<Client> initClientToAdd() {
-        List<String> questions = of(
-                "Enter client name"
-        );
+        Map<String, String> questions = new LinkedHashMap<>();
+        questions.put("Enter client name", "");
         Optional<List<String>> answersOptional = new ConsoleFormToast(
                 "Client adding",
                 questions,
@@ -235,21 +229,17 @@ public class NewConsoleWindowManager implements WindowManager {
         return answersOptional.map(Clients::ofMapping);
     }
 
-
     @Override
     public Optional<Book> editBook(Book originalBook) {
-        Map<String, String> messages = new HashMap<>();
+        Map<String, String> messages = new LinkedHashMap<>();
         messages.put("Enter title", "prev book title: '" + originalBook.getTitle() + "'");
         messages.put("Enter subtitle", "prev book subtitle: '" + originalBook.getSubtitle() + "'");
         messages.put("Enter author", "prev book author: '" + originalBook.getAuthor() + "'");
-        messages.put("Enter publish date", "prev book publish date: '" + originalBook.getPublishedDate() + "'");
+        messages.put("Enter publish date in format 2018-12-31", "prev book publish date: '" + originalBook.getPublishedDate() + "'");
         messages.put("Enter book publisher", "prev book publisher: '" + originalBook.getPublisher() + "'");
-
         Optional<List<String>> answersOptional = new ConsoleFormToast(
                 "Book editing",
-                messages.entrySet().stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getValue, Map.Entry::getKey)),
+                messages,
                 "/stop",
                 "Lets edit book! You can stop by entering '/stop'",
                 "If you wanna edit field, enter data.\nIf you wanna skip editing, click Enter."
@@ -263,13 +253,11 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public Optional<Client> editClient(final Client originalClient) {
-        Map<String, String> messages = new HashMap<>();
+        Map<String, String> messages = new LinkedHashMap<>();
         messages.put("Enter name", "prev client name: '" + originalClient.getName() + "'");
         Optional<List<String>> answersOptional = new ConsoleFormToast(
                 "Client editing",
-                messages.entrySet().stream()
-                        .collect(Collectors.toMap(
-                                Map.Entry::getValue, Map.Entry::getKey)),
+                messages,
                 "/stop",
                 "Lets edit client! You can stop by entering '/stop'",
                 "If you wanna edit field, enter data.\nIf you wanna skip editing, click Enter."
