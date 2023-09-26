@@ -16,7 +16,6 @@
 
 package ua.mibal.minervaTest.model;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,9 +43,6 @@ public class Client implements Serializable {
 
     @OneToMany(mappedBy = "client")
     private Set<Book> books = new HashSet<>();
-
-    @OneToMany(mappedBy = "client", cascade = CascadeType.REMOVE)
-    private Set<Operation> operations = new HashSet<>();
 
     public Client(final String name) {
         this.name = name;
@@ -82,14 +78,6 @@ public class Client implements Serializable {
 
     private void setBooks(Set<Book> books) {
         this.books = books;
-    }
-
-    public Set<Operation> getOperations() {
-        return operations;
-    }
-
-    private void setOperations(Set<Operation> operations) {
-        this.operations = operations;
     }
 
     public void addBook(Book book) {
