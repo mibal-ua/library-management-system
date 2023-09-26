@@ -26,11 +26,6 @@ import java.util.List;
  */
 public class StringUtils {
 
-    public static String substring(final String str, final int max) {
-        if (str.length() < max) return str;
-        return str.substring(0, max);
-    }
-
     /**
      * Returns a string that is a substring of this original string with
      * appended {@code toAppend} string or original string if its length
@@ -40,6 +35,8 @@ public class StringUtils {
      * <blockquote><pre>
      * substringAppend("hamburger", ".." , 5) returns "ham.."
      * substringAppend("cheeseburger", ".." , 20) returns "cheeseburger"
+     * substringAppend("cheeseburger", ".." , 12) returns "cheeseburger"
+     * substringAppend("coca-cola is the best!", ".." , 12) returns "coca-cola.." not "coca-cola .."
      * </pre></blockquote>
      *
      * @param str      the original string to operate.
@@ -47,8 +44,8 @@ public class StringUtils {
      * @return the specified substring.
      */
     public static String substringAppend(final String str, final String toAppend, final int max) {
-        if (str.length() < max) return str;
-        return str.substring(0, max - toAppend.length()) + toAppend;
+        if (str.length() <= max) return str;
+        return str.substring(0, max - toAppend.length()).trim() + toAppend;
     }
 
     public static String min(String name, int n) {
