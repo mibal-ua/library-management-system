@@ -24,6 +24,7 @@ import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,7 +32,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static java.lang.String.format;
-import static ua.mibal.minervaTest.utils.StringUtils.substringAppend;
 
 
 /**
@@ -43,77 +43,72 @@ public class ConsoleDataPrinter implements DataPrinter {
 
     @Override
     public void printListOfBooks(final Collection<Book> books) {
-        final List<String> tableHeaders = List.of(" ID ", "Title", "Author", "Free");
-        final int titleLength = 36;
-        final int authorLength = 23;
-        final List<Integer> sizes = List.of(4, titleLength, authorLength, 4);
-        final List<Function<Book, String>> getters = List.of(
-                book -> book.getId().toString(),
-                book -> substringAppend(book.getTitle(), "..", titleLength),
-                book -> substringAppend(book.getAuthor(), "..", authorLength),
-                book -> book.isFree() ? "Yes" : "No"
+        printListTable(
+                List.of(" ID ", "Title", "Author", "Free"),
+                List.of(4, 36, 23, 4),
+                new ArrayList<>(List.of(
+                        Book::getId,
+                        Book::getTitle,
+                        Book::getAuthor,
+                        book -> book.isFree() ? "Yes" : "No"
+                )), books
         );
-        printListTable(tableHeaders, sizes, getters, books);
     }
 
     @Override
     public void printListOfClients(final Collection<Client> clients) {
-        final List<String> tableHeaders = List.of(" ID ", "Name", "Books");
-        final int nameLength = 35;
-        final int booksLength = 31;
-        final List<Integer> sizes = List.of(4, nameLength, booksLength);
-        // TODO FIXME stub
-        final List<Function<Client, String>> getters = List.of(
-                client -> client.getId().toString(),
-                client -> substringAppend(client.getName(), "..", nameLength),
-                client -> StringUtils.min(
-                        client.getBooks().stream()
+        printListTable(
+                List.of(" ID ", "Name", "Books"),
+                List.of(4, 35, 31),
+                new ArrayList<>(List.of(
+                        Client::getId,
+                        Client::getName,
+                        client -> client.getBooks().stream()
                                 .map(book -> book.getId().toString())
-                                .reduce("", (str1, str2) -> str1 + str2),
-                        booksLength)
+                                .reduce("", (str1, str2) -> str1 + str2 + " ")
+                )), clients
         );
-        printListTable(tableHeaders, sizes, getters, clients);
     }
 
     @Override
     public void printListOfOperations(final Collection<Operation> operations) {
-        final List<String> tableHeaders = List.of(" ID ", "Date", "Client name", "Operation", "Books");
-        final int dateLength = 10;
-        final int nameLength = 26;
-        final int booksLength = 15;
-        final List<Integer> sizes = List.of(4, dateLength, nameLength, 9, booksLength);
-        final List<Function<Operation, String>> getters = List.of(
-                operation -> operation.getId().toString(),
-                operation -> operation.getDate().toString().substring(0, dateLength),
-                operation -> StringUtils.min(operation.getClient().getName(), nameLength),
-                operation -> operation.getOperationType().toString(),
-                operation -> StringUtils.min(operation.getBook().getTitle(), booksLength)
-        );
-        printListTable(tableHeaders, sizes, getters, operations);
+        printListTable(
+                List.of(" ID ", "Date", "Client name", "Operation", "Books"),
+                List.of(4, 10, 26, 9, 15),
+                new ArrayList<>(List.of(
+                        Operation::getId,
+                        operation -> operation.getDate().toLocalDate(),
+                        operation -> operation.getClient().getName(),
+                        Operation::getOperationType,
+                        operation -> operation.getBook().getTitle()
+                )), operations);
     }
 
     private <T> void printListTable(final List<String> tableHeaders,
                                     final List<Integer> sizes,
-                                    final List<Function<T, String>> getters,
+                                    final List<Function<T, Object>> getters,
                                     final Collection<T> data) {
-        if (data.size() == 0) {
+        if (data.isEmpty()) {
             System.out.format("+------------------------------------------------------------------------------+%n");
             System.out.format("|                                List is empty                                 |%n");
             System.out.format("+------------------------------------------------------------------------------+%n");
             return;
         }
-        if (tableHeaders.size() != getters.size()) {
+        if (tableHeaders.size() != getters.size())
             throw new IllegalArgumentException(format(
                     "Number of table names (%d) differs from number of getters (%d)",
                     tableHeaders.size(), getters.size()));
-        }
-        if (sizes.isEmpty()) {
+        if (sizes.isEmpty())
             throw new IllegalArgumentException("Sizes list is empty");
-        }
 
         final StringBuilder dataTemplateBuilder = new StringBuilder("|");
         final StringBuilder dividerBuilder = new StringBuilder("+");
-        for (Integer size : sizes) {
+        for (int i = 0; i < sizes.size(); i++) {
+            Integer size = sizes.get(i);
+
+            Function<Object, Object> trimStrAppendDotsFn = obj -> StringUtils.min(obj.toString(), size);
+            getters.set(i, trimStrAppendDotsFn.compose(getters.get(i)));
+
             dataTemplateBuilder.append(" %-").append(size).append("s |");
             dividerBuilder.append("-").append("-".repeat(size)).append("-+");
         }
@@ -126,7 +121,7 @@ public class ConsoleDataPrinter implements DataPrinter {
         System.out.print(divider);
         for (T el : data) {
             final List<String> fields = getters.stream()
-                    .map(getter -> getter.apply(el))
+                    .map(getter -> getter.apply(el).toString())
                     .toList();
             System.out.printf(dataTemplate, fields.toArray());
         }
@@ -135,23 +130,27 @@ public class ConsoleDataPrinter implements DataPrinter {
 
     @Override
     public void printBookDetails(final Book book) {
-        Map<String, String> valuesMap = new LinkedHashMap<>();
-        valuesMap.put("ID", book.getId().toString());
-        valuesMap.put("Title", book.getTitle());
-        valuesMap.put("Subtitle", book.getSubtitle());
-        valuesMap.put("Author", book.getAuthor());
-        valuesMap.put("Publisher", book.getPublisher());
-        valuesMap.put("Publish date", book.getPublishedDate().toString());
-        valuesMap.put("Free", book.isFree() ? "YES" : "NO");
-        printDetailsTable(valuesMap);
+        Map<String, Object> dataRows = new LinkedHashMap<>();
+        dataRows.put("ID", book.getId());
+        dataRows.put("Title", book.getTitle());
+        dataRows.put("Subtitle", book.getSubtitle());
+        dataRows.put("Author", book.getAuthor());
+        dataRows.put("Publisher", book.getPublisher());
+        dataRows.put("Publish date", book.getPublishedDate());
+        dataRows.put("Free", book.isFree() ? "YES" : "NO");
+        if (!book.isFree())
+            dataRows.put("Client", book.getClient()
+                    .map(Client::getName)
+                    .orElse("NONE"));
+        printDetailsTable(dataRows);
     }
 
     @Override
     public void printClientDetails(final Client client) {
-        Map<String, String> valuesMap = new LinkedHashMap<>();
-        valuesMap.put("ID", client.getId().toString());
-        valuesMap.put("Name", client.getName());
-        printDetailsTable(valuesMap);
+        Map<String, Object> dataRows = new LinkedHashMap<>();
+        dataRows.put("ID", client.getId());
+        dataRows.put("Name", client.getName());
+        printDetailsTable(dataRows);
 
         System.out.println("""
                                                   
@@ -162,20 +161,13 @@ public class ConsoleDataPrinter implements DataPrinter {
 
     @Override
     public void printOperationDetails(final Operation operation) {
-        Map<String, String> valuesMap = new LinkedHashMap<>();
-        // TODO FIXME stub
-        valuesMap.put("ID", operation.getId().toString());
-        valuesMap.put("Date", operation.getDate().toString());
-        valuesMap.put("Client", operation.getClient().getName());
-        // TODO FIXME stub
-        valuesMap.put("Type", operation.getOperationType().toString());
-        printDetailsTable(valuesMap);
-
-        System.out.println("""
-                                                  
-                                               Books in operation
-                """);
-        printListOfBooks(List.of(operation.getBook())); // TODO FIXME
+        Map<String, Object> dataRows = new LinkedHashMap<>();
+        dataRows.put("ID", operation.getId());
+        dataRows.put("Date", operation.getDate());
+        dataRows.put("Client", operation.getClient().getName());
+        dataRows.put("Operation", operation.getOperationType());
+        dataRows.put("Book", operation.getBook().getTitle());
+        printDetailsTable(dataRows);
     }
 
     @Override
@@ -183,13 +175,13 @@ public class ConsoleDataPrinter implements DataPrinter {
         ConsoleUtils.clear();
     }
 
-    private void printDetailsTable(final Map<String, String> valuesMap) {
-        if (valuesMap.isEmpty()) {
+    private void printDetailsTable(final Map<String, Object> dataRows) {
+        if (dataRows.isEmpty()) {
             throw new RuntimeException("Map with values is empty.");
         }
 
         int keyMaxLength = -1;
-        for (Map.Entry<String, String> entry : valuesMap.entrySet()) {
+        for (Map.Entry<String, Object> entry : dataRows.entrySet()) {
             int keyLength = entry.getKey().length();
             if (keyLength > keyMaxLength) {
                 keyMaxLength = keyLength;
@@ -201,7 +193,7 @@ public class ConsoleDataPrinter implements DataPrinter {
         final String divider = format("+-%s-+-%s-+%n", "-".repeat(keyMaxLength), "-".repeat(valueMaxLength));
 
         System.out.print(divider);
-        for (Map.Entry<String, String> entry : valuesMap.entrySet()) {
+        for (Map.Entry<String, Object> entry : dataRows.entrySet()) {
             System.out.format(template, entry.getKey(), entry.getValue());
             System.out.print(divider);
         }

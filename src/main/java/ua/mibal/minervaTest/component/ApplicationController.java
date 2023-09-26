@@ -90,7 +90,7 @@ public class ApplicationController {
         }
         final Long id = Long.valueOf(args[0]);
         switch (windowManager.getCurrentDataType()) {
-            case BOOK -> windowManager.bookDetails(() -> bookDao.findById(id));
+            case BOOK -> windowManager.bookDetails(() -> bookDao.findByIdFetchClient(id));
             case CLIENT -> windowManager.clientDetails(() -> clientDao.findByIdFetchBooks(id));
             case HISTORY -> windowManager.operationDetails(() -> operationDao.findByIdFetchBookClient(id));
             case NULL -> windowManager.showToast("You can not use command 'look' in this tab.");
