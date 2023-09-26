@@ -85,5 +85,10 @@ public abstract class ConsoleToast implements Toast {
         return new Scanner(System.in).nextLine();
     }
 
+    public Toast perform(Runnable runnable) {
+        runnable.run();
+        return this;
+    }
+
     protected abstract void printAppropriateBody();
 }

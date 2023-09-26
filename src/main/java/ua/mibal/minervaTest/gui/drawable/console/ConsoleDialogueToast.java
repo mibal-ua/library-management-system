@@ -44,4 +44,10 @@ public class ConsoleDialogueToast extends ConsoleToast {
     public boolean getAnswer() {
         return userAnswer;
     }
+
+    @Override
+    public ConsoleDialogueToast perform(Runnable runnable) {
+        super.perform(runnable);
+        return this;
+    }
 }

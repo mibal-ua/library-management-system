@@ -142,92 +142,93 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public void showToast(String message) {
-        new ConsoleInfoToast(message).draw();
-        refresh();
+        new ConsoleInfoToast(message)
+                .draw()
+                .perform(this::refresh);
     }
 
     @Override
     public boolean showDialogueToast(String question, String answer1, String answer2) {
-        ConsoleDialogueToast dialogueToast = new ConsoleDialogueToast(
+        return new ConsoleDialogueToast(
                 "Confirmation",
                 question,
                 answer1,
                 answer2
-        ).draw();
-        refresh();
-        return dialogueToast.getAnswer();
+        ).draw()
+                .perform(this::refresh)
+                .getAnswer();
     }
 
     @Override
     public Optional<Book> initBookToAdd() {
-        Map<String, String> questions = new LinkedHashMap<>();
-        questions.put("Enter book title", "");
-        questions.put("Enter subtitle", "");
-        questions.put("Enter author", "");
-        questions.put("Enter publish date in format 2018-12-31", "");
-        questions.put("Enter book publisher", "");
-        Optional<List<String>> answersOptional = new ConsoleFormToast(
+        return new ConsoleFormToast(
                 "Book adding",
-                questions,
+                new LinkedHashMap<>() {{
+                    put("Enter book title", "");
+                    put("Enter subtitle", "");
+                    put("Enter author", "");
+                    put("Enter publish date in format 2018-12-31", "");
+                    put("Enter book publisher", "");
+                }},
                 "/stop",
                 "Lets create book! You can stop everywhere by entering '/stop'"
-        ).draw().getAnswers();
-        refresh();
-        return answersOptional.map(Books::ofMapping);
+        ).draw()
+                .perform(this::refresh)
+                .getAnswers()
+                .map(Books::ofMapping);
     }
 
     @Override
     public Optional<Client> initClientToAdd() {
-        Map<String, String> questions = new LinkedHashMap<>();
-        questions.put("Enter client name", "");
-        Optional<List<String>> answersOptional = new ConsoleFormToast(
+        return new ConsoleFormToast(
                 "Client adding",
-                questions,
+                Map.of("Enter client name", ""),
                 "/stop",
                 "Lets add client! You can stop everywhere by entering '/stop'"
-        ).draw().getAnswers();
-        refresh();
-        return answersOptional.map(Clients::ofMapping);
+        ).draw()
+                .perform(this::refresh)
+                .getAnswers()
+                .map(Clients::ofMapping);
     }
 
     @Override
     public Optional<Book> editBook(Book originalBook) {
-        Map<String, String> messages = new LinkedHashMap<>();
-        messages.put("Enter title", "prev book title: '" + originalBook.getTitle() + "'");
-        messages.put("Enter subtitle", "prev book subtitle: '" + originalBook.getSubtitle() + "'");
-        messages.put("Enter author", "prev book author: '" + originalBook.getAuthor() + "'");
-        messages.put("Enter publish date in format 2018-12-31", "prev book publish date: '" + originalBook.getPublishedDate() + "'");
-        messages.put("Enter book publisher", "prev book publisher: '" + originalBook.getPublisher() + "'");
-        Optional<List<String>> answersOptional = new ConsoleFormToast(
+        return new ConsoleFormToast(
                 "Book editing",
-                messages,
+                new LinkedHashMap<>() {{
+                    put("Enter title", "prev book title: '" + originalBook.getTitle() + "'");
+                    put("Enter subtitle", "prev book subtitle: '" + originalBook.getSubtitle() + "'");
+                    put("Enter author", "prev book author: '" + originalBook.getAuthor() + "'");
+                    put("Enter publish date in format 2018-12-31", "prev book publish date: '" + originalBook.getPublishedDate() + "'");
+                    put("Enter book publisher", "prev book publisher: '" + originalBook.getPublisher() + "'");
+                }},
                 "/stop",
                 "Lets edit book! You can stop by entering '/stop'",
                 "If you wanna edit field, enter data.\nIf you wanna skip editing, click Enter."
-        ).draw().getAnswers();
-        refresh();
-        return answersOptional.map(answers -> {
-            Book editedBook = Books.copyOf(originalBook);
-            return Books.changeByMapping(editedBook, answers);
-        });
+        ).draw()
+                .perform(this::refresh)
+                .getAnswers()
+                .map(answers -> {
+                    Book editedBook = Books.copyOf(originalBook);
+                    return Books.changeByMapping(editedBook, answers);
+                });
     }
 
     @Override
     public Optional<Client> editClient(final Client originalClient) {
-        Map<String, String> messages = new LinkedHashMap<>();
-        messages.put("Enter name", "prev client name: '" + originalClient.getName() + "'");
-        Optional<List<String>> answersOptional = new ConsoleFormToast(
+        return new ConsoleFormToast(
                 "Client editing",
-                messages,
+                Map.of("Enter name", "prev client name: '" + originalClient.getName() + "'"),
                 "/stop",
                 "Lets edit client! You can stop by entering '/stop'",
                 "If you wanna edit field, enter data.\nIf you wanna skip editing, click Enter."
-        ).draw().getAnswers();
-        refresh();
-        return answersOptional.map(answers -> {
-            Client editedClient = Clients.copyOf(originalClient);
-            return Clients.changeByMapping(editedClient, answers);
-        });
+        ).draw()
+                .perform(this::refresh)
+                .getAnswers()
+                .map(answers -> {
+                    Client editedClient = Clients.copyOf(originalClient);
+                    return Clients.changeByMapping(editedClient, answers);
+                });
     }
 
     @Override

@@ -54,4 +54,10 @@ public class ConsoleFormToast extends ConsoleToast {
     public Optional<List<String>> getAnswers() {
         return Optional.ofNullable(answers);
     }
+
+    @Override
+    public ConsoleFormToast perform(Runnable runnable) {
+        super.perform(runnable);
+        return this;
+    }
 }
