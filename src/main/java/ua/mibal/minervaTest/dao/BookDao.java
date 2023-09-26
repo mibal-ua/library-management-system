@@ -19,8 +19,10 @@ package ua.mibal.minervaTest.dao;
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
+import ua.mibal.minervaTest.model.exception.DaoException;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Mykhailo Balakhon
@@ -62,5 +64,16 @@ public class BookDao extends Dao<Book> {
                     return false;
                 })
                 .toList();
+    }
+
+    public Optional<Book> findByIdFetchClient(Long id) throws DaoException {
+        return Optional.ofNullable(queryHelper.readWithinTx(
+                entityManager -> entityManager.createQuery("select b from Book b " +
+                                                           "left join fetch b.client " +
+                                                           "where b.id = :id", Book.class)
+                        .setParameter("id", id)
+                        .getSingleResult(),
+                "Exception while retrieving Book"
+        ));
     }
 }
