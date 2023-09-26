@@ -129,46 +129,7 @@ public class NewConsoleWindowManager implements WindowManager {
     @Override
     public void help() {
         tabStack.push(new ConsoleTab(
-                () -> System.out.println("""
-
-                                                          MAIN CONTROL
-                        --------------------------------------------------------------------------------
-
-                                                       1, 2, 3 - open tab
-
-                                                          exit - to exit
-
-
-                                                            IN TABS
-                        --------------------------------------------------------------------------------
-
-                                  search(s) ${query} - search element in current tab
-
-                                          look ${id} - look at concrete item in list in current tab
-
-                                                 add - to add element into list in current tab
-
-                                   delete(del) ${id} - to delete element in list in current tab
-
-
-                                                     IN CONCRETE BOOK/CLIENT
-                        --------------------------------------------------------------------------------
-
-                                                   edit - to edit this book/client
-
-                                            delete(del) - to delete this book/client
-
-                                                    esc - go to previous window
-
-
-                                                       IN CONCRETE CLIENT
-                        --------------------------------------------------------------------------------
-
-                                                    take ${id} - to take book
-
-                                                  return ${id} - to return book
-
-                         """),
+                dataPrinter::printHelp,
                 HELP_TAB,
                 "HELP"
         )).draw();

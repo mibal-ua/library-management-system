@@ -41,4 +41,6 @@ public interface DataPrinter {
     void printOperationDetails(Operation operation);
 
     void clear();
+
+    void printHelp();
 }
