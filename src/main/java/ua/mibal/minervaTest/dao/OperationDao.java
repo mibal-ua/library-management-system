@@ -16,7 +16,8 @@
 
 package ua.mibal.minervaTest.dao;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.exception.DaoException;
 
@@ -27,35 +28,33 @@ import java.util.Optional;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-@Component
+@Repository
+@Transactional
 public class OperationDao extends Dao<Operation> {
 
-    public OperationDao(QueryHelper queryHelper) {
-        super(queryHelper, Operation.class);
+    public OperationDao() {
+        super(Operation.class);
     }
 
+    @Transactional(readOnly = true)
     public List<Operation> findAllFetchBookClient() throws DaoException {
-        return queryHelper.readWithinTx(
-                entityManager -> entityManager.createQuery("select o from Operation o " +
-                                                           "left join fetch o.book " +
-                                                           "left join fetch o.client", Operation.class)
-                        .getResultList(),
-                "Exception while retrieving all Operations"
-        );
+        return entityManager.createQuery("select o from Operation o " +
+                                         "left join fetch o.book " +
+                                         "left join fetch o.client", Operation.class)
+                .getResultList();
     }
 
+    @Transactional(readOnly = true)
     public Optional<Operation> findByIdFetchBookClient(Long id) throws DaoException {
-        return Optional.ofNullable(queryHelper.readWithinTx(
-                entityManager -> entityManager.createQuery("select o from Operation o " +
-                                                           "left join fetch o.book " +
-                                                           "left join fetch o.client " +
-                                                           "where o.id = :id", Operation.class)
-                        .setParameter("id", id)
-                        .getSingleResult(),
-                "Exception while retrieving Operation"
-        ));
+        return Optional.ofNullable(entityManager.createQuery("select o from Operation o " +
+                                                             "left join fetch o.book " +
+                                                             "left join fetch o.client " +
+                                                             "where o.id = :id", Operation.class)
+                .setParameter("id", id)
+                .getSingleResult());
     }
 
+    @Transactional(readOnly = true)
     public List<Operation> findFetchBookClient(String... args) {
         return findAllFetchBookClient().stream()
                 .filter(operation -> {

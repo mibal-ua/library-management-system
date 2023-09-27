@@ -16,7 +16,8 @@
 
 package ua.mibal.minervaTest.dao;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.exception.DaoException;
 
@@ -27,33 +28,31 @@ import java.util.Optional;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-@Component
+@Repository
+@Transactional
 public class ClientDao extends Dao<Client> {
 
-    public ClientDao(QueryHelper queryHelper) {
-        super(queryHelper, Client.class);
+    public ClientDao() {
+        super(Client.class);
     }
 
+    @Transactional(readOnly = true)
     public List<Client> findAllFetchBooks() throws DaoException {
-        return queryHelper.readWithinTx(
-                entityManager -> entityManager.createQuery("select c from Client c " +
-                                                           "left join fetch c.books", Client.class)
-                        .getResultList(),
-                "Exception while retrieving all Clients"
-        );
+        return entityManager.createQuery("select c from Client c " +
+                                         "left join fetch c.books", Client.class)
+                .getResultList();
     }
 
+    @Transactional(readOnly = true)
     public Optional<Client> findByIdFetchBooks(Long id) throws DaoException {
-        return Optional.ofNullable(queryHelper.readWithinTx(
-                entityManager -> entityManager.createQuery("select c from Client c " +
-                                                           "left join fetch c.books " +
-                                                           "where c.id = :id", Client.class)
-                        .setParameter("id", id)
-                        .getSingleResult(),
-                "Exception while retrieving Client"
-        ));
+        return Optional.ofNullable(entityManager.createQuery("select c from Client c " +
+                                                             "left join fetch c.books " +
+                                                             "where c.id = :id", Client.class)
+                .setParameter("id", id)
+                .getSingleResult());
     }
 
+    @Transactional(readOnly = true)
     public List<Client> findFetchBooks(String... args) {
         return findAllFetchBooks().stream()
                 .filter(client -> {

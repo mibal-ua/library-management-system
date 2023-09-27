@@ -16,7 +16,8 @@
 
 package ua.mibal.minervaTest.dao;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.exception.DaoException;
@@ -28,29 +29,26 @@ import java.util.Optional;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-@Component
+@Repository
+@Transactional
 public class BookDao extends Dao<Book> {
 
-    public BookDao(QueryHelper queryHelper) {
-        super(queryHelper, Book.class);
+    public BookDao() {
+        super(Book.class);
     }
 
     public void takeBook(Long clientId, Long bookId) {
-        queryHelper.performWithinTx(entityManager -> {
-            Book managedBook = entityManager.getReference(Book.class, bookId);
-            Client managedClient = entityManager.getReference(Client.class, clientId);
-            managedBook.setClient(managedClient);
-        }, "Error while taking by client_id=" + clientId + " book_id=" + bookId);
+        Book managedBook = entityManager.getReference(Book.class, bookId);
+        Client managedClient = entityManager.getReference(Client.class, clientId);
+        managedBook.setClient(managedClient);
     }
 
     public void returnBook(Long clientId, Long bookId) {
-        queryHelper.performWithinTx(entityManager -> {
-                    Book managedBook = entityManager.getReference(Book.class, bookId);
-                    managedBook.setClient(null);
-                }, "Error while returning by client_id=" + clientId + " book_id=" + bookId
-        );
+        Book managedBook = entityManager.getReference(Book.class, bookId);
+        managedBook.setClient(null);
     }
 
+    @Transactional(readOnly = true)
     public List<Book> find(String... args) {
         return findAll().stream()
                 .filter(book -> {
@@ -66,14 +64,12 @@ public class BookDao extends Dao<Book> {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public Optional<Book> findByIdFetchClient(Long id) throws DaoException {
-        return Optional.ofNullable(queryHelper.readWithinTx(
-                entityManager -> entityManager.createQuery("select b from Book b " +
-                                                           "left join fetch b.client " +
-                                                           "where b.id = :id", Book.class)
-                        .setParameter("id", id)
-                        .getSingleResult(),
-                "Exception while retrieving Book"
-        ));
+        return Optional.ofNullable(entityManager.createQuery("select b from Book b " +
+                                                             "left join fetch b.client " +
+                                                             "where b.id = :id", Book.class)
+                .setParameter("id", id)
+                .getSingleResult());
     }
 }
