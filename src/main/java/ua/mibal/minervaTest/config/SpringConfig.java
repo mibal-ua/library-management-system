@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @ComponentScan("ua.mibal.minervaTest")
 @PropertySource("classpath:application.properties")
-@EnableJpaRepositories
+@EnableJpaRepositories(basePackages = "ua.mibal.minervaTest.dao")
 @EnableTransactionManagement
 public class SpringConfig {
 

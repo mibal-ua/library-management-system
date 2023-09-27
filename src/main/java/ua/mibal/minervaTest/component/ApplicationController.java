@@ -17,9 +17,9 @@
 package ua.mibal.minervaTest.component;
 
 import org.springframework.stereotype.Component;
-import ua.mibal.minervaTest.dao.BookDao;
-import ua.mibal.minervaTest.dao.ClientDao;
-import ua.mibal.minervaTest.dao.OperationDao;
+import ua.mibal.minervaTest.dao.book.BookRepository;
+import ua.mibal.minervaTest.dao.client.ClientRepository;
+import ua.mibal.minervaTest.dao.operation.OperationRepository;
 import ua.mibal.minervaTest.gui.WindowManager;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.utils.StringUtils;
@@ -36,30 +36,30 @@ public class ApplicationController {
 
     private final WindowManager windowManager;
 
-    private final BookDao bookDao;
-    private final OperationDao operationDao;
-    private final ClientDao clientDao;
+    private final BookRepository bookRepository;
+    private final OperationRepository operationRepository;
+    private final ClientRepository clientRepository;
 
     public ApplicationController(WindowManager windowManager,
-                                 BookDao bookDao,
-                                 OperationDao operationDao,
-                                 ClientDao clientDao) {
+                                 BookRepository bookRepository,
+                                 OperationRepository operationRepository,
+                                 ClientRepository clientRepository) {
         this.windowManager = windowManager;
-        this.bookDao = bookDao;
-        this.operationDao = operationDao;
-        this.clientDao = clientDao;
+        this.bookRepository = bookRepository;
+        this.operationRepository = operationRepository;
+        this.clientRepository = clientRepository;
     }
 
     public void tab1(final String[] ignored) {
-        windowManager.tab1(bookDao::findAll);
+        windowManager.tab1(bookRepository::findAll);
     }
 
     public void tab2(final String[] ignored) {
-        windowManager.tab2(clientDao::findAllFetchBooks);
+        windowManager.tab2(clientRepository::findAllFetchBooks);
     }
 
     public void tab3(final String[] ignored) {
-        windowManager.tab3(operationDao::findAllFetchBookClient);
+        windowManager.tab3(operationRepository::findAllFetchBookClient);
     }
 
     public void esc(final String[] ignored) {
@@ -76,9 +76,9 @@ public class ApplicationController {
             return;
         }
         switch (windowManager.getCurrentDataType()) {
-            case BOOK -> windowManager.searchBookTab(() -> bookDao.find(args), args);
-            case CLIENT -> windowManager.searchClientTab(() -> clientDao.findFetchBooks(args), args);
-            case HISTORY -> windowManager.searchOperationTab(() -> operationDao.findFetchBookClient(args), args);
+            case BOOK -> windowManager.searchBookTab(() -> bookRepository.find(args), args);
+            case CLIENT -> windowManager.searchClientTab(() -> clientRepository.findFetchBooks(args), args);
+            case HISTORY -> windowManager.searchOperationTab(() -> operationRepository.findFetchBookClient(args), args);
             case NULL -> windowManager.showToast("You can not use command 'search' in this tab.");
         }
     }
@@ -90,9 +90,9 @@ public class ApplicationController {
         }
         final Long id = Long.valueOf(args[0]);
         switch (windowManager.getCurrentDataType()) {
-            case BOOK -> windowManager.bookDetails(() -> bookDao.findByIdFetchClient(id));
-            case CLIENT -> windowManager.clientDetails(() -> clientDao.findByIdFetchBooks(id));
-            case HISTORY -> windowManager.operationDetails(() -> operationDao.findByIdFetchBookClient(id));
+            case BOOK -> windowManager.bookDetails(() -> bookRepository.findByIdFetchClient(id));
+            case CLIENT -> windowManager.clientDetails(() -> clientRepository.findByIdFetchBooks(id));
+            case HISTORY -> windowManager.operationDetails(() -> operationRepository.findByIdFetchBookClient(id));
             case NULL -> windowManager.showToast("You can not use command 'look' in this tab.");
         }
     }
@@ -108,19 +108,19 @@ public class ApplicationController {
         }
         final Long id = Long.valueOf(args[0]);
         switch (windowManager.getCurrentDataType()) {
-            case BOOK -> bookDao.findById(id)
+            case BOOK -> bookRepository.findById(id)
                     .flatMap(windowManager::editBook).ifPresentOrElse(
                             book -> {
-                                bookDao.update(book);
+                                bookRepository.save(book);
                                 windowManager.refresh()
                                         .showToast("Book successfully updated!");
                             },
                             () -> windowManager.showToast("Oops, there are no books with this id=" + id)
                     );
-            case CLIENT -> clientDao.findByIdFetchBooks(id)
+            case CLIENT -> clientRepository.findByIdFetchBooks(id)
                     .flatMap(windowManager::editClient).ifPresentOrElse(
                             client -> {
-                                clientDao.update(client);
+                                clientRepository.save(client);
                                 windowManager.refresh()
                                         .showToast("Client successfully updated!");
                             },
@@ -137,13 +137,15 @@ public class ApplicationController {
         }
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> windowManager.initBookToAdd().ifPresent(
-                    book -> windowManager.showToast(bookDao.save(book)
-                            ? "Book successfully added!"
-                            : "Book doesnt added("));
+                    book -> {
+                        bookRepository.save(book);
+                        windowManager.showToast("Book successfully added!");
+                    });
             case CLIENT -> windowManager.initClientToAdd().ifPresent(
-                    client -> windowManager.showToast(clientDao.save(client)
-                            ? "Client successfully added!"
-                            : "Client doesnt added("));
+                    client -> {
+                        clientRepository.save(client);
+                        windowManager.showToast("Client successfully added!");
+                    });
             case NULL -> windowManager.showToast("You can not use command 'add' in this tab.");
         }
     }
@@ -160,7 +162,7 @@ public class ApplicationController {
         }
         final Long id = Long.valueOf(args[0]);
         switch (windowManager.getCurrentDataType()) {
-            case BOOK -> bookDao.findById(id).ifPresentOrElse(
+            case BOOK -> bookRepository.findById(id).ifPresentOrElse(
                     bookToDel -> {
                         final String title = StringUtils.min(bookToDel.getTitle(), 14);
                         if (!bookToDel.isFree()) {
@@ -171,16 +173,14 @@ public class ApplicationController {
                                 "You really need to delete book '" + title + "'?",
                                 "YES", "NO");
                         if (isConfirmed) {
-                            if (bookDao.delete(bookToDel))
-                                windowManager.refresh()
-                                        .showToast("Book successfully deleted.");
-                            else
-                                windowManager.showToast("Book isn't deleted.");
+                            bookRepository.delete(bookToDel);
+                            windowManager.refresh()
+                                    .showToast("Book successfully deleted.");
                         }
                     },
                     () -> windowManager.showToast("Oops, there are no books with this id=" + id)
             );
-            case CLIENT -> clientDao.findByIdFetchBooks(id).ifPresentOrElse(
+            case CLIENT -> clientRepository.findByIdFetchBooks(id).ifPresentOrElse(
                     clientToDel -> {
                         final String name = StringUtils.min(clientToDel.getName(), 15);
                         if (clientToDel.doesHoldBook()) {
@@ -192,12 +192,9 @@ public class ApplicationController {
                                 "You really need to delete client '" + name + "'?",
                                 "YES", "NO");
                         if (isConfirmed) {
-                            if (clientDao.delete(clientToDel)) {
-                                windowManager.refresh()
-                                        .showToast("Client successfully deleted.");
-                            } else {
-                                windowManager.showToast("Client isn't deleted.");
-                            }
+                            clientRepository.delete(clientToDel);
+                            windowManager.refresh()
+                                    .showToast("Client successfully deleted.");
                         }
                     },
                     () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
@@ -213,16 +210,16 @@ public class ApplicationController {
         }
 
         final Long clientId = Long.valueOf(args[0]);
-        clientDao.findById(clientId).orElseThrow(
+        clientRepository.findById(clientId).orElseThrow(
                 () -> new IllegalArgumentException("Client with id=" + clientId + " not found"));
         final Long bookId = Long.valueOf(args[1]);
-        bookDao.findById(bookId).ifPresentOrElse(
+        bookRepository.findById(bookId).ifPresentOrElse(
                 bookToTake -> {
                     if (!bookToTake.isFree()) {
                         windowManager.showToast("Oops, but book with id=" + bookId + " isn't free(");
                         return;
                     }
-                    bookDao.takeBook(clientId, bookId);
+                    bookRepository.takeBook(clientId, bookId);
                     windowManager.refresh()
                             .showToast("Book successfully taken!");
                 },
@@ -236,18 +233,18 @@ public class ApplicationController {
             return;
         }
         final Long clientId = Long.valueOf(args[0]);
-        final Client client = clientDao.findByIdFetchBooks(clientId)
+        final Client client = clientRepository.findByIdFetchBooks(clientId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Client with id=" + clientId + " not found"));
         final Long bookId = Long.valueOf(args[1]);
-        bookDao.findById(bookId).ifPresentOrElse(
+        bookRepository.findById(bookId).ifPresentOrElse(
                 bookToReturn -> {
                     if (!client.getBooks().contains(bookToReturn)) {
                         windowManager.showToast("Oops, but user with id=" + clientId +
                                                 " doesn't hold this book with id=" + bookId);
                         return;
                     }
-                    bookDao.returnBook(clientId, bookId);
+                    bookRepository.returnBook(clientId, bookId);
                     windowManager.refresh()
                             .showToast("Books successfully returned!");
                 },
