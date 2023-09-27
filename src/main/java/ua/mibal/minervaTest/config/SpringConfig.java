@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package ua.mibal.minervaTest;
+package ua.mibal.minervaTest.config;
 
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.TransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * @author Mykhailo Balakhon
@@ -30,11 +33,12 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @ComponentScan("ua.mibal.minervaTest")
 @PropertySource("classpath:application.properties")
+@EnableJpaRepositories
+@EnableTransactionManagement
 public class SpringConfig {
 
     @Bean
-    public EntityManagerFactory entityManagerFactory() {
-        return Persistence.createEntityManagerFactory("Library");
+    public TransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
     }
-
 }

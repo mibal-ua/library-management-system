@@ -18,6 +18,7 @@ package ua.mibal.minervaTest;
 
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ua.mibal.minervaTest.config.SpringConfig;
 
 /**
  * @author Mykhailo Balakhon
