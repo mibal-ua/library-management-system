@@ -243,7 +243,7 @@ public class ApplicationController {
         bookDao.findById(bookId).ifPresentOrElse(
                 bookToReturn -> {
                     if (!client.getBooks().contains(bookToReturn)) {
-                        windowManager.showToast("Oops, but user with id=" + client +
+                        windowManager.showToast("Oops, but user with id=" + clientId +
                                                 " doesn't hold this book with id=" + bookId);
                         return;
                     }
