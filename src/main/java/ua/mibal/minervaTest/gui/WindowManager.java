@@ -71,7 +71,5 @@ public interface WindowManager {
     Optional<Book> editBook(Book book);
 
     Optional<Client> editClient(Client client);
-
-    WindowManager refresh();
 }
 

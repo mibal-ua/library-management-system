@@ -285,10 +285,8 @@ public class NewConsoleWindowManager implements WindowManager {
         )).draw();
     }
 
-    @Override
-    public WindowManager refresh() {
+    private void refresh() {
         dataPrinter.clear();
         this.tabStack.peek().draw();
-        return this;
     }
 }

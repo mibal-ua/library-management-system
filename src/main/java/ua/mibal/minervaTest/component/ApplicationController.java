@@ -112,8 +112,7 @@ public class ApplicationController {
                     .flatMap(windowManager::editBook).ifPresentOrElse(
                             book -> {
                                 bookRepository.save(book);
-                                windowManager.refresh()
-                                        .showToast("Book successfully updated!");
+                                windowManager.showToast("Book successfully updated!");
                             },
                             () -> windowManager.showToast("Oops, there are no books with this id=" + id)
                     );
@@ -121,8 +120,7 @@ public class ApplicationController {
                     .flatMap(windowManager::editClient).ifPresentOrElse(
                             client -> {
                                 clientRepository.save(client);
-                                windowManager.refresh()
-                                        .showToast("Client successfully updated!");
+                                windowManager.showToast("Client successfully updated!");
                             },
                             () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
                     );
@@ -174,8 +172,7 @@ public class ApplicationController {
                                 "YES", "NO");
                         if (isConfirmed) {
                             bookRepository.delete(bookToDel);
-                            windowManager.refresh()
-                                    .showToast("Book successfully deleted.");
+                            windowManager.showToast("Book successfully deleted.");
                         }
                     },
                     () -> windowManager.showToast("Oops, there are no books with this id=" + id)
@@ -193,8 +190,7 @@ public class ApplicationController {
                                 "YES", "NO");
                         if (isConfirmed) {
                             clientRepository.delete(clientToDel);
-                            windowManager.refresh()
-                                    .showToast("Client successfully deleted.");
+                            windowManager.showToast("Client successfully deleted.");
                         }
                     },
                     () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
@@ -220,8 +216,7 @@ public class ApplicationController {
                         return;
                     }
                     bookRepository.takeBook(clientId, bookId);
-                    windowManager.refresh()
-                            .showToast("Book successfully taken!");
+                    windowManager.showToast("Book successfully taken!");
                 },
                 () -> windowManager.showToast("Oops, but book with id=" + bookId + " doesn't exists")
         );
@@ -245,8 +240,7 @@ public class ApplicationController {
                         return;
                     }
                     bookRepository.returnBook(clientId, bookId);
-                    windowManager.refresh()
-                            .showToast("Books successfully returned!");
+                    windowManager.showToast("Books successfully returned!");
                 },
                 () -> windowManager.showToast("Oops, but book with id=" + bookId + " doesn't exists")
         );
