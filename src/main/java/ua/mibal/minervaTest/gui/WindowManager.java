@@ -44,6 +44,8 @@ public interface WindowManager {
 
     void showToast(final String message);
 
+    void showToast(String header, String message);
+
     boolean showDialogueToast(String question, String answer1, String answer2);
 
     void searchBookTab(Supplier<List<Book>> books, String[] args);

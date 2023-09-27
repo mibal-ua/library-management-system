@@ -148,6 +148,13 @@ public class NewConsoleWindowManager implements WindowManager {
     }
 
     @Override
+    public void showToast(String header, String message) {
+        new ConsoleInfoToast(header, message)
+                .draw()
+                .perform(this::refresh);
+    }
+
+    @Override
     public boolean showDialogueToast(String question, String answer1, String answer2) {
         return new ConsoleDialogueToast(
                 "Confirmation",

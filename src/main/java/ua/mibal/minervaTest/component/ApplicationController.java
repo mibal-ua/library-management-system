@@ -22,7 +22,6 @@ import ua.mibal.minervaTest.dao.client.ClientRepository;
 import ua.mibal.minervaTest.dao.operation.OperationRepository;
 import ua.mibal.minervaTest.gui.WindowManager;
 import ua.mibal.minervaTest.model.Client;
-import ua.mibal.minervaTest.utils.StringUtils;
 
 import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
 import static ua.mibal.minervaTest.utils.StringUtils.isNumber;
@@ -165,13 +164,13 @@ public class ApplicationController {
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> bookRepository.findById(id).ifPresentOrElse(
                     bookToDel -> {
-                        final String title = StringUtils.min(bookToDel.getTitle(), 14);
                         if (!bookToDel.isFree()) {
-                            windowManager.showToast("Oops, but book " + title + " isn't free");
+                            windowManager.showToast("Book isn't free",
+                                    "Oops, but book '" + bookToDel.getTitle() + "' isn't free");
                             return;
                         }
                         final boolean isConfirmed = windowManager.showDialogueToast(
-                                "You really need to delete book '" + title + "'?",
+                                "You really need to delete book '" + bookToDel.getTitle() + "'?",
                                 "YES", "NO");
                         if (isConfirmed) {
                             bookRepository.delete(bookToDel);
@@ -182,14 +181,13 @@ public class ApplicationController {
             );
             case CLIENT -> clientRepository.findByIdFetchBooks(id).ifPresentOrElse(
                     clientToDel -> {
-                        final String name = StringUtils.min(clientToDel.getName(), 15);
                         if (clientToDel.doesHoldBook()) {
-                            windowManager.showToast(
-                                    "Oops, but client " + name + " is holding books, we can't delete him(");
+                            windowManager.showToast("Client is holding books",
+                                    "Oops, but client " + clientToDel.getName() + " is holding books, we can't delete him(");
                             return;
                         }
                         final boolean isConfirmed = windowManager.showDialogueToast(
-                                "You really need to delete client '" + name + "'?",
+                                "You really need to delete client '" + clientToDel.getName() + "'?",
                                 "YES", "NO");
                         if (isConfirmed) {
                             clientRepository.delete(clientToDel);
