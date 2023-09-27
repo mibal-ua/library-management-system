@@ -20,21 +20,38 @@ public class ConsoleTab implements Tab {
     private final int boldWordIndex;
     private final Runnable body;
     private final TabType tabType;
+    private final Long entityId;
 
     public ConsoleTab(Runnable body,
                       TabType tabType,
                       int boldWordIndex,
+                      Long entityId,
                       String... headerWords) {
         this.headerWords = headerWords;
         this.boldWordIndex = boldWordIndex;
+        this.entityId = entityId;
         this.body = body;
         this.tabType = tabType;
     }
 
     public ConsoleTab(Runnable body,
                       TabType tabType,
+                      int boldWordIndex,
                       String... headerWords) {
-        this(body, tabType, 0, headerWords);
+        this(body, tabType, boldWordIndex, null, headerWords);
+    }
+
+    public ConsoleTab(Runnable body,
+                      TabType tabType,
+                      String... headerWords) {
+        this(body, tabType, 0, null, headerWords);
+    }
+
+    public ConsoleTab(Runnable body,
+                      TabType tabType,
+                      Long entityId,
+                      String... headerWords) {
+        this(body, tabType, 0, entityId, headerWords);
     }
 
     @Override
@@ -66,5 +83,13 @@ public class ConsoleTab implements Tab {
                     .append(space);
         }
         return header.toString();
+    }
+
+    @Override
+    public Long getEntityId() {
+        if (entityId == null)
+            throw new IllegalArgumentException(
+                    "You call getEntityId() on this tab. But this tab isn't Entity tab.");
+        return entityId;
     }
 }

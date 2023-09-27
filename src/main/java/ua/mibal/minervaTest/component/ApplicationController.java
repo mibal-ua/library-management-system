@@ -102,11 +102,14 @@ public class ApplicationController {
             windowManager.showToast("You cannot change history manually");
             return;
         }
-        if (args.length == 0 || !isNumber(args[0])) {
+        final boolean isDetailsTab = windowManager.getCurrentTabState().isDetailsTab();
+        if (!isDetailsTab && (args.length == 0 || !isNumber(args[0]))) {
             windowManager.showToast("You need to enter 'edit' with ${id}");
             return;
         }
-        final Long id = Long.valueOf(args[0]);
+        final Long id = isDetailsTab
+                ? windowManager.getCurrentEntityId()
+                : Long.valueOf(args[0]);
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> bookRepository.findById(id)
                     .flatMap(windowManager::editBook).ifPresentOrElse(
@@ -158,7 +161,9 @@ public class ApplicationController {
             windowManager.showToast("You need to enter 'delete' with ${id}");
             return;
         }
-        final Long id = Long.valueOf(args[0]);
+        final Long id = isDetailsTab
+                ? windowManager.getCurrentEntityId()
+                : Long.valueOf(args[0]);
         switch (windowManager.getCurrentDataType()) {
             case BOOK -> bookRepository.findById(id).ifPresentOrElse(
                     bookToDel -> {

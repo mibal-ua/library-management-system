@@ -232,12 +232,17 @@ public class NewConsoleWindowManager implements WindowManager {
     }
 
     @Override
+    public Long getCurrentEntityId() throws IllegalArgumentException {
+        return this.tabStack.peek().getEntityId();
+    }
+
+    @Override
     public DataType getCurrentDataType() {
         return getCurrentTabState().getDataType();
     }
 
     @Override
-    public TabType getCurrentTabState() {
+    public TabType getCurrentTabState() { // FIXME naming
         return this.tabStack.peek().getTabType();
     }
 
@@ -251,24 +256,32 @@ public class NewConsoleWindowManager implements WindowManager {
 
     @Override
     public void bookDetails(Supplier<Optional<Book>> bookOptionalSupplier) {
+        Long id = bookOptionalSupplier.get()
+                .map(Book::getId)
+                .orElse(Long.valueOf(-1));
         tabStack.push(new ConsoleTab(
                 () -> bookOptionalSupplier.get().ifPresentOrElse(
                         dataPrinter::printBookDetails,
                         this::drawPrevTab
                 ),
                 LOOK_BOOK,
+                id,
                 "BOOK DETAILS"
         )).draw();
     }
 
     @Override
     public void clientDetails(Supplier<Optional<Client>> clientOptionalSupplier) {
+        Long id = clientOptionalSupplier.get()
+                .map(Client::getId)
+                .orElse(Long.valueOf(-1));
         tabStack.push(new ConsoleTab(
                 () -> clientOptionalSupplier.get().ifPresentOrElse(
                         dataPrinter::printClientDetails,
                         this::drawPrevTab
                 ),
                 LOOK_CLIENT,
+                id,
                 "CLIENT DETAILS"
         )).draw();
     }
