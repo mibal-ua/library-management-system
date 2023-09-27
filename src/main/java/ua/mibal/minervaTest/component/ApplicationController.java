@@ -111,22 +111,20 @@ public class ApplicationController {
                 ? windowManager.getCurrentEntityId()
                 : Long.valueOf(args[0]);
         switch (windowManager.getCurrentDataType()) {
-            case BOOK -> bookRepository.findById(id)
-                    .flatMap(windowManager::editBook).ifPresentOrElse(
-                            book -> {
-                                bookRepository.save(book);
-                                windowManager.showToast("Book successfully updated!");
-                            },
-                            () -> windowManager.showToast("Oops, there are no books with this id=" + id)
-                    );
-            case CLIENT -> clientRepository.findByIdFetchBooks(id)
-                    .flatMap(windowManager::editClient).ifPresentOrElse(
-                            client -> {
-                                clientRepository.save(client);
-                                windowManager.showToast("Client successfully updated!");
-                            },
-                            () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
-                    );
+            case BOOK -> bookRepository.findById(id).ifPresentOrElse(
+                    book -> windowManager.editBook(book).ifPresent(editedBook -> {
+                        bookRepository.save(editedBook);
+                        windowManager.showToast("Book successfully updated!");
+                    }),
+                    () -> windowManager.showToast("Oops, there are no books with this id=" + id)
+            );
+            case CLIENT -> clientRepository.findByIdFetchBooks(id).ifPresentOrElse(
+                    client -> windowManager.editClient(client).ifPresent(editedClient -> {
+                        clientRepository.save(editedClient);
+                        windowManager.showToast("Client successfully updated!");
+                    }),
+                    () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
+            );
             case NULL -> windowManager.showToast("You can not use command 'edit' in this tab.");
         }
     }
