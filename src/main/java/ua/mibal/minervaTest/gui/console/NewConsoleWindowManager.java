@@ -18,9 +18,9 @@ package ua.mibal.minervaTest.gui.console;
 
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.gui.DataPrinter;
-import ua.mibal.minervaTest.gui.TabsStack;
 import ua.mibal.minervaTest.gui.WindowManager;
 import ua.mibal.minervaTest.gui.drawable.Tab;
+import ua.mibal.minervaTest.gui.drawable.TabsStack;
 import ua.mibal.minervaTest.gui.drawable.console.ConsoleDialogueToast;
 import ua.mibal.minervaTest.gui.drawable.console.ConsoleFormToast;
 import ua.mibal.minervaTest.gui.drawable.console.ConsoleInfoToast;
