@@ -1,6 +1,5 @@
 package ua.mibal.minervaTest.gui.drawable.console;
 
-import ua.mibal.minervaTest.gui.drawable.Toast;
 import ua.mibal.minervaTest.utils.StringUtils;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import static ua.mibal.minervaTest.gui.console.ConsoleUtils.goTo;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public abstract class ConsoleToast implements Toast {
+public abstract class ConsoleToast {
 
     protected final String header;
     protected final String body;
@@ -31,7 +30,6 @@ public abstract class ConsoleToast implements Toast {
         this(header, "");
     }
 
-    @Override
     public ConsoleToast draw() {
         printBackground();
         printHeader(header);
@@ -85,7 +83,7 @@ public abstract class ConsoleToast implements Toast {
         return new Scanner(System.in).nextLine();
     }
 
-    public Toast perform(Runnable runnable) {
+    public ConsoleToast perform(Runnable runnable) {
         runnable.run();
         return this;
     }

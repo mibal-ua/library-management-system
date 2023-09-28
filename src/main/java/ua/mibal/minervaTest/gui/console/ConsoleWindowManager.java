@@ -19,7 +19,6 @@ package ua.mibal.minervaTest.gui.console;
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.gui.DataPrinter;
 import ua.mibal.minervaTest.gui.WindowManager;
-import ua.mibal.minervaTest.gui.drawable.Tab;
 import ua.mibal.minervaTest.gui.drawable.TabsStack;
 import ua.mibal.minervaTest.gui.drawable.console.ConsoleDialogueToast;
 import ua.mibal.minervaTest.gui.drawable.console.ConsoleFormToast;
@@ -60,7 +59,7 @@ import static ua.mibal.minervaTest.model.window.TabType.TAB_3;
 public class ConsoleWindowManager implements WindowManager {
 
     private final DataPrinter dataPrinter;
-    private final Stack<Tab> tabStack = new TabsStack();
+    private final Stack<ConsoleTab> tabStack = new TabsStack();
 
     public ConsoleWindowManager(DataPrinter dataPrinter) {
         this.dataPrinter = dataPrinter;

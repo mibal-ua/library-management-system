@@ -16,16 +16,18 @@
 
 package ua.mibal.minervaTest.gui.drawable;
 
+import ua.mibal.minervaTest.gui.drawable.console.ConsoleTab;
+
 import java.util.Stack;
 
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class TabsStack extends Stack<Tab> {
+public class TabsStack extends Stack<ConsoleTab> {
 
     @Override
-    public Tab push(Tab tab) {
+    public ConsoleTab push(ConsoleTab tab) {
         if (tab.getTabType().isRootTab() &&
             !this.isEmpty() &&
             this.peek().getTabType().isRootTab()) {

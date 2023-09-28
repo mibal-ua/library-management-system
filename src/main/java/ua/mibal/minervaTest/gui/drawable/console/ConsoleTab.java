@@ -1,7 +1,6 @@
 package ua.mibal.minervaTest.gui.drawable.console;
 
 import ua.mibal.minervaTest.gui.console.ConsoleUtils;
-import ua.mibal.minervaTest.gui.drawable.Tab;
 import ua.mibal.minervaTest.model.window.TabType;
 
 import java.util.Arrays;
@@ -14,7 +13,7 @@ import static ua.mibal.minervaTest.gui.console.ConsoleUtils.bold;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class ConsoleTab implements Tab {
+public class ConsoleTab {
 
     private final String[] headerWords;
     private final int boldWordIndex;
@@ -54,7 +53,6 @@ public class ConsoleTab implements Tab {
         this(body, tabType, 0, entityId, headerWords);
     }
 
-    @Override
     public void draw() {
         ConsoleUtils.clear();
         System.out.println("\n" + implementHeaderWithSpaces() + "\n");
@@ -62,7 +60,6 @@ public class ConsoleTab implements Tab {
         System.out.print("\n\n");
     }
 
-    @Override
     public TabType getTabType() {
         return tabType;
     }
@@ -85,7 +82,6 @@ public class ConsoleTab implements Tab {
         return header.toString();
     }
 
-    @Override
     public Long getEntityId() {
         if (entityId == null)
             throw new IllegalArgumentException(
