@@ -69,10 +69,8 @@ public class Application {
             if (command.equals("exit") && windowManager.showDialogueToast(
                     "You really need to exit?", "YES", "NO"))
                 return;
-
-            commandMap.getOrDefault(command, ign -> windowManager.showToast(
-                            "Unrecognizable command '" + command + "'"))
-                    .apply(args);
+            commandMap.getOrDefault(command,
+                    applicationController::unrecognizable).apply(args);
         }
     }
 }

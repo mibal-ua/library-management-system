@@ -247,6 +247,10 @@ public class ApplicationController {
         );
     }
 
+    public void unrecognizable(String[] ignored) {
+        windowManager.showToast("Unrecognizable command");
+    }
+
     @FunctionalInterface
     public interface ArrayConsumer<T> {
 
