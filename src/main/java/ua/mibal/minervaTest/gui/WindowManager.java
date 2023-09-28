@@ -20,7 +20,6 @@ import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
-import ua.mibal.minervaTest.model.window.TabType;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,8 +59,6 @@ public interface WindowManager {
 
     DataType getCurrentDataType();
 
-    TabType getCurrentTabState();
-
     void drawPrevTab();
 
     void bookDetails(Supplier<Optional<Book>> book);
@@ -75,5 +72,7 @@ public interface WindowManager {
     Optional<Client> editClient(Client client);
 
     Long getCurrentEntityId();
+
+    boolean isDetailsTab();
 }
 

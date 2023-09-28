@@ -29,7 +29,6 @@ import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
-import ua.mibal.minervaTest.model.window.TabType;
 import ua.mibal.minervaTest.utils.Books;
 import ua.mibal.minervaTest.utils.Clients;
 
@@ -245,12 +244,12 @@ public class ConsoleWindowManager implements WindowManager {
 
     @Override
     public DataType getCurrentDataType() {
-        return getCurrentTabState().getDataType();
+        return this.tabStack.peek().getTabType().getDataType();
     }
 
     @Override
-    public TabType getCurrentTabState() { // FIXME naming
-        return this.tabStack.peek().getTabType();
+    public boolean isDetailsTab() {
+        return this.tabStack.peek().getTabType().isDetailsTab();
     }
 
     @Override

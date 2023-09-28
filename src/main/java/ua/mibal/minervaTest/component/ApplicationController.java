@@ -101,7 +101,7 @@ public class ApplicationController {
             windowManager.showToast("You cannot change history manually");
             return;
         }
-        final boolean isDetailsTab = windowManager.getCurrentTabState().isDetailsTab();
+        final boolean isDetailsTab = windowManager.isDetailsTab();
         if (!isDetailsTab && (args.length == 0 || !isNumber(args[0]))) {
             windowManager.showToast("You need to enter 'edit' with ${id}");
             return;
@@ -153,7 +153,7 @@ public class ApplicationController {
             windowManager.showToast("You cannot change history manually");
             return;
         }
-        final boolean isDetailsTab = windowManager.getCurrentTabState().isDetailsTab();
+        final boolean isDetailsTab = windowManager.isDetailsTab();
         if (!isDetailsTab && (args.length == 0 || !isNumber(args[0]))) {
             windowManager.showToast("You need to enter 'delete' with ${id}");
             return;
