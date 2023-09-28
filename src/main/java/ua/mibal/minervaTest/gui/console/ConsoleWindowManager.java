@@ -58,12 +58,12 @@ import static ua.mibal.minervaTest.model.window.TabType.TAB_3;
  * @link t.me/mibal_ua
  */
 @Component
-public class NewConsoleWindowManager implements WindowManager {
+public class ConsoleWindowManager implements WindowManager {
 
     private final DataPrinter dataPrinter;
     private final Stack<Tab> tabStack = new TabsStack();
 
-    public NewConsoleWindowManager(DataPrinter dataPrinter) {
+    public ConsoleWindowManager(DataPrinter dataPrinter) {
         this.dataPrinter = dataPrinter;
     }
 
