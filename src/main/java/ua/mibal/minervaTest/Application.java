@@ -23,8 +23,9 @@ import ua.mibal.minervaTest.component.ApplicationController.ArrayConsumer;
 import ua.mibal.minervaTest.gui.WindowManager;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+
+import static java.util.Map.entry;
 
 /**
  * @author Mykhailo Balakhon
@@ -44,23 +45,24 @@ public class Application {
     }
 
     public void start() {
-        final Map<String, ArrayConsumer<String>> commandMap = new HashMap<>();
-        commandMap.put("1", applicationController::tab1);
-        commandMap.put("2", applicationController::tab2);
-        commandMap.put("3", applicationController::tab3);
-        commandMap.put("esc", applicationController::esc);
-        commandMap.put("help", applicationController::help);
-        commandMap.put("search", applicationController::search);
-        commandMap.put("s", applicationController::search);
-        commandMap.put("look", applicationController::look);
-        commandMap.put("edit", applicationController::edit);
-        commandMap.put("add", applicationController::add);
-        commandMap.put("delete", applicationController::delete);
-        commandMap.put("del", applicationController::delete);
-        commandMap.put("take", applicationController::take);
-        commandMap.put("return", applicationController::returnn);
+        final Map<String, ArrayConsumer<String>> router = Map.ofEntries(
+                entry("1", applicationController::tab1),
+                entry("2", applicationController::tab2),
+                entry("3", applicationController::tab3),
+                entry("esc", applicationController::esc),
+                entry("help", applicationController::help),
+                entry("search", applicationController::search),
+                entry("s", applicationController::search),
+                entry("look", applicationController::look),
+                entry("edit", applicationController::edit),
+                entry("add", applicationController::add),
+                entry("delete", applicationController::delete),
+                entry("del", applicationController::delete),
+                entry("take", applicationController::take),
+                entry("return", applicationController::returnn)
+        );
 
-        commandMap.get("1").apply();
+        router.get("1").apply();
         while (true) {
             String[] input = windowManager.readCommandLine();
             final String command = input[0];
@@ -69,7 +71,7 @@ public class Application {
             if (command.equals("exit") && windowManager.showDialogueToast(
                     "You really need to exit?", "YES", "NO"))
                 return;
-            commandMap.getOrDefault(command,
+            router.getOrDefault(command,
                     applicationController::unrecognizable).apply(args);
         }
     }
