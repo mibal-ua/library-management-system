@@ -33,7 +33,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "client")
-public class Client implements Serializable {
+public class Client implements Serializable, ua.mibal.minervaTest.model.Entity {
 
     @Id @GeneratedValue
     private Long id;
@@ -64,6 +64,7 @@ public class Client implements Serializable {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -92,5 +93,15 @@ public class Client implements Serializable {
 
     public boolean doesHoldBook() {
         return !books.isEmpty();
+    }
+
+    @Override
+    public boolean isReadyToDelete() {
+        return this.getBooks().isEmpty();
+    }
+
+    @Override
+    public String getNotDeleteReason() {
+        return "is holding books.";
     }
 }

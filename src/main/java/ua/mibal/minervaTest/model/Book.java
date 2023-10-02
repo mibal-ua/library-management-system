@@ -36,9 +36,10 @@ import java.util.Optional;
  */
 @Entity
 @Table(name = "book")
-public class Book implements Serializable {
+public class Book implements Serializable, ua.mibal.minervaTest.model.Entity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long id;
 
     @Column(name = "title", nullable = false)
@@ -172,5 +173,20 @@ public class Book implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public boolean isReadyToDelete() {
+        return free;
+    }
+
+    @Override
+    public String getNotDeleteReason() {
+        return "isn't free";
+    }
+
+    @Override
+    public String getName() {
+        return title;
     }
 }
