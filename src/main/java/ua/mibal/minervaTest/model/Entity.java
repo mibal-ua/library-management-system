@@ -11,4 +11,6 @@ public interface Entity {
     String getNotDeleteReason();
 
     String getName();
+
+    Long getId();
 }

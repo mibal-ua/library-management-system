@@ -97,6 +97,7 @@ public class Book implements Serializable, ua.mibal.minervaTest.model.Entity {
     public Book() {
     }
 
+    @Override
     public Long getId() {
         return id;
     }

@@ -56,6 +56,7 @@ public class Client implements Serializable, ua.mibal.minervaTest.model.Entity {
     public Client() {
     }
 
+    @Override
     public Long getId() {
         return id;
     }

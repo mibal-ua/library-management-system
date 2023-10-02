@@ -74,6 +74,7 @@ public class Operation implements Serializable, ua.mibal.minervaTest.model.Entit
     public Operation() {
     }
 
+    @Override
     public Long getId() {
         return id;
     }
