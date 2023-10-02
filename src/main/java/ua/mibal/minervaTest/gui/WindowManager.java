@@ -16,10 +16,7 @@
 
 package ua.mibal.minervaTest.gui;
 
-import ua.mibal.minervaTest.model.Book;
-import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Entity;
-import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
 
 import java.util.List;
@@ -31,12 +28,6 @@ import java.util.function.Supplier;
  * @link t.me/mibal_ua
  */
 public interface WindowManager {
-
-    void tab1(Supplier<List<Book>> books);
-
-    void tab2(Supplier<List<Client>> clients);
-
-    void tab3(Supplier<List<Operation>> operations);
 
     void listTab(Supplier<List<? extends Entity>> listSupplier);
 

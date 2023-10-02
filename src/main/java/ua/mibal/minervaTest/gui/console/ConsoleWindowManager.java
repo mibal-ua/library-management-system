@@ -27,7 +27,6 @@ import ua.mibal.minervaTest.gui.drawable.console.ConsoleTab;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Entity;
-import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
 import ua.mibal.minervaTest.model.window.TabType;
 import ua.mibal.minervaTest.utils.Books;
@@ -44,9 +43,6 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static ua.mibal.minervaTest.model.window.TabType.HELP_TAB;
 import static ua.mibal.minervaTest.model.window.TabType.LOOK_BOOK;
-import static ua.mibal.minervaTest.model.window.TabType.TAB_1;
-import static ua.mibal.minervaTest.model.window.TabType.TAB_2;
-import static ua.mibal.minervaTest.model.window.TabType.TAB_3;
 
 /**
  * @author Mykhailo Balakhon
@@ -68,33 +64,6 @@ public class ConsoleWindowManager implements WindowManager {
                 () -> dataPrinter.printListOfEntities(listSupplier.get()),
                 TabType.getRootTabOf(listSupplier.get().iterator().next().getClass()), // FIXME stub
                 0, // FIXME stub
-                "BOOKS", "CLIENTS", "HISTORY"
-        )).draw();
-    }
-
-    @Override
-    public void tab1(Supplier<List<Book>> booksSupplier) {
-        tabStack.push(new ConsoleTab(
-                () -> dataPrinter.printListOfEntities(booksSupplier.get()),
-                TAB_1,
-                "BOOKS", "CLIENTS", "HISTORY"
-        )).draw();
-    }
-
-    public void tab2(Supplier<List<Client>> clientsSupplier) {
-        tabStack.push(new ConsoleTab(
-                () -> dataPrinter.printListOfEntities(clientsSupplier.get()),
-                TAB_2,
-                1,
-                "BOOKS", "CLIENTS", "HISTORY"
-        )).draw();
-    }
-
-    public void tab3(Supplier<List<Operation>> operationsSupplier) {
-        tabStack.push(new ConsoleTab(
-                () -> dataPrinter.printListOfEntities(operationsSupplier.get()),
-                TAB_3,
-                2,
                 "BOOKS", "CLIENTS", "HISTORY"
         )).draw();
     }
