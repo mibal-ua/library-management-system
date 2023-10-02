@@ -13,7 +13,7 @@ import java.util.Optional;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public interface OperationRepository extends JpaRepository<Operation, Long>, CustomOperationRepository {
+public interface OperationRepository extends JpaRepository<Operation, Long> {
 
     @Transactional(readOnly = true)
     @Query("select o from Operation o left join fetch o.book left join fetch o.client")
