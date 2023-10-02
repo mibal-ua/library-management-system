@@ -34,4 +34,10 @@ public class CustomClientRepositoryImpl implements CustomClientRepository {
                 })
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Client getReference(Long id) {
+        return entityManager.getReference(Client.class, id);
+    }
 }

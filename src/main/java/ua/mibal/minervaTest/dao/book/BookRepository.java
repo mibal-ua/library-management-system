@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ua.mibal.minervaTest.model.Book;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,4 +18,8 @@ public interface BookRepository extends JpaRepository<Book, Long>, CustomBookRep
     @Transactional(readOnly = true)
     @Query("select b from Book b left join fetch b.client where b.id = :id")
     Optional<Book> findByIdFetchClient(@Param("id") Long id);
+
+    @Transactional(readOnly = true)
+    @Query("select b from Book b left join fetch b.client")
+    List<Book> findAllFetchClient();
 }

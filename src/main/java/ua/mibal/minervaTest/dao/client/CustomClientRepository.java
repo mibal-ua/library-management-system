@@ -11,4 +11,6 @@ import java.util.List;
 public interface CustomClientRepository {
 
     List<Client> findFetchBooks(String... args);
+
+    Client getReference(Long id);
 }
