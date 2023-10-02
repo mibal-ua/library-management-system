@@ -55,4 +55,9 @@ public class OperationService extends Service<Operation> {
     public Optional<Operation> findByIdFetchAll(Long id) {
         return Optional.empty();
     }
+
+    @Override
+    public List<Operation> search() {
+        return null;
+    }
 }

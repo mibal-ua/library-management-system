@@ -32,4 +32,6 @@ public abstract class Service<T> {
     abstract public void delete(T entityToDel);
 
     abstract public Optional<T> findByIdFetchAll(Long id);
+
+    abstract public List<T> search();
 }

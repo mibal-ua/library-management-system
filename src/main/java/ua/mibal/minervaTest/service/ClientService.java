@@ -53,4 +53,9 @@ public class ClientService extends Service<Client> {
     public Optional<Client> findByIdFetchAll(Long id) {
         return Optional.empty();
     }
+
+    @Override
+    public List<Client> search() {
+        return null;
+    }
 }

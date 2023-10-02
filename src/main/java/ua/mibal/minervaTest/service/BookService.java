@@ -85,6 +85,11 @@ public class BookService extends Service<Book> {
         return bookRepository.findByIdFetchClient(id);
     }
 
+    @Override
+    public List<Book> search() {
+        return bookRepository.findAll();
+    }
+
     @Transactional
     public void takeBook(Long clientId, Long bookId) {
         Book managedBook = bookRepository.getReference(bookId);
