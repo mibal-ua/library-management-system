@@ -16,19 +16,32 @@
 
 package ua.mibal.minervaTest.model.window;
 
+import ua.mibal.minervaTest.model.Book;
+import ua.mibal.minervaTest.model.Client;
+import ua.mibal.minervaTest.model.Entity;
+import ua.mibal.minervaTest.model.Operation;
+
+import java.util.Arrays;
+
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
 public enum DataType {
 
-    BOOK,
+    BOOK(Book.class),
 
-    CLIENT,
+    CLIENT(Client.class),
 
-    HISTORY,
+    HISTORY(Operation.class),
 
-    NULL;
+    NULL(null);
+
+    private final Class<? extends Entity> clazz;
+
+    DataType(Class<? extends Entity> clazz) {
+        this.clazz = clazz;
+    }
 
     public static boolean contains(final String value) {
         for (DataType type : values()) {
@@ -37,5 +50,25 @@ public enum DataType {
             }
         }
         return false;
+    }
+
+    public static DataType valueOf(Class<? extends Entity> clazz) {
+        return Arrays.stream(values())
+                .filter(dataType -> dataType.clazz == clazz)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Illegal class '" + clazz + "' for instance DataType instance"));
+    }
+
+    public String simpleName() {
+        return clazz.getSimpleName();
+    }
+
+    public String simplePluralName() {
+        return simpleName() + "s";
+    }
+
+    public Class<? extends Entity> getEntityClass() {
+        return clazz;
     }
 }
