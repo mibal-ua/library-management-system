@@ -20,9 +20,9 @@ package ua.mibal.minervaTest.model.exception;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-public class DaoException extends RuntimeException {
+public class IllegalRepositoryAccessException extends RuntimeException {
 
-    public DaoException(Throwable cause, String exceptionMessage) {
-        super(exceptionMessage, cause);
+    public IllegalRepositoryAccessException(String message) {
+        super(message);
     }
 }
