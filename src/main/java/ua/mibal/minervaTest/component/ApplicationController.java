@@ -17,14 +17,13 @@
 package ua.mibal.minervaTest.component;
 
 import org.springframework.stereotype.Component;
-import ua.mibal.minervaTest.dao.book.BookRepository;
-import ua.mibal.minervaTest.dao.client.ClientRepository;
-import ua.mibal.minervaTest.dao.operation.OperationRepository;
 import ua.mibal.minervaTest.gui.WindowManager;
 import ua.mibal.minervaTest.model.Entity;
 import ua.mibal.minervaTest.model.window.DataType;
 import ua.mibal.minervaTest.service.Service;
 
+import static ua.mibal.minervaTest.model.window.DataType.BOOK;
+import static ua.mibal.minervaTest.model.window.DataType.CLIENT;
 import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
 import static ua.mibal.minervaTest.model.window.DataType.NULL;
 import static ua.mibal.minervaTest.utils.StringUtils.isNumber;
@@ -38,30 +37,25 @@ public class ApplicationController {
 
     private final WindowManager windowManager;
 
-    private final BookRepository bookRepository;
-    private final OperationRepository operationRepository;
-    private final ClientRepository clientRepository;
-
-    public ApplicationController(WindowManager windowManager,
-                                 BookRepository bookRepository,
-                                 OperationRepository operationRepository,
-                                 ClientRepository clientRepository) {
+    public ApplicationController(WindowManager windowManager) {
         this.windowManager = windowManager;
-        this.bookRepository = bookRepository;
-        this.operationRepository = operationRepository;
-        this.clientRepository = clientRepository;
     }
 
     public void tab1(final String[] ignored) {
-        windowManager.tab1(bookRepository::findAll);
+        listTab(BOOK);
     }
 
     public void tab2(final String[] ignored) {
-        windowManager.tab2(clientRepository::findAllFetchBooks);
+        listTab(CLIENT);
     }
 
     public void tab3(final String[] ignored) {
-        windowManager.tab3(operationRepository::findAllFetchBookClient);
+        listTab(HISTORY);
+    }
+
+    private void listTab(DataType dataType) {
+        Service<? extends Entity> service = Service.getInstance(dataType);
+        windowManager.listTab(service::search);
     }
 
     public void esc(final String[] ignored) {
