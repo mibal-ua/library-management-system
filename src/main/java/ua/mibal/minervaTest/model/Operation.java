@@ -36,7 +36,7 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "operation")
-public class Operation implements Serializable {
+public class Operation implements Serializable, ua.mibal.minervaTest.model.Entity {
 
     @Id @GeneratedValue
     private Long id;
@@ -112,5 +112,20 @@ public class Operation implements Serializable {
 
     private void setBook(Book book) {
         this.book = book;
+    }
+
+    @Override
+    public boolean isReadyToDelete() {
+        throw new IllegalArgumentException("You are trying to change history manually");
+    }
+
+    @Override
+    public String getNotDeleteReason() {
+        throw new IllegalArgumentException("You are trying to change history manually");
+    }
+
+    @Override
+    public String getName() {
+        throw new IllegalArgumentException("You are trying to change history manually");
     }
 }
