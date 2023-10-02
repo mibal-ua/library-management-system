@@ -3,7 +3,6 @@ package ua.mibal.minervaTest.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import ua.mibal.minervaTest.dao.client.ClientRepository;
 import ua.mibal.minervaTest.model.Client;
-import ua.mibal.minervaTest.model.Entity;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,18 +43,15 @@ public class ClientService extends Service<Client> {
     }
 
     @Override
-    public void update(Entity editedEntity) {
-
+    public void update(Client edited) {
     }
 
     @Override
-    public void save(Entity e) {
-
+    public void save(Client client) {
     }
 
     @Override
-    public void delete(Entity entityToDel) {
-
+    public void delete(Client client) {
     }
 
     @Override

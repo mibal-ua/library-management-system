@@ -103,7 +103,7 @@ public class ApplicationController {
         windowManager.detailsTab(() -> service.details(id));
     }
 
-    public void edit(final String[] args) {
+    public <T extends Entity> void edit(final String[] args) {
         DataType dataType = windowManager.getCurrentDataType();
         if (dataType == HISTORY || dataType == NULL) {
             windowManager.showToast("You can not use command 'edit' in this tab.");
@@ -118,7 +118,7 @@ public class ApplicationController {
         final Long id = isDetailsTab
                 ? windowManager.getCurrentEntityId()
                 : Long.valueOf(args[0]);
-        Service<? extends Entity> service = Service.getInstance(dataType);
+        Service<T> service = (Service<T>) Service.getInstance(dataType);
         service.findById(id).ifPresentOrElse(
                 e -> windowManager.editEntity(e).ifPresent(editedE -> {
                     service.update(editedE);
@@ -128,21 +128,21 @@ public class ApplicationController {
         );
     }
 
-    public void add(final String[] ignored) {
+    public <T extends Entity> void add(final String[] ignored) {
         DataType dataType = windowManager.getCurrentDataType();
         if (dataType == HISTORY || dataType == NULL) {
             windowManager.showToast("You can not use command 'add' in this tab.");
             return;
         }
 
-        Service<? extends Entity> service = Service.getInstance(dataType);
+        Service<T> service = (Service<T>) Service.getInstance(dataType);
         windowManager.initEntityToAdd(dataType.getEntityClass()).ifPresent(e -> {
-            service.save(e);
+            service.save((T) e);
             windowManager.showToast(dataType.simpleName() + " successfully added!");
         });
     }
 
-    public void delete(final String[] args) {
+    public <T extends Entity> void delete(final String[] args) {
         DataType dataType = windowManager.getCurrentDataType();
         if (dataType == HISTORY || dataType == NULL) {
             windowManager.showToast("You can not use command 'delete' in this tab.");
@@ -157,7 +157,7 @@ public class ApplicationController {
         final Long id = isDetailsTab
                 ? windowManager.getCurrentEntityId()
                 : Long.valueOf(args[0]);
-        Service<? extends Entity> service = Service.getInstance(dataType);
+        Service<T> service = (Service<T>) Service.getInstance(dataType);
         service.findById(id).ifPresentOrElse(
                 entityToDel -> {
                     if (!entityToDel.isReadyToDelete()) {

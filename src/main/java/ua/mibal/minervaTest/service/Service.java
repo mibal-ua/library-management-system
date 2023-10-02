@@ -27,11 +27,11 @@ public abstract class Service<T> {
 
     abstract public Optional<T> findById(Long id);
 
-    abstract public void update(Entity editedEntity);
+    abstract public void update(T edited);
 
-    abstract public void save(Entity e);
+    abstract public void save(T entity);
 
-    abstract public void delete(Entity entityToDel);
+    abstract public void delete(T entityToDel);
 
     abstract public Optional<T> findByIdFetchAll(Long id);
 }

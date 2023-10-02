@@ -46,18 +46,15 @@ public class BookService extends Service<Book> {
     }
 
     @Override
-    public void update(Entity editedEntity) {
-
+    public void update(Book edited) {
     }
 
     @Override
-    public void save(Entity e) {
-
+    public void save(Book book) {
     }
 
     @Override
-    public void delete(Entity entityToDel) {
-
+    public void delete(Book book) {
     }
 
     @Override

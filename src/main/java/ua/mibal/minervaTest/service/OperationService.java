@@ -2,7 +2,6 @@ package ua.mibal.minervaTest.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import ua.mibal.minervaTest.dao.operation.OperationRepository;
-import ua.mibal.minervaTest.model.Entity;
 import ua.mibal.minervaTest.model.Operation;
 
 import java.util.List;
@@ -43,17 +42,17 @@ public class OperationService extends Service<Operation> {
     }
 
     @Override
-    public void update(Entity editedEntity) {
+    public void update(Operation edited) {
 
     }
 
     @Override
-    public void save(Entity e) {
+    public void save(Operation operation) {
 
     }
 
     @Override
-    public void delete(Entity entityToDel) {
+    public void delete(Operation operation) {
 
     }
 
