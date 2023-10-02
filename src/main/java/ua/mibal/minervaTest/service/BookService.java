@@ -64,4 +64,12 @@ public class BookService extends Service<Book> {
     public Optional<Book> findByIdFetchAll(Long id) {
         return Optional.empty();
     }
+
+    public void takeBook(Long clientId, Long bookId) {
+
+    }
+
+    public void returnBook(Long clientId, Long bookId) {
+
+    }
 }
