@@ -47,12 +47,12 @@ public class BookService extends Service<Book> {
         for (String arg : args) {
             List<Book> booksToAdd = books.stream()
                     .filter(book -> book.getId().toString().equals(arg) ||
-                                    book.getTitle().contains(arg) || // TODO add search by Date
+                                    book.getTitle().contains(arg) ||
+                                    book.getPublishedDate().toString().contains(arg) ||
                                     book.getAuthor().contains(arg) ||
                                     book.getPublisher().contains(arg) ||
-                                    book.getClient()
-                                            .map(cl -> cl.getName().contains(arg))
-                                            .orElse(false))
+                                    book.getClient().stream()
+                                            .anyMatch(cl -> cl.getName().contains(arg)))
                     .toList();
             result.addAll(booksToAdd);
         }
