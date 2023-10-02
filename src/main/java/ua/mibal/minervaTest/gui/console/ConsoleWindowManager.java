@@ -59,7 +59,8 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     // FIXME stub
-    public void listTab(Supplier<List<? extends Entity>> listSupplier) {
+    @Override
+    public <T extends Entity> void listTab(Supplier<List<T>> listSupplier, DataType dataType) {
         tabStack.push(new ConsoleTab(
                 () -> dataPrinter.printListOfEntities(listSupplier.get()),
                 TabType.getRootTabOf(listSupplier.get().iterator().next().getClass()), // FIXME stub
@@ -120,15 +121,15 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public <T extends Entity> Optional<T> initEntityToAdd(Class<T> entityClass) {
+    public <T extends Entity> Optional<T> initEntityToAdd(DataType dataType) {
         // FIXME stub
-        if (entityClass == Book.class) {
+        if (dataType.getEntityClass() == Book.class) {
             return (Optional<T>) initBookToAdd();
         }
-        if (entityClass == Client.class) {
+        if (dataType.getEntityClass() == Client.class) {
             return (Optional<T>) initClientToAdd();
         }
-        throw new IllegalStateException("Illegal for editing entity class " + entityClass);
+        throw new IllegalStateException("Illegal for editing entity class " + dataType.getEntityClass());
     }
 
     private Optional<Book> initBookToAdd() {
@@ -162,7 +163,7 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public <T extends Entity> Optional<T> editEntity(T entity) {
+    public <T extends Entity> Optional<T> editEntity(T entity, DataType dataType) {
         // FIXME stub
         if (entity instanceof Book book) {
             return (Optional<T>) editBook(book);

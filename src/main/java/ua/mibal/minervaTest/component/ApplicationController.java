@@ -55,7 +55,7 @@ public class ApplicationController {
 
     private void listTab(DataType dataType) {
         Service<? extends Entity> service = Service.getInstance(dataType);
-        windowManager.listTab(service::search);
+        windowManager.listTab(service::search, dataType);
     }
 
     public void esc(final String[] ignored) {
@@ -114,7 +114,7 @@ public class ApplicationController {
                 : Long.valueOf(args[0]);
         Service<T> service = (Service<T>) Service.getInstance(dataType);
         service.findById(id).ifPresentOrElse(
-                e -> windowManager.editEntity(e).ifPresent(editedE -> {
+                e -> windowManager.editEntity(e, dataType).ifPresent(editedE -> {
                     service.update(editedE);
                     windowManager.showToast(dataType.simpleName() + " successfully updated!");
                 }),
@@ -130,7 +130,7 @@ public class ApplicationController {
         }
 
         Service<T> service = (Service<T>) Service.getInstance(dataType);
-        windowManager.initEntityToAdd(dataType.getEntityClass()).ifPresent(e -> {
+        windowManager.initEntityToAdd(dataType).ifPresent(e -> {
             service.save((T) e);
             windowManager.showToast(dataType.simpleName() + " successfully added!");
         });

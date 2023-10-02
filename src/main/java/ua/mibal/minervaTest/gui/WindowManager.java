@@ -29,17 +29,25 @@ import java.util.function.Supplier;
  */
 public interface WindowManager {
 
-    void listTab(Supplier<List<? extends Entity>> listSupplier);
+    <T extends Entity> void listTab(Supplier<List<T>> listSupplier, DataType dataType);
+
+    <T extends Entity> void searchTab(Supplier<List<T>> o, String[] args);
+
+    <T extends Entity> void detailsTab(Supplier<Optional<T>> o);
+
+    <T extends Entity> Optional<T> editEntity(T e, DataType dataType);
+
+    <T extends Entity> Optional<T> initEntityToAdd(DataType dataType);
 
     void help();
-
-    String[] readCommandLine();
 
     void showToast(final String message);
 
     void showToast(String header, String message);
 
     boolean showDialogueToast(String question, String answer1, String answer2);
+
+    String[] readCommandLine();
 
     DataType getCurrentDataType();
 
@@ -48,13 +56,5 @@ public interface WindowManager {
     Long getCurrentEntityId();
 
     boolean isDetailsTab();
-
-    <T extends Entity> void searchTab(Supplier<List<T>> o, String[] args);
-
-    <T extends Entity> void detailsTab(Supplier<Optional<T>> o);
-
-    <T extends Entity> Optional<T> editEntity(T e);
-
-    <T extends Entity> Optional<T> initEntityToAdd(Class<T> entityClass);
 }
 
