@@ -20,6 +20,7 @@ package ua.mibal.minervaTest;
 import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.component.ApplicationController;
 import ua.mibal.minervaTest.component.ApplicationController.ArrayConsumer;
+import ua.mibal.minervaTest.component.AppropriateBookOperationController;
 import ua.mibal.minervaTest.gui.WindowManager;
 
 import java.util.Arrays;
@@ -35,13 +36,15 @@ import static java.util.Map.entry;
 public class Application {
 
     private final ApplicationController applicationController;
-
+    private final AppropriateBookOperationController appropriateBookOperationController;
     private final WindowManager windowManager;
 
-    public Application(final WindowManager windowManager,
-                       final ApplicationController applicationController) {
+    public Application(WindowManager windowManager,
+                       ApplicationController applicationController,
+                       AppropriateBookOperationController appropriateBookOperationController) {
         this.windowManager = windowManager;
         this.applicationController = applicationController;
+        this.appropriateBookOperationController = appropriateBookOperationController;
     }
 
     public void start() {
@@ -58,8 +61,8 @@ public class Application {
                 entry("add", applicationController::add),
                 entry("delete", applicationController::delete),
                 entry("del", applicationController::delete),
-                entry("take", applicationController::take),
-                entry("return", applicationController::returnn)
+                entry("take", appropriateBookOperationController::take),
+                entry("return", appropriateBookOperationController::returnn)
         );
 
         router.get("1").apply();

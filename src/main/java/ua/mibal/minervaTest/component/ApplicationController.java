@@ -200,52 +200,6 @@ public class ApplicationController {
         }
     }
 
-    public void take(final String[] args) {
-        if (args.length != 2 || !isNumber(args[1]) || !isNumber(args[0])) {
-            windowManager.showToast("You need to enter 'take ${client_id} ${book_id}'");
-            return;
-        }
-
-        final Long clientId = Long.valueOf(args[0]);
-        clientRepository.findById(clientId).orElseThrow(
-                () -> new IllegalArgumentException("Client with id=" + clientId + " not found"));
-        final Long bookId = Long.valueOf(args[1]);
-        bookRepository.findById(bookId).ifPresentOrElse(
-                bookToTake -> {
-                    if (!bookToTake.isFree()) {
-                        windowManager.showToast("Oops, but book with id=" + bookId + " isn't free(");
-                        return;
-                    }
-                    bookRepository.takeBook(clientId, bookId);
-                    windowManager.showToast("Book successfully taken!");
-                },
-                () -> windowManager.showToast("Oops, but book with id=" + bookId + " doesn't exists")
-        );
-    }
-
-    public void returnn(final String[] args) {
-        if (args.length != 2 || !isNumber(args[1]) || !isNumber(args[0])) {
-            windowManager.showToast("You need to enter 'return ${client_id} ${book_id}'");
-            return;
-        }
-        final Long clientId = Long.valueOf(args[0]);
-        final Client client = clientRepository.findByIdFetchBooks(clientId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Client with id=" + clientId + " not found"));
-        final Long bookId = Long.valueOf(args[1]);
-        bookRepository.findById(bookId).ifPresentOrElse(
-                bookToReturn -> {
-                    if (!client.getBooks().contains(bookToReturn)) {
-                        windowManager.showToast("Oops, but user with id=" + clientId +
-                                                " doesn't hold this book with id=" + bookId);
-                        return;
-                    }
-                    bookRepository.returnBook(clientId, bookId);
-                    windowManager.showToast("Books successfully returned!");
-                },
-                () -> windowManager.showToast("Oops, but book with id=" + bookId + " doesn't exists")
-        );
-    }
 
     public void unrecognizable(String[] ignored) {
         windowManager.showToast("Unrecognizable command");
