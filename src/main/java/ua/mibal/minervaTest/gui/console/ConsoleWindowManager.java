@@ -26,8 +26,10 @@ import ua.mibal.minervaTest.gui.drawable.console.ConsoleInfoToast;
 import ua.mibal.minervaTest.gui.drawable.console.ConsoleTab;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
+import ua.mibal.minervaTest.model.Entity;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
+import ua.mibal.minervaTest.model.window.TabType;
 import ua.mibal.minervaTest.utils.Books;
 import ua.mibal.minervaTest.utils.Clients;
 
@@ -42,11 +44,6 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static ua.mibal.minervaTest.model.window.TabType.HELP_TAB;
 import static ua.mibal.minervaTest.model.window.TabType.LOOK_BOOK;
-import static ua.mibal.minervaTest.model.window.TabType.LOOK_CLIENT;
-import static ua.mibal.minervaTest.model.window.TabType.LOOK_HISTORY;
-import static ua.mibal.minervaTest.model.window.TabType.SEARCH_BOOK;
-import static ua.mibal.minervaTest.model.window.TabType.SEARCH_CLIENT;
-import static ua.mibal.minervaTest.model.window.TabType.SEARCH_HISTORY;
 import static ua.mibal.minervaTest.model.window.TabType.TAB_1;
 import static ua.mibal.minervaTest.model.window.TabType.TAB_2;
 import static ua.mibal.minervaTest.model.window.TabType.TAB_3;
@@ -65,29 +62,37 @@ public class ConsoleWindowManager implements WindowManager {
         this.dataPrinter = dataPrinter;
     }
 
-    @Override
-    public void tab1(Supplier<List<Book>> booksSupplier) {
+    // FIXME stub
+    public void listTab(Supplier<List<? extends Entity>> listSupplier) {
         tabStack.push(new ConsoleTab(
-                () -> dataPrinter.printListOfBooks(booksSupplier.get()),
-                TAB_1,
+                () -> dataPrinter.printListOfEntities(listSupplier.get()),
+                TabType.getRootTabOf(listSupplier.get().iterator().next().getClass()), // FIXME stub
+                0, // FIXME stub
                 "BOOKS", "CLIENTS", "HISTORY"
         )).draw();
     }
 
     @Override
+    public void tab1(Supplier<List<Book>> booksSupplier) {
+        tabStack.push(new ConsoleTab(
+                () -> dataPrinter.printListOfEntities(booksSupplier.get()),
+                TAB_1,
+                "BOOKS", "CLIENTS", "HISTORY"
+        )).draw();
+    }
+
     public void tab2(Supplier<List<Client>> clientsSupplier) {
         tabStack.push(new ConsoleTab(
-                () -> dataPrinter.printListOfClients(clientsSupplier.get()),
+                () -> dataPrinter.printListOfEntities(clientsSupplier.get()),
                 TAB_2,
                 1,
                 "BOOKS", "CLIENTS", "HISTORY"
         )).draw();
     }
 
-    @Override
     public void tab3(Supplier<List<Operation>> operationsSupplier) {
         tabStack.push(new ConsoleTab(
-                () -> dataPrinter.printListOfOperations(operationsSupplier.get()),
+                () -> dataPrinter.printListOfEntities(operationsSupplier.get()),
                 TAB_3,
                 2,
                 "BOOKS", "CLIENTS", "HISTORY"
@@ -95,31 +100,12 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public void searchBookTab(final Supplier<List<Book>> booksSupplier, final String[] args) {
-        final String header = format("SEARCH IN BOOKS BY '%s'", join(" ", args));
+    public <T extends Entity> void searchTab(Supplier<List<T>> entitiesSupplier, String[] args) {
+        TabType tabType = getCurrentTabType();
+        final String header = format("SEARCH IN " + tabType.name() + " BY '%s'", join(" ", args));
         tabStack.push(new ConsoleTab(
-                () -> dataPrinter.printListOfBooks(booksSupplier.get()),
-                SEARCH_BOOK,
-                header
-        )).draw();
-    }
-
-    @Override
-    public void searchClientTab(final Supplier<List<Client>> clientsSupplier, final String[] args) {
-        final String header = format("SEARCH IN CLIENTS BY '%s'", join(" ", args));
-        tabStack.push(new ConsoleTab(
-                () -> dataPrinter.printListOfClients(clientsSupplier.get()),
-                SEARCH_CLIENT,
-                header
-        )).draw();
-    }
-
-    @Override
-    public void searchOperationTab(final Supplier<List<Operation>> operationsSupplier, final String[] args) {
-        final String header = format("SEARCH IN OPERATIONS BY '%s'", join(" ", args));
-        tabStack.push(new ConsoleTab(
-                () -> dataPrinter.printListOfOperations(operationsSupplier.get()),
-                SEARCH_HISTORY,
+                () -> dataPrinter.printListOfEntities(entitiesSupplier.get()),
+                tabType,
                 header
         )).draw();
     }
@@ -165,7 +151,18 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public Optional<Book> initBookToAdd() {
+    public <T extends Entity> Optional<T> initEntityToAdd(Class<T> entityClass) {
+        // FIXME stub
+        if (entityClass == Book.class) {
+            return (Optional<T>) initBookToAdd();
+        }
+        if (entityClass == Client.class) {
+            return (Optional<T>) initClientToAdd();
+        }
+        throw new IllegalStateException("Illegal for editing entity class " + entityClass);
+    }
+
+    private Optional<Book> initBookToAdd() {
         return new ConsoleFormToast(
                 "Book adding",
                 new LinkedHashMap<>() {{
@@ -183,8 +180,7 @@ public class ConsoleWindowManager implements WindowManager {
                 .map(Books::ofMapping);
     }
 
-    @Override
-    public Optional<Client> initClientToAdd() {
+    private Optional<Client> initClientToAdd() {
         return new ConsoleFormToast(
                 "Client adding",
                 Map.of("Enter client name", ""),
@@ -197,7 +193,18 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public Optional<Book> editBook(Book originalBook) {
+    public <T extends Entity> Optional<T> editEntity(T entity) {
+        // FIXME stub
+        if (entity instanceof Book book) {
+            return (Optional<T>) editBook(book);
+        }
+        if (entity instanceof Client client) {
+            return (Optional<T>) editClient(client);
+        }
+        throw new IllegalStateException("Illegal for editing entity class " + entity.getClass());
+    }
+
+    private Optional<Book> editBook(Book originalBook) {
         return new ConsoleFormToast(
                 "Book editing",
                 new LinkedHashMap<>() {{
@@ -219,8 +226,7 @@ public class ConsoleWindowManager implements WindowManager {
                 });
     }
 
-    @Override
-    public Optional<Client> editClient(final Client originalClient) {
+    private Optional<Client> editClient(final Client originalClient) {
         return new ConsoleFormToast(
                 "Client editing",
                 Map.of("Enter name", "prev client name: '" + originalClient.getName() + "'"),
@@ -246,6 +252,10 @@ public class ConsoleWindowManager implements WindowManager {
         return this.tabStack.peek().getTabType().getDataType();
     }
 
+    private TabType getCurrentTabType() {
+        return this.tabStack.peek().getTabType();
+    }
+
     @Override
     public boolean isDetailsTab() {
         return this.tabStack.peek().getTabType().isDetailsTab();
@@ -260,46 +270,18 @@ public class ConsoleWindowManager implements WindowManager {
     }
 
     @Override
-    public void bookDetails(Supplier<Optional<Book>> bookOptionalSupplier) {
-        Long id = bookOptionalSupplier.get()
-                .map(Book::getId)
+    public <T extends Entity> void detailsTab(Supplier<Optional<T>> optionalSupplier) {
+        Long id = optionalSupplier.get()
+                .map(Entity::getId)
                 .orElse(Long.valueOf(-1));
         tabStack.push(new ConsoleTab(
-                () -> bookOptionalSupplier.get().ifPresentOrElse(
-                        dataPrinter::printBookDetails,
+                () -> optionalSupplier.get().ifPresentOrElse(
+                        dataPrinter::printEntityDetails,
                         this::drawPrevTab
                 ),
-                LOOK_BOOK,
+                LOOK_BOOK, // FIXME stub
                 id,
-                "BOOK DETAILS"
-        )).draw();
-    }
-
-    @Override
-    public void clientDetails(Supplier<Optional<Client>> clientOptionalSupplier) {
-        Long id = clientOptionalSupplier.get()
-                .map(Client::getId)
-                .orElse(Long.valueOf(-1));
-        tabStack.push(new ConsoleTab(
-                () -> clientOptionalSupplier.get().ifPresentOrElse(
-                        dataPrinter::printClientDetails,
-                        this::drawPrevTab
-                ),
-                LOOK_CLIENT,
-                id,
-                "CLIENT DETAILS"
-        )).draw();
-    }
-
-    @Override
-    public void operationDetails(Supplier<Optional<Operation>> operationOptionalSupplier) {
-        tabStack.push(new ConsoleTab(
-                () -> operationOptionalSupplier.get().ifPresentOrElse(
-                        dataPrinter::printOperationDetails,
-                        this::drawPrevTab
-                ),
-                LOOK_HISTORY,
-                "OPERATION DETAILS"
+                "BOOK DETAILS" // FIXME stub
         )).draw();
     }
 

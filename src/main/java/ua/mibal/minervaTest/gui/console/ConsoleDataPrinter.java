@@ -21,10 +21,10 @@ import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.gui.DataPrinter;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
+import ua.mibal.minervaTest.model.Entity;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.utils.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -41,73 +41,70 @@ import static java.lang.String.format;
 @Component
 public class ConsoleDataPrinter implements DataPrinter {
 
+    private final static Map<Class<? extends Entity>, DataBundle<? extends Entity>> map = Map.of(
+            Book.class, new DataBundle<Book>(
+                    List.of(" ID ", "Title", "Author", "Free"),
+                    List.of(4, 36, 23, 4),
+                    List.of(
+                            Book::getId,
+                            Book::getTitle,
+                            Book::getAuthor,
+                            book -> book.isFree() ? "Yes" : "No")),
+            Client.class, new DataBundle<Client>(
+                    List.of(" ID ", "Name", "Books"),
+                    List.of(4, 35, 31),
+                    List.of(
+                            Client::getId,
+                            Client::getName,
+                            client -> client.getBooks().stream()
+                                    .map(book -> book.getId().toString())
+                                    .reduce("", (str1, str2) -> str1 + str2 + " "))),
+            Operation.class, new DataBundle<Operation>(
+                    List.of(" ID ", "Date", "Client name", "Operation", "Books"),
+                    List.of(4, 10, 26, 9, 15),
+                    List.of(
+                            Operation::getId,
+                            operation -> operation.getDate().toLocalDate(),
+                            operation -> operation.getClient().getName(),
+                            Operation::getOperationType,
+                            operation -> operation.getBook().getTitle()))
+    );
+
+
     @Override
-    public void printListOfBooks(final Collection<Book> books) {
-        printListTable(
-                List.of(" ID ", "Title", "Author", "Free"),
-                List.of(4, 36, 23, 4),
-                new ArrayList<>(List.of(
-                        Book::getId,
-                        Book::getTitle,
-                        Book::getAuthor,
-                        book -> book.isFree() ? "Yes" : "No"
-                )), books
-        );
+    public void printEntityDetails(Entity entity) {
+        // TODO FIXME
+        if (entity instanceof Book book) {
+            printBookDetails(book);
+        } else if (entity instanceof Client client) {
+            printClientDetails(client);
+        } else if (entity instanceof Operation operation) {
+            printOperationDetails(operation);
+        } else {
+            throw new IllegalStateException("Illegal entity class " + entity.getClass());
+        }
     }
 
     @Override
-    public void printListOfClients(final Collection<Client> clients) {
-        printListTable(
-                List.of(" ID ", "Name", "Books"),
-                List.of(4, 35, 31),
-                new ArrayList<>(List.of(
-                        Client::getId,
-                        Client::getName,
-                        client -> client.getBooks().stream()
-                                .map(book -> book.getId().toString())
-                                .reduce("", (str1, str2) -> str1 + str2 + " ")
-                )), clients
-        );
-    }
-
-    @Override
-    public void printListOfOperations(final Collection<Operation> operations) {
-        printListTable(
-                List.of(" ID ", "Date", "Client name", "Operation", "Books"),
-                List.of(4, 10, 26, 9, 15),
-                new ArrayList<>(List.of(
-                        Operation::getId,
-                        operation -> operation.getDate().toLocalDate(),
-                        operation -> operation.getClient().getName(),
-                        Operation::getOperationType,
-                        operation -> operation.getBook().getTitle()
-                )), operations);
-    }
-
-    private <T> void printListTable(final List<String> tableHeaders,
-                                    final List<Integer> sizes,
-                                    final List<Function<T, Object>> getters,
-                                    final Collection<T> data) {
+    public <T extends Entity> void printListOfEntities(Collection<T> data) {
         if (data.isEmpty()) {
             System.out.format("+------------------------------------------------------------------------------+%n");
             System.out.format("|                                List is empty                                 |%n");
             System.out.format("+------------------------------------------------------------------------------+%n");
             return;
         }
-        if (tableHeaders.size() != getters.size())
-            throw new IllegalArgumentException(format(
-                    "Number of table names (%d) differs from number of getters (%d)",
-                    tableHeaders.size(), getters.size()));
-        if (sizes.isEmpty())
+        DataBundle<T> dataBundle = (DataBundle<T>) map.get(data.iterator().next().getClass());
+
+        if (dataBundle.sizes.isEmpty())
             throw new IllegalArgumentException("Sizes list is empty");
 
         final StringBuilder dataTemplateBuilder = new StringBuilder("|");
         final StringBuilder dividerBuilder = new StringBuilder("+");
-        for (int i = 0; i < sizes.size(); i++) {
-            Integer size = sizes.get(i);
+        for (int i = 0; i < dataBundle.sizes.size(); i++) {
+            Integer size = dataBundle.sizes.get(i);
 
             Function<Object, Object> trimStrAppendDotsFn = obj -> StringUtils.min(obj.toString(), size);
-            getters.set(i, trimStrAppendDotsFn.compose(getters.get(i)));
+            dataBundle.fields.set(i, trimStrAppendDotsFn.compose(dataBundle.fields.get(i)));
 
             dataTemplateBuilder.append(" %-").append(size).append("s |");
             dividerBuilder.append("-").append("-".repeat(size)).append("-+");
@@ -117,10 +114,10 @@ public class ConsoleDataPrinter implements DataPrinter {
         final String divider = dividerBuilder.append("\n").toString();
 
         System.out.print(divider);
-        System.out.printf(dataTemplate, tableHeaders.toArray());
+        System.out.printf(dataTemplate, dataBundle.headers.toArray());
         System.out.print(divider);
         for (T el : data) {
-            final List<String> fields = getters.stream()
+            final List<String> fields = dataBundle.fields.stream()
                     .map(getter -> getter.apply(el).toString())
                     .toList();
             System.out.printf(dataTemplate, fields.toArray());
@@ -128,8 +125,7 @@ public class ConsoleDataPrinter implements DataPrinter {
         System.out.print(divider);
     }
 
-    @Override
-    public void printBookDetails(final Book book) {
+    private void printBookDetails(final Book book) {
         Map<String, Object> dataRows = new LinkedHashMap<>();
         dataRows.put("ID", book.getId());
         dataRows.put("Title", book.getTitle());
@@ -145,8 +141,7 @@ public class ConsoleDataPrinter implements DataPrinter {
         printDetailsTable(dataRows);
     }
 
-    @Override
-    public void printClientDetails(final Client client) {
+    private void printClientDetails(final Client client) {
         Map<String, Object> dataRows = new LinkedHashMap<>();
         dataRows.put("ID", client.getId());
         dataRows.put("Name", client.getName());
@@ -156,11 +151,10 @@ public class ConsoleDataPrinter implements DataPrinter {
                                                   
                                             Books that client holds
                 """);
-        printListOfBooks(client.getBooks());
+        printListOfEntities(client.getBooks());
     }
 
-    @Override
-    public void printOperationDetails(final Operation operation) {
+    private void printOperationDetails(final Operation operation) {
         Map<String, Object> dataRows = new LinkedHashMap<>();
         dataRows.put("ID", operation.getId());
         dataRows.put("Date", operation.getDate());
@@ -241,5 +235,12 @@ public class ConsoleDataPrinter implements DataPrinter {
             System.out.format(template, entry.getKey(), entry.getValue());
             System.out.print(divider);
         }
+    }
+
+    private record DataBundle<T extends Entity>(
+            List<String> headers,
+            List<Integer> sizes,
+            List<Function<T, Object>> fields
+    ) {
     }
 }

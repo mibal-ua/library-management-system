@@ -21,9 +21,12 @@ import ua.mibal.minervaTest.dao.book.BookRepository;
 import ua.mibal.minervaTest.dao.client.ClientRepository;
 import ua.mibal.minervaTest.dao.operation.OperationRepository;
 import ua.mibal.minervaTest.gui.WindowManager;
-import ua.mibal.minervaTest.model.Client;
+import ua.mibal.minervaTest.model.Entity;
+import ua.mibal.minervaTest.model.window.DataType;
+import ua.mibal.minervaTest.service.Service;
 
 import static ua.mibal.minervaTest.model.window.DataType.HISTORY;
+import static ua.mibal.minervaTest.model.window.DataType.NULL;
 import static ua.mibal.minervaTest.utils.StringUtils.isNumber;
 
 /**
@@ -74,12 +77,14 @@ public class ApplicationController {
             windowManager.showToast("You need to enter 'search' with ${query}");
             return;
         }
-        switch (windowManager.getCurrentDataType()) {
-            case BOOK -> windowManager.searchBookTab(() -> bookRepository.find(args), args);
-            case CLIENT -> windowManager.searchClientTab(() -> clientRepository.findFetchBooks(args), args);
-            case HISTORY -> windowManager.searchOperationTab(() -> operationRepository.findFetchBookClient(args), args);
-            case NULL -> windowManager.showToast("You can not use command 'search' in this tab.");
+        DataType dataType = windowManager.getCurrentDataType();
+        if (dataType == NULL) {
+            windowManager.showToast("You can not use command 'search' in this tab.");
+            return;
         }
+
+        Service<? extends Entity> service = Service.getInstance(dataType);
+        windowManager.searchTab(() -> service.searchBy(args), args);
     }
 
     public void look(final String[] args) {
@@ -87,18 +92,21 @@ public class ApplicationController {
             windowManager.showToast("You need to enter 'look' with ${id}");
             return;
         }
-        final Long id = Long.valueOf(args[0]);
-        switch (windowManager.getCurrentDataType()) {
-            case BOOK -> windowManager.bookDetails(() -> bookRepository.findByIdFetchClient(id));
-            case CLIENT -> windowManager.clientDetails(() -> clientRepository.findByIdFetchBooks(id));
-            case HISTORY -> windowManager.operationDetails(() -> operationRepository.findByIdFetchBookClient(id));
-            case NULL -> windowManager.showToast("You can not use command 'look' in this tab.");
+        DataType dataType = windowManager.getCurrentDataType();
+        if (dataType == NULL) {
+            windowManager.showToast("You can not use command 'look' in this tab.");
+            return;
         }
+
+        final Long id = Long.valueOf(args[0]);
+        Service<? extends Entity> service = Service.getInstance(dataType);
+        windowManager.detailsTab(() -> service.details(id));
     }
 
     public void edit(final String[] args) {
-        if (windowManager.getCurrentDataType() == HISTORY) {
-            windowManager.showToast("You cannot change history manually");
+        DataType dataType = windowManager.getCurrentDataType();
+        if (dataType == HISTORY || dataType == NULL) {
+            windowManager.showToast("You can not use command 'edit' in this tab.");
             return;
         }
         final boolean isDetailsTab = windowManager.isDetailsTab();
@@ -106,51 +114,38 @@ public class ApplicationController {
             windowManager.showToast("You need to enter 'edit' with ${id}");
             return;
         }
+
         final Long id = isDetailsTab
                 ? windowManager.getCurrentEntityId()
                 : Long.valueOf(args[0]);
-        switch (windowManager.getCurrentDataType()) {
-            case BOOK -> bookRepository.findById(id).ifPresentOrElse(
-                    book -> windowManager.editBook(book).ifPresent(editedBook -> {
-                        bookRepository.save(editedBook);
-                        windowManager.showToast("Book successfully updated!");
-                    }),
-                    () -> windowManager.showToast("Oops, there are no books with this id=" + id)
-            );
-            case CLIENT -> clientRepository.findByIdFetchBooks(id).ifPresentOrElse(
-                    client -> windowManager.editClient(client).ifPresent(editedClient -> {
-                        clientRepository.save(editedClient);
-                        windowManager.showToast("Client successfully updated!");
-                    }),
-                    () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
-            );
-            case NULL -> windowManager.showToast("You can not use command 'edit' in this tab.");
-        }
+        Service<? extends Entity> service = Service.getInstance(dataType);
+        service.findById(id).ifPresentOrElse(
+                e -> windowManager.editEntity(e).ifPresent(editedE -> {
+                    service.update(editedE);
+                    windowManager.showToast(dataType.simpleName() + " successfully updated!");
+                }),
+                () -> windowManager.showToast("Oops, there are no " + dataType.simplePluralName() + " with this id=" + id)
+        );
     }
 
     public void add(final String[] ignored) {
-        if (windowManager.getCurrentDataType() == HISTORY) {
-            windowManager.showToast("You cannot change history manually");
+        DataType dataType = windowManager.getCurrentDataType();
+        if (dataType == HISTORY || dataType == NULL) {
+            windowManager.showToast("You can not use command 'add' in this tab.");
             return;
         }
-        switch (windowManager.getCurrentDataType()) {
-            case BOOK -> windowManager.initBookToAdd().ifPresent(
-                    book -> {
-                        bookRepository.save(book);
-                        windowManager.showToast("Book successfully added!");
-                    });
-            case CLIENT -> windowManager.initClientToAdd().ifPresent(
-                    client -> {
-                        clientRepository.save(client);
-                        windowManager.showToast("Client successfully added!");
-                    });
-            case NULL -> windowManager.showToast("You can not use command 'add' in this tab.");
-        }
+
+        Service<? extends Entity> service = Service.getInstance(dataType);
+        windowManager.initEntityToAdd(dataType.getEntityClass()).ifPresent(e -> {
+            service.save(e);
+            windowManager.showToast(dataType.simpleName() + " successfully added!");
+        });
     }
 
     public void delete(final String[] args) {
-        if (windowManager.getCurrentDataType() == HISTORY) {
-            windowManager.showToast("You cannot change history manually");
+        DataType dataType = windowManager.getCurrentDataType();
+        if (dataType == HISTORY || dataType == NULL) {
+            windowManager.showToast("You can not use command 'delete' in this tab.");
             return;
         }
         final boolean isDetailsTab = windowManager.isDetailsTab();
@@ -158,46 +153,28 @@ public class ApplicationController {
             windowManager.showToast("You need to enter 'delete' with ${id}");
             return;
         }
+
         final Long id = isDetailsTab
                 ? windowManager.getCurrentEntityId()
                 : Long.valueOf(args[0]);
-        switch (windowManager.getCurrentDataType()) {
-            case BOOK -> bookRepository.findById(id).ifPresentOrElse(
-                    bookToDel -> {
-                        if (!bookToDel.isFree()) {
-                            windowManager.showToast("Book isn't free",
-                                    "Oops, but book '" + bookToDel.getTitle() + "' isn't free");
-                            return;
-                        }
-                        final boolean isConfirmed = windowManager.showDialogueToast(
-                                "You really need to delete book '" + bookToDel.getTitle() + "'?",
-                                "YES", "NO");
-                        if (isConfirmed) {
-                            bookRepository.delete(bookToDel);
-                            windowManager.showToast("Book successfully deleted.");
-                        }
-                    },
-                    () -> windowManager.showToast("Oops, there are no books with this id=" + id)
-            );
-            case CLIENT -> clientRepository.findByIdFetchBooks(id).ifPresentOrElse(
-                    clientToDel -> {
-                        if (clientToDel.doesHoldBook()) {
-                            windowManager.showToast("Client is holding books",
-                                    "Oops, but client " + clientToDel.getName() + " is holding books, we can't delete him(");
-                            return;
-                        }
-                        final boolean isConfirmed = windowManager.showDialogueToast(
-                                "You really need to delete client '" + clientToDel.getName() + "'?",
-                                "YES", "NO");
-                        if (isConfirmed) {
-                            clientRepository.delete(clientToDel);
-                            windowManager.showToast("Client successfully deleted.");
-                        }
-                    },
-                    () -> windowManager.showToast("Oops, there are no clients with this id=" + id)
-            );
-            case NULL -> windowManager.showToast("You can not use command 'delete' in this tab.");
-        }
+        Service<? extends Entity> service = Service.getInstance(dataType);
+        service.findById(id).ifPresentOrElse(
+                entityToDel -> {
+                    if (!entityToDel.isReadyToDelete()) {
+                        String reason = entityToDel.getNotDeleteReason();
+                        windowManager.showToast(dataType.simpleName() + reason,
+                                "Oops, but " + dataType.simpleName() + " '" +
+                                entityToDel.getName() + "' " + reason);
+                    } else if (windowManager.showDialogueToast("You really need to delete " +
+                                                               dataType.simpleName() + " '" +
+                                                               entityToDel.getName() + "'?",
+                            "YES", "NO")) {
+                        service.delete(entityToDel);
+                        windowManager.showToast(dataType.simpleName() + " successfully deleted.");
+                    }
+                },
+                () -> windowManager.showToast("Oops, there are no " + dataType.simplePluralName() + " with this id=" + id)
+        );
     }
 
 

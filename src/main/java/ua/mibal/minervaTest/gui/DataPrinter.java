@@ -16,9 +16,7 @@
 
 package ua.mibal.minervaTest.gui;
 
-import ua.mibal.minervaTest.model.Book;
-import ua.mibal.minervaTest.model.Client;
-import ua.mibal.minervaTest.model.Operation;
+import ua.mibal.minervaTest.model.Entity;
 
 import java.util.Collection;
 
@@ -28,17 +26,9 @@ import java.util.Collection;
  */
 public interface DataPrinter {
 
-    void printListOfBooks(Collection<Book> books);
+    <T extends Entity> void printListOfEntities(Collection<T> entities);
 
-    void printListOfClients(Collection<Client> clients);
-
-    void printListOfOperations(Collection<Operation> operations);
-
-    void printBookDetails(Book book);
-
-    void printClientDetails(Client client);
-
-    void printOperationDetails(Operation operation);
+    <T extends Entity> void printEntityDetails(T entity);
 
     void clear();
 

@@ -18,6 +18,7 @@ package ua.mibal.minervaTest.gui;
 
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
+import ua.mibal.minervaTest.model.Entity;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.window.DataType;
 
@@ -37,6 +38,8 @@ public interface WindowManager {
 
     void tab3(Supplier<List<Operation>> operations);
 
+    void listTab(Supplier<List<? extends Entity>> listSupplier);
+
     void help();
 
     String[] readCommandLine();
@@ -47,32 +50,20 @@ public interface WindowManager {
 
     boolean showDialogueToast(String question, String answer1, String answer2);
 
-    void searchBookTab(Supplier<List<Book>> books, String[] args);
-
-    void searchClientTab(Supplier<List<Client>> clients, String[] args);
-
-    void searchOperationTab(Supplier<List<Operation>> operations, String[] args);
-
-    Optional<Book> initBookToAdd();
-
-    Optional<Client> initClientToAdd();
-
     DataType getCurrentDataType();
 
     void drawPrevTab();
 
-    void bookDetails(Supplier<Optional<Book>> book);
-
-    void clientDetails(Supplier<Optional<Client>> client);
-
-    void operationDetails(Supplier<Optional<Operation>> operation);
-
-    Optional<Book> editBook(Book book);
-
-    Optional<Client> editClient(Client client);
-
     Long getCurrentEntityId();
 
     boolean isDetailsTab();
+
+    <T extends Entity> void searchTab(Supplier<List<T>> o, String[] args);
+
+    <T extends Entity> void detailsTab(Supplier<Optional<T>> o);
+
+    <T extends Entity> Optional<T> editEntity(T e);
+
+    <T extends Entity> Optional<T> initEntityToAdd(Class<T> entityClass);
 }
 
