@@ -23,8 +23,6 @@ public abstract class Service<T> {
 
     abstract public List<T> searchBy(String[] args);
 
-    abstract public Optional<T> details(Long id);
-
     abstract public Optional<T> findById(Long id);
 
     abstract public void update(T edited);

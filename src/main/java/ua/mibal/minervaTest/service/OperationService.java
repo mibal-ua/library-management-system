@@ -32,11 +32,6 @@ public class OperationService extends Service<Operation> {
     }
 
     @Override
-    public Optional<Operation> details(Long id) {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<Operation> findById(Long id) {
         return Optional.empty();
     }

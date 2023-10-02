@@ -33,11 +33,6 @@ public class ClientService extends Service<Client> {
     }
 
     @Override
-    public Optional<Client> details(Long id) {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<Client> findById(Long id) {
         return Optional.empty();
     }

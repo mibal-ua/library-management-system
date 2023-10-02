@@ -100,7 +100,7 @@ public class ApplicationController {
 
         final Long id = Long.valueOf(args[0]);
         Service<? extends Entity> service = Service.getInstance(dataType);
-        windowManager.detailsTab(() -> service.details(id));
+        windowManager.detailsTab(() -> service.findByIdFetchAll(id));
     }
 
     public <T extends Entity> void edit(final String[] args) {

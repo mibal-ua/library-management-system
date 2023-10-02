@@ -36,11 +36,6 @@ public class BookService extends Service<Book> {
     }
 
     @Override
-    public Optional<Book> details(Long id) {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<Book> findById(Long id) {
         return Optional.empty();
     }
