@@ -60,7 +60,7 @@ public class ConsoleWindowManager implements WindowManager {
     @Override
     public <T extends Entity> void listTab(Supplier<List<T>> listSupplier, DataType dataType) {
         tabStack.push(new ConsoleListTab(
-                () -> dataPrinter.printListOfEntities(listSupplier.get()),
+                () -> dataPrinter.printListOfEntities(listSupplier.get(), dataType),
                 dataType
         )).draw();
     }
@@ -68,7 +68,7 @@ public class ConsoleWindowManager implements WindowManager {
     @Override
     public <T extends Entity> void searchTab(Supplier<List<T>> entitiesSupplier, String[] args) {
         tabStack.push(new ConsoleSearchListTab(
-                () -> dataPrinter.printListOfEntities(entitiesSupplier.get()),
+                () -> dataPrinter.printListOfEntities(entitiesSupplier.get(), getCurrentDataType()),
                 getCurrentTabType(),
                 args
         )).draw();
@@ -78,7 +78,7 @@ public class ConsoleWindowManager implements WindowManager {
     public <T extends Entity> void detailsTab(Supplier<Optional<T>> optionalSupplier) {
         tabStack.push(new ConsoleDetailsTab(
                 () -> optionalSupplier.get().ifPresentOrElse(
-                        dataPrinter::printEntityDetails,
+                        entity -> dataPrinter.printEntityDetails(entity, getCurrentDataType()),
                         this::drawPrevTab
                 ),
                 getCurrentDataType(),

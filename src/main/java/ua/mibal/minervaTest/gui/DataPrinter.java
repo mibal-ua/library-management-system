@@ -17,6 +17,7 @@
 package ua.mibal.minervaTest.gui;
 
 import ua.mibal.minervaTest.model.Entity;
+import ua.mibal.minervaTest.model.window.DataType;
 
 import java.util.Collection;
 
@@ -26,9 +27,9 @@ import java.util.Collection;
  */
 public interface DataPrinter {
 
-    <T extends Entity> void printListOfEntities(Collection<T> entities);
+    <T extends Entity> void printListOfEntities(Collection<T> entities, DataType dataType);
 
-    <T extends Entity> void printEntityDetails(T entity);
+    <T extends Entity> void printEntityDetails(T entity, DataType dataType);
 
     void clear();
 
