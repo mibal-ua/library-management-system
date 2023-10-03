@@ -1,6 +1,5 @@
-package ua.mibal.minervaTest.gui.drawable.console.tab;
+package ua.mibal.minervaTest.gui.drawable.tab;
 
-import ua.mibal.minervaTest.gui.drawable.console.ConsoleTab;
 import ua.mibal.minervaTest.model.Entity;
 import ua.mibal.minervaTest.model.window.DataType;
 import ua.mibal.minervaTest.model.window.TabType;

@@ -1,4 +1,4 @@
-package ua.mibal.minervaTest.gui.drawable.console;
+package ua.mibal.minervaTest.gui.drawable.tab;
 
 import ua.mibal.minervaTest.gui.console.ConsoleUtils;
 import ua.mibal.minervaTest.model.window.TabType;
