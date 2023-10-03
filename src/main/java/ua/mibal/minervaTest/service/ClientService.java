@@ -15,7 +15,7 @@ import java.util.Optional;
 @org.springframework.stereotype.Service
 public class ClientService extends Service<Client> {
 
-    private final static Service<Client> instance = new ClientService();
+    private final static ClientService instance = new ClientService();
 
     @Autowired
     private ClientRepository clientRepository;
@@ -23,7 +23,7 @@ public class ClientService extends Service<Client> {
     private ClientService() {
     }
 
-    public static Service<Client> getInstance() {
+    public static ClientService getInstance() {
         return instance;
     }
 
