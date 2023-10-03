@@ -24,6 +24,10 @@ import ua.mibal.minervaTest.gui.drawable.console.ConsoleDialogueToast;
 import ua.mibal.minervaTest.gui.drawable.console.ConsoleFormToast;
 import ua.mibal.minervaTest.gui.drawable.console.ConsoleInfoToast;
 import ua.mibal.minervaTest.gui.drawable.console.ConsoleTab;
+import ua.mibal.minervaTest.gui.drawable.console.tab.ConsoleDetailsTab;
+import ua.mibal.minervaTest.gui.drawable.console.tab.ConsoleListTab;
+import ua.mibal.minervaTest.gui.drawable.console.tab.ConsoleSearchListTab;
+import ua.mibal.minervaTest.gui.drawable.console.tab.HelpTab;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Entity;
@@ -39,11 +43,6 @@ import java.util.Optional;
 import java.util.Stack;
 import java.util.function.Supplier;
 
-import static java.lang.String.format;
-import static java.lang.String.join;
-import static ua.mibal.minervaTest.model.window.TabType.HELP_TAB;
-import static ua.mibal.minervaTest.model.window.TabType.LOOK_BOOK;
-
 /**
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
@@ -58,34 +57,39 @@ public class ConsoleWindowManager implements WindowManager {
         this.dataPrinter = dataPrinter;
     }
 
-    // FIXME stub
     @Override
     public <T extends Entity> void listTab(Supplier<List<T>> listSupplier, DataType dataType) {
-        tabStack.push(new ConsoleTab(
+        tabStack.push(new ConsoleListTab(
                 () -> dataPrinter.printListOfEntities(listSupplier.get()),
-                TabType.getRootTabOf(listSupplier.get().iterator().next().getClass()), // FIXME stub
-                0, // FIXME stub
-                "BOOKS", "CLIENTS", "HISTORY"
+                dataType
         )).draw();
     }
 
     @Override
     public <T extends Entity> void searchTab(Supplier<List<T>> entitiesSupplier, String[] args) {
-        TabType tabType = getCurrentTabType();
-        final String header = format("SEARCH IN " + tabType.name() + " BY '%s'", join(" ", args));
-        tabStack.push(new ConsoleTab(
+        tabStack.push(new ConsoleSearchListTab(
                 () -> dataPrinter.printListOfEntities(entitiesSupplier.get()),
-                tabType,
-                header
+                getCurrentTabType(),
+                args
+        )).draw();
+    }
+
+    @Override
+    public <T extends Entity> void detailsTab(Supplier<Optional<T>> optionalSupplier) {
+        tabStack.push(new ConsoleDetailsTab(
+                () -> optionalSupplier.get().ifPresentOrElse(
+                        dataPrinter::printEntityDetails,
+                        this::drawPrevTab
+                ),
+                getCurrentDataType(),
+                optionalSupplier
         )).draw();
     }
 
     @Override
     public void help() {
-        tabStack.push(new ConsoleTab(
-                dataPrinter::printHelp,
-                HELP_TAB,
-                "HELP"
+        tabStack.push(new HelpTab(
+                dataPrinter::printHelp
         )).draw();
     }
 
@@ -237,22 +241,6 @@ public class ConsoleWindowManager implements WindowManager {
         if (this.tabStack.size() > 1)
             this.tabStack.pop();
         this.tabStack.peek().draw();
-    }
-
-    @Override
-    public <T extends Entity> void detailsTab(Supplier<Optional<T>> optionalSupplier) {
-        Long id = optionalSupplier.get()
-                .map(Entity::getId)
-                .orElse(Long.valueOf(-1));
-        tabStack.push(new ConsoleTab(
-                () -> optionalSupplier.get().ifPresentOrElse(
-                        dataPrinter::printEntityDetails,
-                        this::drawPrevTab
-                ),
-                LOOK_BOOK, // FIXME stub
-                id,
-                "BOOK DETAILS" // FIXME stub
-        )).draw();
     }
 
     private void refresh() {
