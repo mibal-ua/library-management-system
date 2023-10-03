@@ -16,9 +16,8 @@
 
 package ua.mibal.minervaTest.model.window;
 
-import ua.mibal.minervaTest.model.Entity;
-
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 import static ua.mibal.minervaTest.model.window.DataType.BOOK;
 import static ua.mibal.minervaTest.model.window.DataType.CLIENT;
@@ -57,13 +56,25 @@ public enum TabType {
         this.dataType = dataType;
     }
 
-    public static TabType getRootTabOf(Class<? extends Entity> clazz) {
+    public static TabType getRootTabOf(DataType dataType) {
+        return findInValues(dataType,
+                tabType -> tabType.isRootTab() &&
+                           tabType.getDataType() == dataType);
+    }
+
+    public static TabType getDetailsTabOf(DataType dataType) {
+        return findInValues(dataType,
+                tabType -> tabType.isDetailsTab() &&
+                           tabType.getDataType() == dataType);
+
+    }
+
+    private static TabType findInValues(DataType dataType, Predicate<TabType> filterPredicate) {
         return Arrays.stream(values())
-                .filter(tabType -> tabType.isRootTab() &&
-                                   tabType.getDataType() == DataType.valueOf(clazz))
+                .filter(filterPredicate)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "Illegal class '" + clazz + "' for TabType instance"));
+                        "Illegal DataType=" + dataType + " for TabType instance"));
     }
 
     public DataType getDataType() {
