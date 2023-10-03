@@ -36,7 +36,7 @@ import java.util.Optional;
  */
 @Entity
 @Table(name = "book")
-public class Book implements Serializable, ua.mibal.minervaTest.model.Entity {
+public class Book extends ua.mibal.minervaTest.model.Entity implements Serializable {
 
     @Id
     @GeneratedValue

@@ -36,7 +36,7 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Table(name = "operation")
-public class Operation implements Serializable, ua.mibal.minervaTest.model.Entity {
+public class Operation extends ua.mibal.minervaTest.model.Entity implements Serializable {
 
     @Id @GeneratedValue
     private Long id;

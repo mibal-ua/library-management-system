@@ -33,7 +33,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "client")
-public class Client implements Serializable, ua.mibal.minervaTest.model.Entity {
+public class Client extends ua.mibal.minervaTest.model.Entity implements Serializable  {
 
     @Id @GeneratedValue
     private Long id;
