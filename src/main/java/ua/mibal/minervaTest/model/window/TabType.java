@@ -83,7 +83,8 @@ public enum TabType {
 
     public boolean isDetailsTab() {
         return this == LOOK_BOOK ||
-               this == LOOK_CLIENT;
+               this == LOOK_CLIENT ||
+               this == LOOK_HISTORY;
     }
 
     public boolean isRootTab() {
