@@ -59,7 +59,9 @@ public class ConsoleDataPrinter implements DataPrinter {
         List<String> headers = dataBundle.getHeaders();
         List<Function<T, Object>> fields = dataBundle.getFields();
         for (int i = 0; i < dataBundle.getHeaders().size(); i++) {
-            System.out.format(template, headers.get(i), fields.get(i));
+            String header = headers.get(i);
+            String value = fields.get(i).apply(entity).toString();
+            System.out.format(template, header, value);
             System.out.print(divider);
         }
 
