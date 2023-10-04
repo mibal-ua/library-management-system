@@ -2,6 +2,7 @@ package ua.mibal.minervaTest.gui.console;
 
 import ua.mibal.minervaTest.model.Entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -24,7 +25,7 @@ public class DataBundle<T extends Entity> {
                       Function<T, Set<? extends Entity>> function) {
         this.headers = headers;
         this.sizes = sizes;
-        this.fields = fields;
+        this.fields = new ArrayList<>(fields);
         this.function = function;
     }
 
