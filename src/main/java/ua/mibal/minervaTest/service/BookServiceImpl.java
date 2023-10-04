@@ -77,7 +77,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Optional<Book> findByIdFetchAll(Long id) {
+    public Optional<Book> findByIdLoadAll(Long id) {
         return bookRepository.findByIdFetchClient(id);
     }
 

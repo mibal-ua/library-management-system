@@ -19,7 +19,7 @@ public interface Service<T> {
 
     void delete(T entityToDel);
 
-    Optional<T> findByIdFetchAll(Long id);
+    Optional<T> findByIdLoadAll(Long id);
 
     List<T> search();
 

@@ -60,7 +60,7 @@ public class OperationService implements Service<Operation> {
     }
 
     @Override
-    public Optional<Operation> findByIdFetchAll(Long id) {
+    public Optional<Operation> findByIdLoadAll(Long id) {
         return operationRepository.findByIdFetchBookClient(id);
     }
 

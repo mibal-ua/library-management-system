@@ -58,7 +58,7 @@ public class ClientService implements Service<Client> {
     }
 
     @Override
-    public Optional<Client> findByIdFetchAll(Long id) {
+    public Optional<Client> findByIdLoadAll(Long id) {
         return clientRepository.findByIdFetchBooks(id);
     }
 
@@ -69,6 +69,6 @@ public class ClientService implements Service<Client> {
 
     @Override
     public Optional<Client> findByIdForDeleteChecking(Long id) {
-        return findByIdFetchAll(id);
+        return findByIdLoadAll(id);
     }
 }

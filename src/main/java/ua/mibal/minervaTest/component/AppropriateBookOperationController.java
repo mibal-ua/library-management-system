@@ -56,7 +56,7 @@ public class AppropriateBookOperationController {
             return;
         }
         final Long clientId = Long.valueOf(args[0]);
-        final Client client = clientService.findByIdFetchAll(clientId)
+        final Client client = clientService.findByIdLoadAll(clientId)
                 .orElseThrow(() -> new IllegalArgumentException(
                         "Client with id=" + clientId + " not found"));
         final Long bookId = Long.valueOf(args[1]);
