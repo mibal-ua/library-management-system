@@ -40,6 +40,34 @@ import static ua.mibal.minervaTest.model.window.DataType.CLIENT;
 @Component
 public class ConsoleDataPrinter implements DataPrinter {
 
+    private static String getDivider(int headerMaxLength, int valueMaxLength) {
+        return format("+-%s-+-%s-+%n", "-".repeat(headerMaxLength), "-".repeat(valueMaxLength));
+    }
+
+    private static String getDataTemplate(int headerMaxLength, int valueMaxLength) {
+        return "| %-" + headerMaxLength + "s | %-" + valueMaxLength + "s |%n";
+    }
+
+    private static <T extends Entity> void printTable(T entity, DataBundle<T> dataBundle, String divider, String template) {
+        List<String> headers = dataBundle.getHeaders();
+        List<Function<T, Object>> fields = dataBundle.getFields();
+
+        System.out.print(divider);
+        for (int i = 0; i < dataBundle.getHeaders().size(); i++) {
+            String header = headers.get(i);
+            String value = fields.get(i).apply(entity).toString();
+            System.out.format(template, header, value);
+            System.out.print(divider);
+        }
+    }
+
+    private static int getKeyMaxLength(List<String> list) {
+        return list.stream()
+                .mapToInt(String::length)
+                .max()
+                .orElse(0);
+    }
+
     @Override
     public <T extends Entity> void printEntityDetails(T entity, DataType dataType) {
         DataBundle<T> dataBundle = Entity.getConsoleDetailsBundle(dataType);
@@ -51,19 +79,10 @@ public class ConsoleDataPrinter implements DataPrinter {
         int headerMaxLength = getKeyMaxLength(dataBundle.getHeaders());
 
         int valueMaxLength = (ConsoleConstants.WINDOW_WIDTH - headerMaxLength - 7);
-        String template = "| %-" + headerMaxLength + "s | %-" + valueMaxLength + "s |%n";
-        String divider = format("+-%s-+-%s-+%n", "-".repeat(headerMaxLength), "-".repeat(valueMaxLength));
+        String template = getDataTemplate(headerMaxLength, valueMaxLength);
+        String divider = getDivider(headerMaxLength, valueMaxLength);
 
-        System.out.print(divider);
-
-        List<String> headers = dataBundle.getHeaders();
-        List<Function<T, Object>> fields = dataBundle.getFields();
-        for (int i = 0; i < dataBundle.getHeaders().size(); i++) {
-            String header = headers.get(i);
-            String value = fields.get(i).apply(entity).toString();
-            System.out.format(template, header, value);
-            System.out.print(divider);
-        }
+        printTable(entity, dataBundle, divider, template);
 
         dataBundle.getFunction().ifPresent(fn -> {
             Set<? extends Entity> set = fn.apply(entity);
@@ -164,12 +183,5 @@ public class ConsoleDataPrinter implements DataPrinter {
                                           return ${id} - to return book
 
                  """);
-    }
-
-    private int getKeyMaxLength(List<String> list) {
-        return list.stream()
-                .mapToInt(String::length)
-                .max()
-                .orElse(0);
     }
 }
