@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.gui.WindowManager;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.service.BookService;
-import ua.mibal.minervaTest.service.ClientService;
+import ua.mibal.minervaTest.service.Service;
 
 import static ua.mibal.minervaTest.utils.StringUtils.isNumber;
 
@@ -17,11 +17,11 @@ public class AppropriateBookOperationController {
 
     private final WindowManager windowManager;
     private final BookService bookService;
-    private final ClientService clientService;
+    private final Service<Client> clientService;
 
     public AppropriateBookOperationController(WindowManager windowManager,
                                               BookService bookService,
-                                              ClientService clientService) {
+                                              Service<Client> clientService) {
         this.windowManager = windowManager;
         this.bookService = bookService;
         this.clientService = clientService;

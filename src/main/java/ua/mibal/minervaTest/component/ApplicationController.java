@@ -21,6 +21,7 @@ import ua.mibal.minervaTest.gui.WindowManager;
 import ua.mibal.minervaTest.model.Entity;
 import ua.mibal.minervaTest.model.window.DataType;
 import ua.mibal.minervaTest.service.Service;
+import ua.mibal.minervaTest.service.ServiceFactory;
 
 import static ua.mibal.minervaTest.model.window.DataType.BOOK;
 import static ua.mibal.minervaTest.model.window.DataType.CLIENT;
@@ -36,9 +37,12 @@ import static ua.mibal.minervaTest.utils.StringUtils.isNumber;
 public class ApplicationController {
 
     private final WindowManager windowManager;
+    private final ServiceFactory serviceFactory;
 
-    public ApplicationController(WindowManager windowManager) {
+    public ApplicationController(WindowManager windowManager,
+                                 ServiceFactory serviceFactory) {
         this.windowManager = windowManager;
+        this.serviceFactory = serviceFactory;
     }
 
     public void tab1(final String[] ignored) {
@@ -54,7 +58,7 @@ public class ApplicationController {
     }
 
     private void listTab(DataType dataType) {
-        Service<? extends Entity> service = Service.getInstance(dataType);
+        Service<? extends Entity> service = serviceFactory.getInstance(dataType);
         windowManager.listTab(service::search, dataType);
     }
 
@@ -77,7 +81,7 @@ public class ApplicationController {
             return;
         }
 
-        Service<? extends Entity> service = Service.getInstance(dataType);
+        Service<? extends Entity> service = serviceFactory.getInstance(dataType);
         windowManager.searchTab(() -> service.searchBy(args), args);
     }
 
@@ -93,7 +97,7 @@ public class ApplicationController {
         }
 
         final Long id = Long.valueOf(args[0]);
-        Service<? extends Entity> service = Service.getInstance(dataType);
+        Service<? extends Entity> service = serviceFactory.getInstance(dataType);
         windowManager.detailsTab(() -> service.findByIdFetchAll(id));
     }
 
@@ -112,7 +116,7 @@ public class ApplicationController {
         final Long id = isDetailsTab
                 ? windowManager.getCurrentEntityId()
                 : Long.valueOf(args[0]);
-        Service<T> service = (Service<T>) Service.getInstance(dataType);
+        Service<T> service = (Service<T>) serviceFactory.getInstance(dataType);
         service.findById(id).ifPresentOrElse(
                 e -> windowManager.editEntity(e, dataType).ifPresent(editedE -> {
                     service.update(editedE);
@@ -129,7 +133,7 @@ public class ApplicationController {
             return;
         }
 
-        Service<T> service = (Service<T>) Service.getInstance(dataType);
+        Service<T> service = (Service<T>) serviceFactory.getInstance(dataType);
         windowManager.initEntityToAdd(dataType).ifPresent(e -> {
             service.save((T) e);
             windowManager.showToast(dataType.simpleName() + " successfully added!");
@@ -151,7 +155,7 @@ public class ApplicationController {
         final Long id = isDetailsTab
                 ? windowManager.getCurrentEntityId()
                 : Long.valueOf(args[0]);
-        Service<T> service = (Service<T>) Service.getInstance(dataType);
+        Service<T> service = (Service<T>) serviceFactory.getInstance(dataType);
         service.findById(id).ifPresentOrElse(
                 entityToDel -> {
                     if (!entityToDel.isReadyToDelete()) {

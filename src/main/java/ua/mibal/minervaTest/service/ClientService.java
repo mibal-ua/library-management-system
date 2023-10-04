@@ -1,6 +1,5 @@
 package ua.mibal.minervaTest.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import ua.mibal.minervaTest.dao.client.ClientRepository;
 import ua.mibal.minervaTest.model.Client;
 
@@ -13,18 +12,12 @@ import java.util.Optional;
  * @link t.me/mibal_ua
  */
 @org.springframework.stereotype.Service
-public class ClientService extends Service<Client> {
+public class ClientService implements Service<Client> {
 
-    private final static ClientService instance = new ClientService();
+    private final ClientRepository clientRepository;
 
-    @Autowired
-    private ClientRepository clientRepository;
-
-    private ClientService() {
-    }
-
-    public static ClientService getInstance() {
-        return instance;
+    public ClientService(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
     }
 
     @Override

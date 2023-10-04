@@ -1,6 +1,5 @@
 package ua.mibal.minervaTest.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import ua.mibal.minervaTest.dao.operation.OperationRepository;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.exception.IllegalRepositoryAccessException;
@@ -14,18 +13,12 @@ import java.util.Optional;
  * @link t.me/mibal_ua
  */
 @org.springframework.stereotype.Service
-public class OperationService extends Service<Operation> {
+public class OperationService implements Service<Operation> {
 
-    private final static Service<Operation> instance = new OperationService();
+    private final OperationRepository operationRepository;
 
-    @Autowired
-    private OperationRepository operationRepository;
-
-    private OperationService() {
-    }
-
-    public static Service<Operation> getInstance() {
-        return instance;
+    public OperationService(OperationRepository operationRepository) {
+        this.operationRepository = operationRepository;
     }
 
     @Override
