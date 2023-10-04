@@ -66,4 +66,9 @@ public class ClientService implements Service<Client> {
     public List<Client> search() {
         return clientRepository.findAllFetchBooks();
     }
+
+    @Override
+    public Optional<Client> findByIdForDeleteChecking(Long id) {
+        return findByIdFetchAll(id);
+    }
 }

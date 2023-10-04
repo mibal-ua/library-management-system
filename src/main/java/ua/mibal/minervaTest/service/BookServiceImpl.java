@@ -86,6 +86,11 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findAll();
     }
 
+    @Override
+    public Optional<Book> findByIdForDeleteChecking(Long id) {
+        return findById(id);
+    }
+
     @Transactional
     @Override
     public void takeBook(Long clientId, Long bookId) {

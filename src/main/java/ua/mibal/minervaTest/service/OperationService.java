@@ -69,6 +69,12 @@ public class OperationService implements Service<Operation> {
         return operationRepository.findAllFetchBookClient();
     }
 
+    @Override
+    public Optional<Operation> findByIdForDeleteChecking(Long id) {
+        throwAccessException();
+        return Optional.empty();
+    }
+
     private void throwAccessException() throws IllegalRepositoryAccessException {
         throw new IllegalRepositoryAccessException("You are trying to change history manually. You have no access for this action");
     }

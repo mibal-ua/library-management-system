@@ -156,7 +156,7 @@ public class ApplicationController {
                 ? windowManager.getCurrentEntityId()
                 : Long.valueOf(args[0]);
         Service<T> service = (Service<T>) serviceFactory.getInstance(dataType);
-        service.findById(id).ifPresentOrElse(
+        service.findByIdForDeleteChecking(id).ifPresentOrElse(
                 entityToDel -> {
                     if (!entityToDel.isReadyToDelete()) {
                         String reason = entityToDel.getNotDeleteReason();

@@ -22,4 +22,6 @@ public interface Service<T> {
     Optional<T> findByIdFetchAll(Long id);
 
     List<T> search();
+
+    Optional<T> findByIdForDeleteChecking(Long id);
 }
