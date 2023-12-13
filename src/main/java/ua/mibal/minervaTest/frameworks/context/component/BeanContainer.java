@@ -1,10 +1,10 @@
 package ua.mibal.minervaTest.frameworks.context.component;
 
-import ua.mibal.minervaTest.frameworks.context.model.exception.ContextDuplicateException;
 import ua.mibal.minervaTest.frameworks.context.model.exception.NoSuchBeanDefinitionException;
 import ua.mibal.minervaTest.frameworks.context.model.exception.SuitableBeanNotFoundException;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,18 +15,18 @@ import static java.util.Arrays.stream;
  * @author Mykhailo Balakhon
  * @link <a href="mailto:9mohapx9@gmail.com">9mohapx9@gmail.com</a>
  */
-public class BeanInitializer {
-    private final Map<Class<?>, Object> beansContainer = new HashMap<>();
+public class BeanContainer {
+    private final Map<Class<?>, List<Object>> context = new HashMap<>();
     private List<Class<?>> classesToInit;
 
-    public Map<Class<?>, Object> initBeans(List<Class<?>> classesToInit) {
+    public Map<Class<?>, List<Object>> initBeans(List<Class<?>> classesToInit) {
         this.classesToInit = classesToInit;
         classesToInit.forEach(this::initBean);
-        return beansContainer;
+        return context;
     }
 
     private void initBean(Class<?> clazz) {
-        if (beansContainer.containsKey(clazz)) {
+        if (context.containsKey(clazz)) {
             return;
         }
         try {
@@ -68,13 +68,15 @@ public class BeanInitializer {
     private void registerBean(Object bean) {
         stream(bean.getClass().getInterfaces())
                 .forEach(inter -> register(inter, bean));
-        beansContainer.put(bean.getClass(), bean);
+        register(bean.getClass(), bean);
     }
 
     private void register(Class<?> clazz, Object bean) {
-        if (beansContainer.containsKey(clazz))
-            throw new ContextDuplicateException(clazz, beansContainer.get(clazz), bean);
-        beansContainer.put(clazz, bean);
+        if (context.containsKey(clazz)) {
+            context.get(clazz).add(bean);
+        } else {
+            context.put(clazz, new ArrayList<>(List.of(bean)));
+        }
     }
 
     private boolean beanWantsDependencies(Class<?> clazz) {
@@ -88,7 +90,20 @@ public class BeanInitializer {
 
     private Object[] getBeans(Class<?>[] beanClasses) {
         return stream(beanClasses)
-                .map(beansContainer::get)
+                .map(this::get)
                 .toArray();
+    }
+
+    public Object get(Class<?> beanClazz) {
+        List<Object> beans = context.get(beanClazz);
+        if (beans.isEmpty())
+            throw new NoSuchBeanDefinitionException(beanClazz);
+        if (beans.size() > 1)
+            throw new SuitableBeanNotFoundException(beans, beanClazz);
+        return beans.get(0);
+    }
+
+    public void clear() {
+        context.clear();
     }
 }

@@ -1,12 +1,11 @@
 package ua.mibal.minervaTest.frameworks.context;
 
 import ua.mibal.minervaTest.frameworks.context.annotations.Component;
-import ua.mibal.minervaTest.frameworks.context.component.BeanInitializer;
+import ua.mibal.minervaTest.frameworks.context.component.BeanContainer;
 import ua.mibal.minervaTest.frameworks.context.component.FileLoader;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Mykhailo Balakhon
@@ -14,11 +13,11 @@ import java.util.Map;
  */
 public class AnnotationApplicationContext implements ApplicationContext {
 
-    private final Map<Class<?>, Object> container;
+    private final BeanContainer beanContainer = new BeanContainer();
 
     public AnnotationApplicationContext(String basePackage) {
         List<Class<?>> classesToInit = classesWithAnnotation(basePackage, Component.class);
-        this.container = new BeanInitializer().initBeans(classesToInit);
+        beanContainer.initBeans(classesToInit);
     }
 
     private List<Class<?>> classesWithAnnotation(String rootPackage, Class<? extends Annotation> annotation) {
@@ -29,11 +28,11 @@ public class AnnotationApplicationContext implements ApplicationContext {
 
     @Override
     public <T> T getBean(Class<T> beanClass) {
-        return beanClass.cast(container.get(beanClass));
+        return beanClass.cast(beanContainer.get(beanClass));
     }
 
     @Override
     public void close() {
-        container.clear();
+        beanContainer.clear();
     }
 }

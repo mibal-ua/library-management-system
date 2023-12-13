@@ -14,4 +14,11 @@ public class SuitableBeanNotFoundException extends RuntimeException {
                 wanted, classes.size(), classes
         ));
     }
+
+    public SuitableBeanNotFoundException(List<Object> beans, Class<?> wanted) {
+        super(String.format(
+                "Excepted 1 instance of class '%s' but found %d instances: %s",
+                wanted, beans.size(), beans.stream().map(Object::getClass)
+        ));
+    }
 }
