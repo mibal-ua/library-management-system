@@ -27,7 +27,7 @@ import ua.mibal.minervaTest.frameworks.context.ApplicationContext;
 public class Launcher {
 
     public static void main(String[] args) {
-        ApplicationContext context = new AnnotationApplicationContext();
+        ApplicationContext context = new AnnotationApplicationContext("ua.mibal.minervaTest");
         final Application application = context.getBean(Application.class);
         application.start();
         context.close();
