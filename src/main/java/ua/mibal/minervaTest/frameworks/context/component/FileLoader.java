@@ -32,7 +32,6 @@ public class FileLoader {
                 classesInDir.add(clazz);
             }
         }
-        System.out.println(classesInDir);
         return classesInDir;
     }
 
