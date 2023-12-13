@@ -41,19 +41,21 @@ public class BeanInitializer {
         }
     }
 
-    private Object[] getBeans(Class<?>[] beanClasses) {
-        return null;
-    }
+    private void registerBean(Object bean) {
 
-    private Class<?>[] getDependenciesForBean(Class<?> clazz) {
-        return null;
     }
 
     private boolean beanWantsDependencies(Class<?> clazz) {
         return false;
     }
 
-    private void registerBean(Object bean) {
+    private Class<?>[] getDependenciesForBean(Class<?> clazz) {
+        return null;
+    }
 
+    private Object[] getBeans(Class<?>[] beanClasses) {
+        return stream(beanClasses)
+                .map(beansContainer::get)
+                .toArray();
     }
 }
