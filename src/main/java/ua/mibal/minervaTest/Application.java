@@ -17,10 +17,10 @@
 package ua.mibal.minervaTest;
 
 
-import org.springframework.stereotype.Component;
 import ua.mibal.minervaTest.component.ApplicationController;
 import ua.mibal.minervaTest.component.ApplicationController.ArrayConsumer;
 import ua.mibal.minervaTest.component.AppropriateBookOperationController;
+import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.gui.WindowManager;
 
 import java.util.Arrays;

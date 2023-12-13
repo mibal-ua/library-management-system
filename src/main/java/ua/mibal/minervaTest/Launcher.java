@@ -17,8 +17,8 @@
 package ua.mibal.minervaTest;
 
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import ua.mibal.minervaTest.config.SpringConfig;
+import ua.mibal.minervaTest.frameworks.context.AnnotationApplicationContext;
+import ua.mibal.minervaTest.frameworks.context.ApplicationContext;
 
 /**
  * @author Mykhailo Balakhon
@@ -27,9 +27,7 @@ import ua.mibal.minervaTest.config.SpringConfig;
 public class Launcher {
 
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(
-                SpringConfig.class
-        );
+        ApplicationContext context = new AnnotationApplicationContext();
         final Application application = context.getBean(Application.class);
         application.start();
         context.close();

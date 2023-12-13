@@ -1,6 +1,6 @@
 package ua.mibal.minervaTest.service;
 
-import org.springframework.stereotype.Component;
+import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Entity;

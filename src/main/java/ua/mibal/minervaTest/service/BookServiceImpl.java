@@ -1,10 +1,9 @@
 package ua.mibal.minervaTest.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ua.mibal.minervaTest.dao.book.BookRepository;
 import ua.mibal.minervaTest.dao.client.ClientRepository;
 import ua.mibal.minervaTest.dao.operation.OperationRepository;
+import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.model.Operation;
@@ -21,7 +20,7 @@ import static ua.mibal.minervaTest.model.OperationType.TAKE;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-@Service
+@Component
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
@@ -91,7 +90,7 @@ public class BookServiceImpl implements BookService {
         return findById(id);
     }
 
-    @Transactional
+//    @Transactional
     @Override
     public void takeBook(Long clientId, Long bookId) {
         Book managedBook = bookRepository.getReference(bookId);
@@ -105,7 +104,7 @@ public class BookServiceImpl implements BookService {
         ));
     }
 
-    @Transactional
+//    @Transactional
     @Override
     public void returnBook(Long clientId, Long bookId) {
         Book managedBook = bookRepository.getReference(bookId);

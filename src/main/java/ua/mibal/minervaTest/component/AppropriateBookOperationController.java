@@ -1,6 +1,6 @@
 package ua.mibal.minervaTest.component;
 
-import org.springframework.stereotype.Component;
+import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.gui.WindowManager;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.service.BookService;

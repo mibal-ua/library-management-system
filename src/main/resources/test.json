@@ -1,6 +1,7 @@
+
 {
   "books" : [ {
-    "id" : "01ab",
+    "id" : 1,
     "title" : "Meditations. Alone with yourself",
     "subtitle" : "Notes of Marcus Aurelius",
     "author" : "Marcus Aurelius",
@@ -8,7 +9,7 @@
     "free" : false,
     "published" : "-170-00-00"
   }, {
-    "id" : "0620",
+    "id" : 2,
     "title" : "Eloquent JavaScript, Third Edition",
     "subtitle" : "A Modern Introduction to Programming",
     "author" : "Marijn Haverbeke",
@@ -16,7 +17,7 @@
     "free" : false,
     "published" : "2018-12-04"
   }, {
-    "id" : "9d28",
+    "id" : 3,
     "title" : "Practical Modern JavaScript",
     "subtitle" : "Dive into ES6 and the Future of JavaScript",
     "author" : "Nicolás Bevacqua",
@@ -24,7 +25,7 @@
     "free" : false,
     "published" : "2017-07-16"
   }, {
-    "id" : "5214",
+    "id" : 4,
     "title" : "Understanding ECMAScript 6",
     "subtitle" : "The Definitive Guide for JavaScript Developers",
     "author" : "Nicholas C. Zakas",
@@ -32,7 +33,7 @@
     "free" : true,
     "published" : "2016-09-03"
   }, {
-    "id" : "b969",
+    "id" : 5,
     "title" : "Speaking JavaScript",
     "subtitle" : "An In-Depth Guide for Programmers",
     "author" : "Axel Rauschmayer",
@@ -40,7 +41,7 @@
     "free" : true,
     "published" : "2014-04-08"
   }, {
-    "id" : "152c",
+    "id" : 6,
     "title" : "Learning JavaScript Design Patterns",
     "subtitle" : "A JavaScript and jQuery Developer's Guide",
     "author" : "Addy Osmani",
@@ -48,7 +49,7 @@
     "free" : true,
     "published" : "2012-08-30"
   }, {
-    "id" : "f20a",
+    "id" : 7,
     "title" : "You Don't Know JS Yet",
     "subtitle" : "Get Started",
     "author" : "Kyle Simpson",
@@ -56,7 +57,7 @@
     "free" : true,
     "published" : "2020-01-28"
   }, {
-    "id" : "68f6",
+    "id" : 8,
     "title" : "Pro Git",
     "subtitle" : "Everything you neeed to know about Git",
     "author" : "Scott Chacon and Ben Straub",
@@ -64,60 +65,40 @@
     "free" : true,
     "published" : "2014-11-18"
   }, {
-    "id" : "71dc",
+    "id" : 9,
     "title" : "Rethinking Productivity in Software Engineering",
     "subtitle" : "",
     "author" : "Caitlin Sadowski, Thomas Zimmermann",
     "publisher" : "Apress",
     "free" : true,
     "published" : "2019-05-11"
-  }, {
-    "id" : "9453",
-    "title" : "Nazdar",
-    "subtitle" : "Nazar",
-    "author" : "Marek",
-    "publisher" : "Marek",
-    "free" : false,
-    "published" : "31-07-2023"
   } ],
   "clients" : [ {
-    "id" : "00aa",
+    "id" : 1,
     "name" : "Marcus Aurelius",
-    "books" : [ "01ab" ]
+    "books" : [ 1 ]
   }, {
-    "id" : "54ob",
+    "id" : 2,
     "name" : "Mykhailo Balakhon",
-    "books" : [ "9d28", "0620", "9453" ]
+    "books" : [ 3, 2 ]
   } ],
   "operations" : [ {
-    "id" : "0000",
-    "date" : "-167-04-03",
-    "clientId" : "00aa",
+    "id" : 1,
+    "date" : "0000-04-03",
+    "clientId" : 1,
     "operation" : "TAKE",
-    "books" : [ "01ab" ]
+    "books" : [ 1 ]
   }, {
-    "id" : "152c",
+    "id" : 2,
     "date" : "2023-05-11 03:48",
-    "clientId" : "54ob",
+    "clientId" : 2,
     "operation" : "TAKE",
-    "books" : [ "9d28", "68f6" ]
+    "books" : [ 3 ]
   }, {
-    "id" : "4f25",
-    "date" : "2023-05-11 03:49",
-    "clientId" : "54ob",
-    "operation" : "RETURN",
-    "books" : [ "68f6" ]
-  }, {
-    "id" : "ak47",
+    "id" : 4,
     "date" : "2023-05-12 09:40",
-    "clientId" : "54ob",
+    "clientId" : 2,
     "operation" : "TAKE",
-    "books" : [ "0620" ]
-  }, {
-    "id" : "bbff",
-    "date" : "2023-07-31 05:42",
-    "clientId" : "54ob",
-    "operation" : "TAKE",
-    "books" : [ "9453" ]
+    "books" : [ 2 ]
   } ]
 }

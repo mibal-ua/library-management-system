@@ -1,6 +1,7 @@
 package ua.mibal.minervaTest.service;
 
 import ua.mibal.minervaTest.dao.client.ClientRepository;
+import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.model.Client;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.Optional;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-@org.springframework.stereotype.Service
+@Component
 public class ClientService implements Service<Client> {
 
     private final ClientRepository clientRepository;

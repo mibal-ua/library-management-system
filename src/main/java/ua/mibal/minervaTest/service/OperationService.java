@@ -1,6 +1,7 @@
 package ua.mibal.minervaTest.service;
 
 import ua.mibal.minervaTest.dao.operation.OperationRepository;
+import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.exception.IllegalRepositoryAccessException;
 
@@ -12,7 +13,7 @@ import java.util.Optional;
  * @author Mykhailo Balakhon
  * @link t.me/mibal_ua
  */
-@org.springframework.stereotype.Service
+@Component
 public class OperationService implements Service<Operation> {
 
     private final OperationRepository operationRepository;

@@ -16,7 +16,7 @@
 
 package ua.mibal.minervaTest.gui.console;
 
-import org.springframework.stereotype.Component;
+import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.gui.DataPrinter;
 import ua.mibal.minervaTest.gui.WindowManager;
 import ua.mibal.minervaTest.gui.drawable.TabsStack;
