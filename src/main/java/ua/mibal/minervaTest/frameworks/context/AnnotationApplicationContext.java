@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static ua.mibal.minervaTest.utils.ArrayUtils.contains;
+import static ua.mibal.minervaTest.frameworks.context.utils.ArrayUtils.contains;
 
 /**
  * @author Mykhailo Balakhon

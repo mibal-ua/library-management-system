@@ -1,4 +1,4 @@
-package ua.mibal.minervaTest.utils;
+package ua.mibal.minervaTest.frameworks.context.utils;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
