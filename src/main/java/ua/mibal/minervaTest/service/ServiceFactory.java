@@ -18,9 +18,9 @@ public class ServiceFactory {
     private final Service<Client> clientService;
     private final Service<Operation> operationService;
 
-    public ServiceFactory(Service<Book> bookService,
-                          Service<Client> clientService,
-                          Service<Operation> operationService) {
+    public ServiceFactory(BookService bookService,
+                          ClientService clientService,
+                          OperationService operationService) {
         this.bookService = bookService;
         this.clientService = clientService;
         this.operationService = operationService;

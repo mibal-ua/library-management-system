@@ -4,6 +4,7 @@ import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.gui.WindowManager;
 import ua.mibal.minervaTest.model.Client;
 import ua.mibal.minervaTest.service.BookService;
+import ua.mibal.minervaTest.service.ClientService;
 import ua.mibal.minervaTest.service.Service;
 
 import static ua.mibal.minervaTest.utils.StringUtils.isNumber;
@@ -21,7 +22,7 @@ public class AppropriateBookOperationController {
 
     public AppropriateBookOperationController(WindowManager windowManager,
                                               BookService bookService,
-                                              Service<Client> clientService) {
+                                              ClientService clientService) {
         this.windowManager = windowManager;
         this.bookService = bookService;
         this.clientService = clientService;
