@@ -12,23 +12,16 @@ import java.util.Optional;
  * @link t.me/mibal_ua
  */
 @Component
-public class BookRepository implements CustomBookRepository {
+public class BookRepository {
 
     private EntityManager entityManager;
 
-//
-//    @Query("select b from Book b left join fetch b.client where b.id = :id")
     public Optional<Book> findByIdFetchClientLong(Long id) {
         return Optional.empty();
     }
-//
-//    @Query("select b from Book b left join fetch b.client")
+
     public List<Book> findAllFetchClient() {
         return List.of();
-    }
-
-    public Book getReference(Long id) {
-        return entityManager.getReference(Book.class, id);
     }
 
     public Optional<Book> findById(Long id) {

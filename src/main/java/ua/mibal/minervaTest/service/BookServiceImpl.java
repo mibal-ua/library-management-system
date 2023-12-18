@@ -90,31 +90,33 @@ public class BookServiceImpl implements BookService {
         return findById(id);
     }
 
-//    @Transactional
     @Override
     public void takeBook(Long clientId, Long bookId) {
-        Book managedBook = bookRepository.getReference(bookId);
-        Client managedClient = clientRepository.getReference(clientId);
-        managedBook.setClient(managedClient);
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow();
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow();
+        book.setClient(client);
         operationRepository.save(new Operation(
                 LocalDateTime.now(),
-                managedClient,
+                client,
                 TAKE,
-                managedBook
+                book
         ));
     }
 
-//    @Transactional
     @Override
     public void returnBook(Long clientId, Long bookId) {
-        Book managedBook = bookRepository.getReference(bookId);
-        Client managedClient = clientRepository.getReference(clientId);
-        managedBook.setClient(null);
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow();
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow();
+        book.setClient(null);
         operationRepository.save(new Operation(
                 LocalDateTime.now(),
-                managedClient,
+                client,
                 RETURN,
-                managedBook
+                book
         ));
     }
 }

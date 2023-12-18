@@ -13,14 +13,10 @@ import java.util.Optional;
 @Component
 public class OperationRepository {
 
-//    @Transactional(readOnly = true)
-//    @Query("select o from Operation o left join fetch o.book left join fetch o.client")
     public List<Operation> findAllFetchBookClient() {
         return List.of();
     }
 
-//    @Transactional(readOnly = true)
-//    @Query("select o from Operation o left join fetch o.book left join fetch o.client where o.id = :id")
     public Optional<Operation> findByIdFetchBookClient(Long id) {
         return Optional.empty();
     }

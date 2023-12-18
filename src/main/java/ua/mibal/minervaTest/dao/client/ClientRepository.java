@@ -11,7 +11,7 @@ import java.util.Optional;
  * @link t.me/mibal_ua
  */
 @Component
-public class ClientRepository implements CustomClientRepository {
+public class ClientRepository {
 
     //    @Transactional(readOnly = true)
 //    @Query("select c from Client c left join fetch c.books where c.id = :id")
@@ -23,11 +23,6 @@ public class ClientRepository implements CustomClientRepository {
 //    @Query("select c from Client c left join fetch c.books")
     public List<Client> findAllFetchBooks() {
         return List.of();
-    }
-
-    @Override
-    public Client getReference(Long id) {
-        return null;
     }
 
     public Optional<Client> findById(Long id) {
