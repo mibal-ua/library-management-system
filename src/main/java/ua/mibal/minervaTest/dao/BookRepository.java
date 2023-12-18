@@ -9,4 +9,8 @@ import ua.mibal.minervaTest.model.Book;
  */
 @Component
 public class BookRepository extends Repository<Book> {
+
+    public BookRepository() {
+        super(Book.class);
+    }
 }

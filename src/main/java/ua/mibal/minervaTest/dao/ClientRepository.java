@@ -9,4 +9,8 @@ import ua.mibal.minervaTest.model.Client;
  */
 @Component
 public class ClientRepository extends Repository<Client> {
+
+    public ClientRepository() {
+        super(Client.class);
+    }
 }

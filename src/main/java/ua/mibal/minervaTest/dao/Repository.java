@@ -11,6 +11,12 @@ import java.util.Optional;
  */
 public abstract class Repository<T extends Entity> {
 
+    private final Class<T> clazz;
+
+    protected Repository(Class<T> entityClazz) {
+        this.clazz = entityClazz;
+    }
+
     public Optional<T> findById(Long id) {
         return Optional.empty();
     }
@@ -18,7 +24,6 @@ public abstract class Repository<T extends Entity> {
     public List<T> findAll() {
         return List.of();
     }
-
 
     public void save(T entity) {
 

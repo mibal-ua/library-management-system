@@ -9,4 +9,8 @@ import ua.mibal.minervaTest.model.Operation;
  */
 @Component
 public class OperationRepository extends Repository<Operation> {
+
+    protected OperationRepository() {
+        super(Operation.class);
+    }
 }
