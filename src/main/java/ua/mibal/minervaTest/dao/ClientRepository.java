@@ -1,6 +1,7 @@
 package ua.mibal.minervaTest.dao;
 
 import ua.mibal.minervaTest.frameworks.context.annotations.Component;
+import ua.mibal.minervaTest.frameworks.orm.Repository;
 import ua.mibal.minervaTest.model.Client;
 
 import javax.sql.DataSource;

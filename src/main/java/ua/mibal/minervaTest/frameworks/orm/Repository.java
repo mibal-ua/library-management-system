@@ -1,4 +1,4 @@
-package ua.mibal.minervaTest.dao;
+package ua.mibal.minervaTest.frameworks.orm;
 
 import ua.mibal.minervaTest.model.Entity;
 
