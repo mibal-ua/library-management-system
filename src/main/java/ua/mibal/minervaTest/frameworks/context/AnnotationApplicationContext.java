@@ -1,6 +1,7 @@
 package ua.mibal.minervaTest.frameworks.context;
 
 import ua.mibal.minervaTest.frameworks.context.annotations.Component;
+import ua.mibal.minervaTest.frameworks.context.annotations.Configuration;
 import ua.mibal.minervaTest.frameworks.context.component.BeanContainer;
 import ua.mibal.minervaTest.frameworks.context.component.FileLoader;
 
@@ -16,8 +17,11 @@ public class AnnotationApplicationContext implements ApplicationContext {
     private final BeanContainer beanContainer = new BeanContainer();
 
     public AnnotationApplicationContext(String basePackage) {
-        List<Class<?>> classesToInit = classesWithAnnotation(basePackage, Component.class);
-        beanContainer.initBeans(classesToInit);
+        List<Class<?>> beans = classesWithAnnotation(basePackage, Component.class);
+        beanContainer.initBeans(beans);
+
+        List<Class<?>> configurations = classesWithAnnotation(basePackage, Configuration.class);
+        beanContainer.initBeansViaConfigurations(configurations);
     }
 
     private List<Class<?>> classesWithAnnotation(String rootPackage, Class<? extends Annotation> annotation) {

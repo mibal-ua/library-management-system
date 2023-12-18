@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
 
@@ -105,5 +106,17 @@ public class BeanContainer {
 
     public void clear() {
         context.clear();
+    }
+
+    public void initBeansViaConfigurations(List<Class<?>> configurations) {
+        configurations.stream()
+                .flatMap(this::getBeansFromConfig)
+                .forEach(this::registerBean);
+
+    }
+
+    private Stream<Object> getBeansFromConfig(Class<?> aClass) {
+        // TODO
+        return null;
     }
 }
