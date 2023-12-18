@@ -1,5 +1,6 @@
 package ua.mibal.minervaTest.frameworks.context.component;
 
+import ua.mibal.minervaTest.frameworks.context.model.exception.ContextException;
 import ua.mibal.minervaTest.frameworks.context.model.exception.NoSuchBeanDefinitionException;
 import ua.mibal.minervaTest.frameworks.context.model.exception.SuitableBeanNotFoundException;
 
@@ -115,8 +116,19 @@ public class BeanContainer {
 
     }
 
-    private Stream<Object> getBeansFromConfig(Class<?> aClass) {
-        // TODO
-        return null;
+    private <T> Stream<Object> getBeansFromConfig(Class<T> configClass) {
+        try {
+            T config = configClass.getConstructor().newInstance();
+            return stream(configClass.getDeclaredMethods())
+                    .map(method -> {
+                        try {
+                            return method.invoke(config);
+                        } catch (ReflectiveOperationException e) {
+                            throw new ContextException(e);
+                        }
+                    });
+        } catch (ReflectiveOperationException e) {
+            throw new ContextException(e);
+        }
     }
 }
