@@ -17,11 +17,11 @@ public class AnnotationApplicationContext implements ApplicationContext {
     private final BeanContainer beanContainer = new BeanContainer();
 
     public AnnotationApplicationContext(String basePackage) {
-        List<Class<?>> beans = classesWithAnnotation(basePackage, Component.class);
-        beanContainer.initBeans(beans);
-
         List<Class<?>> configurations = classesWithAnnotation(basePackage, Configuration.class);
         beanContainer.initBeansViaConfigurations(configurations);
+
+        List<Class<?>> beans = classesWithAnnotation(basePackage, Component.class);
+        beanContainer.initBeans(beans);
     }
 
     private List<Class<?>> classesWithAnnotation(String rootPackage, Class<? extends Annotation> annotation) {
