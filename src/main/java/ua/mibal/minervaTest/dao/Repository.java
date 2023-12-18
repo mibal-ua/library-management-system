@@ -2,6 +2,7 @@ package ua.mibal.minervaTest.dao;
 
 import ua.mibal.minervaTest.model.Entity;
 
+import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +14,7 @@ public abstract class Repository<T extends Entity> {
 
     private final Class<T> clazz;
 
-    protected Repository(Class<T> entityClazz) {
+    protected Repository(Class<T> entityClazz, DataSource dataSource) {
         this.clazz = entityClazz;
     }
 
