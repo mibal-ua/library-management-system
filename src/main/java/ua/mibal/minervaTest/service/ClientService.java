@@ -23,7 +23,7 @@ public class ClientService implements Service<Client> {
 
     @Override
     public List<Client> searchBy(String[] args) {
-        List<Client> books = clientRepository.findAllFetchBooks();
+        List<Client> books = clientRepository.findAll();
         List<Client> result = new ArrayList<>();
         for (String arg : args) {
             List<Client> clientsToAdd = books.stream()
@@ -60,12 +60,12 @@ public class ClientService implements Service<Client> {
 
     @Override
     public Optional<Client> findByIdLoadAll(Long id) {
-        return clientRepository.findByIdFetchBooks(id);
+        return clientRepository.findById(id);
     }
 
     @Override
     public List<Client> search() {
-        return clientRepository.findAllFetchBooks();
+        return clientRepository.findAll();
     }
 
     @Override

@@ -37,7 +37,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> searchBy(String[] args) {
-        List<Book> books = bookRepository.findAllFetchClient();
+        List<Book> books = bookRepository.findAll();
         List<Book> result = new ArrayList<>();
         for (String arg : args) {
             List<Book> booksToAdd = books.stream()
@@ -77,7 +77,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Optional<Book> findByIdLoadAll(Long id) {
-        return bookRepository.findByIdFetchClient(id);
+        return bookRepository.findById(id);
     }
 
     @Override

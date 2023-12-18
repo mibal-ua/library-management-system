@@ -24,7 +24,7 @@ public class OperationService implements Service<Operation> {
 
     @Override
     public List<Operation> searchBy(String[] args) {
-        List<Operation> operations = operationRepository.findAllFetchBookClient();
+        List<Operation> operations = operationRepository.findAll();
         List<Operation> result = new ArrayList<>();
         for (String arg : args) {
             List<Operation> operationsToAdd = operations.stream()
@@ -62,12 +62,12 @@ public class OperationService implements Service<Operation> {
 
     @Override
     public Optional<Operation> findByIdLoadAll(Long id) {
-        return operationRepository.findByIdFetchBookClient(id);
+        return operationRepository.findById(id);
     }
 
     @Override
     public List<Operation> search() {
-        return operationRepository.findAllFetchBookClient();
+        return operationRepository.findAll();
     }
 
     @Override
