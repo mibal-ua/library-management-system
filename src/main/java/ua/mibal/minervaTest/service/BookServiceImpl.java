@@ -1,8 +1,8 @@
 package ua.mibal.minervaTest.service;
 
-import ua.mibal.minervaTest.dao.book.BookRepository;
-import ua.mibal.minervaTest.dao.client.ClientRepository;
-import ua.mibal.minervaTest.dao.operation.OperationRepository;
+import ua.mibal.minervaTest.dao.BookRepository;
+import ua.mibal.minervaTest.dao.ClientRepository;
+import ua.mibal.minervaTest.dao.OperationRepository;
 import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.model.Book;
 import ua.mibal.minervaTest.model.Client;

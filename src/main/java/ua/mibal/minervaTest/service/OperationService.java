@@ -1,6 +1,6 @@
 package ua.mibal.minervaTest.service;
 
-import ua.mibal.minervaTest.dao.operation.OperationRepository;
+import ua.mibal.minervaTest.dao.OperationRepository;
 import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.model.Operation;
 import ua.mibal.minervaTest.model.exception.IllegalRepositoryAccessException;
