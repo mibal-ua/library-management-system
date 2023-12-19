@@ -44,10 +44,13 @@ public class EntityManager {
         }, sql, false);
     }
 
-    private <T extends Entity> void insertFields(PreparedStatement preparedStatement,
-                                                 T entity,
-                                                 EntityMetadata metadata) {
-        // TODO
+    public <T extends Entity> boolean delete(T entity) {
+        EntityMetadata metadata = metadataMap.get(entity.getClass());
+        String sql = sqlRequestGenerator.delete(metadata);
+        return perform(statement -> {
+            insertField(statement, entity.getId());
+            return statement.executeUpdate() == 1;
+        }, sql, false);
     }
 
 
@@ -59,8 +62,14 @@ public class EntityManager {
         return null;
     }
 
-    public <T extends Entity> boolean delete(T entity) {
-        return false;
+    private <T extends Entity> void insertFields(PreparedStatement preparedStatement,
+                                                 T entity,
+                                                 EntityMetadata metadata) {
+        // TODO
+    }
+
+    private void insertField(PreparedStatement statement, Long id) {
+        // TODO
     }
 
     private <R> R perform(ExceptionAllowsFunction<PreparedStatement, R> statementFunction,

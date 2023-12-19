@@ -30,8 +30,12 @@ public class SqlRequestGenerator {
         return null;
     }
 
-    public String delete(Object entity) {
-        return null;
+    public String delete(EntityMetadata entityMetadata) {
+        return "delete from %s where %s.%s = ?".formatted(
+                entityMetadata.getTable(),
+                entityMetadata.getTable(),
+                entityMetadata.getIdColumn()
+        );
     }
 
     public String findById(Long id) {

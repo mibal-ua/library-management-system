@@ -74,4 +74,12 @@ public class EntityMetadata {
     public String getTable() {
         return table;
     }
+
+    public String getIdColumn() {
+        return simpleFields.stream()
+                .filter(f -> f.isAnnotationPresent(Id.class))
+                .map(Field::getName)
+                .findFirst()
+                .orElseThrow();
+    }
 }
