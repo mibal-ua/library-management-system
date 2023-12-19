@@ -16,4 +16,12 @@ public class Relation {
         this.field = field;
         this.relationType = relationType;
     }
+
+    public Field getField() {
+        return field;
+    }
+
+    public Annotation getRelationType() {
+        return relationType;
+    }
 }

@@ -9,7 +9,6 @@ import ua.mibal.minervaTest.model.Entity;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -25,16 +24,32 @@ import static java.util.function.Function.identity;
 public class EntityManager {
 
     private final DataSource dataSource;
+    private final SqlRequestGenerator sqlRequestGenerator;
     private Map<Class<?>, EntityMetadata> metadataMap;
 
-    public EntityManager(DataSource dataSource, String entityPackage) {
+    public EntityManager(DataSource dataSource,
+                         String entityPackage,
+                         SqlRequestGenerator sqlRequestGenerator) {
         this.dataSource = dataSource;
+        this.sqlRequestGenerator = sqlRequestGenerator;
         initEntitiesMetadata(entityPackage);
     }
 
     public <T extends Entity> boolean save(T entity) {
-        return false;
+        EntityMetadata metadata = metadataMap.get(entity.getClass());
+        String sql = sqlRequestGenerator.save(metadata);
+        return perform(statement -> {
+            insertFields(statement, entity, metadata);
+            return statement.executeUpdate() == 1;
+        }, sql, false);
     }
+
+    private <T extends Entity> void insertFields(PreparedStatement preparedStatement,
+                                                 T entity,
+                                                 EntityMetadata metadata) {
+        // TODO
+    }
+
 
     public <T extends Entity> List<T> findAll(Class<T> entityClazz) {
         return null;
@@ -48,36 +63,20 @@ public class EntityManager {
         return false;
     }
 
-    private ResultSet perform(String sql, boolean readOnly) {
+    private <R> R perform(ExceptionAllowsFunction<PreparedStatement, R> statementFunction,
+                          String sql,
+                          boolean readOnly) {
         try (Connection connection = dataSource.getConnection()) {
             connection.beginRequest();
             connection.setReadOnly(readOnly);
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            R result = statementFunction.apply(preparedStatement);
 
             connection.commit();
-            return resultSet;
+            return result;
         } catch (SQLException e) {
             throw new DaoException(e);
-        }
-    }
-
-    private boolean insert(String sql) {
-        try {
-            return perform(sql, false)
-                    .rowInserted();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private boolean deleteRow(String sql) {
-        try {
-            return perform(sql, false)
-                    .rowDeleted();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -91,5 +90,10 @@ public class EntityManager {
                         identity(),
                         metadataBuilder::build
                 ));
+    }
+
+    @FunctionalInterface
+    public interface ExceptionAllowsFunction<T, R> {
+        R apply(T value) throws SQLException;
     }
 }
