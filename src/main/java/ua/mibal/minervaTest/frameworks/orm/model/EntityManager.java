@@ -1,6 +1,8 @@
 package ua.mibal.minervaTest.frameworks.orm.model;
 
 import ua.mibal.minervaTest.frameworks.context.annotations.Component;
+import ua.mibal.minervaTest.frameworks.context.component.FileLoader;
+import ua.mibal.minervaTest.frameworks.orm.component.MetadataBuilder;
 import ua.mibal.minervaTest.frameworks.orm.model.exception.DaoException;
 import ua.mibal.minervaTest.model.Entity;
 
@@ -9,9 +11,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.function.Function.identity;
 
 /**
  * @author Mykhailo Balakhon
@@ -20,12 +24,12 @@ import java.util.Map;
 @Component
 public class EntityManager {
 
-    private final Map<Class<?>, EntityMetadata> metadataMap = new HashMap<>();
     private final DataSource dataSource;
+    private Map<Class<?>, EntityMetadata> metadataMap;
 
-    public EntityManager(DataSource dataSource) {
+    public EntityManager(DataSource dataSource, String entityPackage) {
         this.dataSource = dataSource;
-        initEntitiesMetadata();
+        initEntitiesMetadata(entityPackage);
     }
 
     public <T extends Entity> boolean save(T entity) {
@@ -77,7 +81,15 @@ public class EntityManager {
         }
     }
 
-    private void initEntitiesMetadata() {
-
+    private void initEntitiesMetadata(String entityPackage) {
+        MetadataBuilder metadataBuilder = new MetadataBuilder();
+        metadataMap = new FileLoader()
+                .classesInDir(entityPackage)
+                .stream()
+                .filter(clazz -> clazz.isAnnotationPresent(jakarta.persistence.Entity.class))
+                .collect(Collectors.toMap(
+                        identity(),
+                        metadataBuilder::build
+                ));
     }
 }

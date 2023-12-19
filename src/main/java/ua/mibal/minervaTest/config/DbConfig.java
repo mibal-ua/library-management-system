@@ -19,4 +19,8 @@ public class DbConfig {
         dataSource.setPassword("password");
         return dataSource;
     }
+
+    public String entityPackage() {
+        return "ua.mibal.minervaTest.model";
+    }
 }
