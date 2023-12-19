@@ -1,8 +1,8 @@
-package ua.mibal.minervaTest.frameworks.orm.model;
+package ua.mibal.minervaTest.frameworks.orm.component;
 
 import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.frameworks.context.component.FileLoader;
-import ua.mibal.minervaTest.frameworks.orm.component.MetadataBuilder;
+import ua.mibal.minervaTest.frameworks.orm.model.EntityMetadata;
 import ua.mibal.minervaTest.frameworks.orm.model.exception.DaoException;
 import ua.mibal.minervaTest.model.Entity;
 

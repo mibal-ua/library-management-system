@@ -1,6 +1,6 @@
 package ua.mibal.minervaTest.frameworks.orm;
 
-import ua.mibal.minervaTest.frameworks.orm.model.EntityManager;
+import ua.mibal.minervaTest.frameworks.orm.component.EntityManager;
 import ua.mibal.minervaTest.model.Entity;
 
 import java.util.List;
