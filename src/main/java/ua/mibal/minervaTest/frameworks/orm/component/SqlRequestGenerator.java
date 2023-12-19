@@ -13,17 +13,13 @@ import java.util.Collections;
 public class SqlRequestGenerator {
 
     public String save(EntityMetadata entityMetadata) {
-        StringBuilder requestBuilder = new StringBuilder("insert into client ");
-
         String fields = String.join(",", entityMetadata.getValueColumns());
-        requestBuilder.append("(")
-                .append(fields)
-                .append(")");
-        requestBuilder.append("value (")
-                .append(String.join(",", Collections.nCopies(fields.length(), "?")))
-                .append(")");
-
-        return requestBuilder.toString();
+        String values = String.join(",", Collections.nCopies(fields.length(), "?"));
+        return "insert into %s(%s) value(%s)".formatted(
+                entityMetadata.getTable(),
+                fields,
+                values
+        );
     }
 
     public String findAll() {
