@@ -2,9 +2,8 @@ package ua.mibal.minervaTest.dao;
 
 import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.frameworks.orm.Repository;
+import ua.mibal.minervaTest.frameworks.orm.model.EntityManager;
 import ua.mibal.minervaTest.model.Client;
-
-import javax.sql.DataSource;
 
 /**
  * @author Mykhailo Balakhon
@@ -13,7 +12,7 @@ import javax.sql.DataSource;
 @Component
 public class ClientRepository extends Repository<Client> {
 
-    public ClientRepository(DataSource dataSource) {
-        super(Client.class, dataSource);
+    public ClientRepository(EntityManager entityManager) {
+        super(Client.class, entityManager);
     }
 }

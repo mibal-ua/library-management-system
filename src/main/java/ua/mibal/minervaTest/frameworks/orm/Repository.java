@@ -1,16 +1,8 @@
 package ua.mibal.minervaTest.frameworks.orm;
 
-import ua.mibal.minervaTest.frameworks.orm.component.ResultInterpreter;
-import ua.mibal.minervaTest.frameworks.orm.component.SqlRequestGenerator;
-import ua.mibal.minervaTest.frameworks.orm.model.EntityMetadata;
-import ua.mibal.minervaTest.frameworks.orm.model.exception.DaoException;
+import ua.mibal.minervaTest.frameworks.orm.model.EntityManager;
 import ua.mibal.minervaTest.model.Entity;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,69 +12,29 @@ import java.util.Optional;
  */
 public abstract class Repository<T extends Entity> {
 
-    private final DataSource dataSource;
-    private final SqlRequestGenerator sqlRequestGenerator;
-    private final ResultInterpreter<T> resultInterpreter;
+    private final Class<T> entityClazz;
+    private final EntityManager entityManager;
 
-    protected Repository(Class<T> entityClazz, DataSource dataSource) {
-        EntityMetadata metadata = EntityMetadata.of(entityClazz);
-        this.dataSource = dataSource;
-        this.sqlRequestGenerator = new SqlRequestGenerator(metadata);
-        this.resultInterpreter = new ResultInterpreter<>(metadata, entityClazz);
+    protected Repository(Class<T> entityClazz, EntityManager entityManager) {
+        this.entityClazz = entityClazz;
+        this.entityManager = entityManager;
     }
 
     public Optional<T> findById(Long id) {
-        String sql = sqlRequestGenerator.findById(id);
-        ResultSet resultSet = get(sql, true);
-        return resultInterpreter.interpret(resultSet);
+        return Optional.ofNullable(
+                entityManager.findById(id, entityClazz)
+        );
     }
 
     public List<T> findAll() {
-        String sql = sqlRequestGenerator.findAll();
-        ResultSet resultSet = get(sql, true);
-        return resultInterpreter.interpretList(resultSet);
+        return entityManager.findAll(entityClazz);
     }
 
     public boolean save(T entity) {
-        String sql = sqlRequestGenerator.save(entity);
-        return insert(sql);
+        return entityManager.save(entity);
     }
 
     public boolean delete(T entity) {
-        String sql = sqlRequestGenerator.delete(entity);
-        return deleteRow(sql);
-    }
-
-    private ResultSet get(String sql, boolean readOnly) {
-        try (Connection connection = dataSource.getConnection()) {
-            connection.beginRequest();
-            connection.setReadOnly(readOnly);
-
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            connection.commit();
-            return resultSet;
-        } catch (SQLException e) {
-            throw new DaoException(e);
-        }
-    }
-
-    private boolean insert(String sql) {
-        try {
-            return get(sql, false)
-                    .rowInserted();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private boolean deleteRow(String sql) {
-        try {
-            return get(sql, false)
-                    .rowDeleted();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return entityManager.delete(entity);
     }
 }

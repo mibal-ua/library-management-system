@@ -2,9 +2,8 @@ package ua.mibal.minervaTest.dao;
 
 import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.frameworks.orm.Repository;
+import ua.mibal.minervaTest.frameworks.orm.model.EntityManager;
 import ua.mibal.minervaTest.model.Operation;
-
-import javax.sql.DataSource;
 
 /**
  * @author Mykhailo Balakhon
@@ -13,7 +12,7 @@ import javax.sql.DataSource;
 @Component
 public class OperationRepository extends Repository<Operation> {
 
-    public OperationRepository(DataSource dataSource) {
-        super(Operation.class, dataSource);
+    public OperationRepository(EntityManager entityManager) {
+        super(Operation.class, entityManager);
     }
 }
