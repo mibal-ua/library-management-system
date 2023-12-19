@@ -1,6 +1,6 @@
 package ua.mibal.minervaTest.frameworks.orm.component;
 
-import ua.mibal.minervaTest.model.Entity;
+import ua.mibal.minervaTest.frameworks.orm.model.EntityMetadata;
 
 import java.sql.ResultSet;
 import java.util.List;
@@ -10,18 +10,16 @@ import java.util.Optional;
  * @author Mykhailo Balakhon
  * @link <a href="mailto:9mohapx9@gmail.com">9mohapx9@gmail.com</a>
  */
-public class ResultInterpreter<T extends Entity> {
+public class ResultInterpreter<T> {
 
-    // TODO
+    private final EntityMetadata metadata;
 
-    private final Class<T> clazz;
-
-    public ResultInterpreter(Class<T> clazz) {
-        this.clazz = clazz;
+    public ResultInterpreter(EntityMetadata metadata, Class<T> entityClass) {
+        this.metadata = metadata;
     }
 
     public Optional<T> interpret(ResultSet resultSet) {
-        return null;
+        return Optional.empty();
     }
 
     public List<T> interpretList(ResultSet resultSet) {

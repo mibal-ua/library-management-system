@@ -2,6 +2,7 @@ package ua.mibal.minervaTest.frameworks.orm;
 
 import ua.mibal.minervaTest.frameworks.orm.component.ResultInterpreter;
 import ua.mibal.minervaTest.frameworks.orm.component.SqlRequestGenerator;
+import ua.mibal.minervaTest.frameworks.orm.model.EntityMetadata;
 import ua.mibal.minervaTest.frameworks.orm.model.exception.DaoException;
 import ua.mibal.minervaTest.model.Entity;
 
@@ -20,13 +21,14 @@ import java.util.Optional;
 public abstract class Repository<T extends Entity> {
 
     private final DataSource dataSource;
-    private final SqlRequestGenerator<T> sqlRequestGenerator;
+    private final SqlRequestGenerator sqlRequestGenerator;
     private final ResultInterpreter<T> resultInterpreter;
 
     protected Repository(Class<T> entityClazz, DataSource dataSource) {
+        EntityMetadata metadata = EntityMetadata.of(entityClazz);
         this.dataSource = dataSource;
-        this.sqlRequestGenerator = new SqlRequestGenerator<>(entityClazz);
-        this.resultInterpreter = new ResultInterpreter<>(entityClazz);
+        this.sqlRequestGenerator = new SqlRequestGenerator(metadata);
+        this.resultInterpreter = new ResultInterpreter<>(metadata, entityClazz);
     }
 
     public Optional<T> findById(Long id) {

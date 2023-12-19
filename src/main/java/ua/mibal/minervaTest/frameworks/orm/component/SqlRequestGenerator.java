@@ -1,30 +1,28 @@
 package ua.mibal.minervaTest.frameworks.orm.component;
 
-import ua.mibal.minervaTest.model.Entity;
+import ua.mibal.minervaTest.frameworks.orm.model.EntityMetadata;
 
 /**
  * @author Mykhailo Balakhon
  * @link <a href="mailto:9mohapx9@gmail.com">9mohapx9@gmail.com</a>
  */
-public class SqlRequestGenerator<T extends Entity> {
+public class SqlRequestGenerator {
 
-    // TODO
+    private final EntityMetadata metadata;
 
-    private final Class<T> clazz;
-
-    public SqlRequestGenerator(Class<T> clazz) {
-        this.clazz = clazz;
+    public SqlRequestGenerator(EntityMetadata metadata) {
+        this.metadata = metadata;
     }
 
     public String findAll() {
         return null;
     }
 
-    public String save(T entity) {
+    public String save(Object entity) {
         return null;
     }
 
-    public String delete(T entity) {
+    public String delete(Object entity) {
         return null;
     }
 
