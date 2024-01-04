@@ -3,15 +3,18 @@ package ua.mibal.minervaTest.frameworks.orm.component;
 import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.frameworks.context.component.FileLoader;
 import ua.mibal.minervaTest.frameworks.orm.model.EntityMetadata;
+import ua.mibal.minervaTest.frameworks.orm.model.SqlRequest;
 import ua.mibal.minervaTest.frameworks.orm.model.exception.DaoException;
 import ua.mibal.minervaTest.model.Entity;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.function.Function.identity;
@@ -25,62 +28,73 @@ public class EntityManager {
 
     private final DataSource dataSource;
     private final SqlRequestGenerator sqlRequestGenerator;
+    private final ResultInterpreter resultInterpreter;
     private Map<Class<?>, EntityMetadata> metadataMap;
 
     public EntityManager(DataSource dataSource,
                          String entityPackage,
+                         ResultInterpreter resultInterpreter,
                          SqlRequestGenerator sqlRequestGenerator) {
         this.dataSource = dataSource;
         this.sqlRequestGenerator = sqlRequestGenerator;
         initEntitiesMetadata(entityPackage);
+        this.resultInterpreter = resultInterpreter;
     }
 
     public <T extends Entity> boolean save(T entity) {
         EntityMetadata metadata = metadataMap.get(entity.getClass());
-        String sql = sqlRequestGenerator.save(metadata);
-        return perform(statement -> {
-            insertFields(statement, entity, metadata);
-            return statement.executeUpdate() == 1;
-        }, sql, false);
+        SqlRequest<T> request = sqlRequestGenerator.save(metadata);
+        return perform(conn -> {
+                    PreparedStatement preparedStatement =
+                            conn.prepareStatement(request.getSql());
+                    request.insertValues(preparedStatement, entity);
+                    return preparedStatement.executeUpdate() == 1;
+                }, false
+        );
     }
 
     public <T extends Entity> boolean delete(T entity) {
         EntityMetadata metadata = metadataMap.get(entity.getClass());
-        String sql = sqlRequestGenerator.delete(metadata);
-        return perform(statement -> {
-            insertField(statement, entity.getId());
-            return statement.executeUpdate() == 1;
-        }, sql, false);
+        SqlRequest<T> request = sqlRequestGenerator.delete(metadata);
+        return perform(conn -> {
+            PreparedStatement preparedStatement =
+                    conn.prepareStatement(request.getSql());
+            request.insertValues(preparedStatement, entity);
+            return preparedStatement.executeQuery().rowDeleted();
+        }, false);
     }
 
 
     public <T extends Entity> List<T> findAll(Class<T> entityClazz) {
-        return null;
+        EntityMetadata metadata = metadataMap.get(entityClazz);
+        SqlRequest<T> request = sqlRequestGenerator.findAll(metadata);
+        return perform(conn -> {
+            PreparedStatement preparedStatement =
+                    conn.prepareStatement(request.getSql());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultInterpreter.interpretList(resultSet, metadata);
+        }, true);
     }
 
-    public <T extends Entity> T findById(Long id, Class<T> entityClazz) {
-        return null;
+    public <T extends Entity> Optional<T> findById(Long id, Class<T> entityClazz) {
+        EntityMetadata metadata = metadataMap.get(entityClazz);
+        SqlRequest<T> request = sqlRequestGenerator.findById(metadata);
+        return perform(conn -> {
+            PreparedStatement preparedStatement =
+                    conn.prepareStatement(request.getSql());
+            request.insertValues(preparedStatement, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return resultInterpreter.interpret(resultSet, metadata);
+        }, true);
     }
 
-    private <T extends Entity> void insertFields(PreparedStatement preparedStatement,
-                                                 T entity,
-                                                 EntityMetadata metadata) {
-        // TODO
-    }
-
-    private void insertField(PreparedStatement statement, Long id) {
-        // TODO
-    }
-
-    private <R> R perform(ExceptionAllowsFunction<PreparedStatement, R> statementFunction,
-                          String sql,
+    private <R> R perform(ExceptionAllowsFunction<Connection, R> statementFunction,
                           boolean readOnly) {
         try (Connection connection = dataSource.getConnection()) {
             connection.beginRequest();
             connection.setReadOnly(readOnly);
 
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            R result = statementFunction.apply(preparedStatement);
+            R result = statementFunction.apply(connection);
 
             connection.commit();
             return result;

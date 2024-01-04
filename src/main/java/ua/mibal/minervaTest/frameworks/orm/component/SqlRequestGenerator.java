@@ -2,6 +2,7 @@ package ua.mibal.minervaTest.frameworks.orm.component;
 
 import ua.mibal.minervaTest.frameworks.context.annotations.Component;
 import ua.mibal.minervaTest.frameworks.orm.model.EntityMetadata;
+import ua.mibal.minervaTest.frameworks.orm.model.SqlRequest;
 
 import java.util.Collections;
 
@@ -12,29 +13,21 @@ import java.util.Collections;
 @Component
 public class SqlRequestGenerator {
 
-    public String save(EntityMetadata entityMetadata) {
+    public <T> SqlRequest<T> save(EntityMetadata entityMetadata) {
         String fields = String.join(",", entityMetadata.getValueColumns());
         String values = String.join(",", Collections.nCopies(fields.length(), "?"));
-        return "insert into %s(%s) value(%s)".formatted(
-                entityMetadata.getTable(),
-                fields,
-                values
-        );
-    }
-
-    public String findAll() {
         return null;
     }
 
-    public String delete(EntityMetadata entityMetadata) {
-        return "delete from %s where %s.%s = ?".formatted(
-                entityMetadata.getTable(),
-                entityMetadata.getTable(),
-                entityMetadata.getIdColumn()
-        );
+    public <T> SqlRequest<T> findAll(EntityMetadata entityMetadata) {
+        return null;
     }
 
-    public String findById(Long id) {
+    public <T> SqlRequest<T> delete(EntityMetadata entityMetadata) {
+        return null;
+    }
+
+    public <T> SqlRequest<T> findById(EntityMetadata entityMetadata) {
         return null;
     }
 }

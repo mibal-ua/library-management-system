@@ -21,9 +21,7 @@ public abstract class Repository<T extends Entity> {
     }
 
     public Optional<T> findById(Long id) {
-        return Optional.ofNullable(
-                entityManager.findById(id, entityClazz)
-        );
+        return entityManager.findById(id, entityClazz);
     }
 
     public List<T> findAll() {
