@@ -11,11 +11,13 @@ public class Column {
     private final Field field;
     private final String name;
     private final boolean relation;
+    private final boolean id;
 
-    public Column(Field field, String name, boolean relation) {
+    public Column(Field field, String name, boolean relation, boolean id) {
         this.field = field;
         this.name = name;
         this.relation = relation;
+        this.id = id;
     }
 
     public String getName() {
@@ -35,5 +37,9 @@ public class Column {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean isId() {
+        return id;
     }
 }

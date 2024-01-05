@@ -28,12 +28,18 @@ public class EntityMetadata {
     private List<Column> initAllColumns(List<Field> simpleFields,
                                         List<Relation> relationFields) {
         List<Column> simpleColumns = simpleFields.stream()
-                .map(field -> new Column(field, getColumnName(field), false))
+                .map(field -> new Column(
+                        field,
+                        getColumnName(field),
+                        false,
+                        field.isAnnotationPresent(Id.class)
+                ))
                 .toList();
         List<Column> relationColumns = relationFields.stream()
-                .map(relation -> new Column(relation.getField(), relation.getColumnName(), true))
+                .map(relation -> new Column(relation.getField(), relation.getColumnName(), true, false))
                 .filter(column -> column.getName() != null)
                 .toList();
+
         List<Column> union = new ArrayList<>();
         union.addAll(simpleColumns);
         union.addAll(relationColumns);

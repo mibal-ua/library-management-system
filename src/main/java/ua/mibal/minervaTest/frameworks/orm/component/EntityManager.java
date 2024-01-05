@@ -29,6 +29,7 @@ public class EntityManager {
     private final DataSource dataSource;
     private final SqlRequestGenerator sqlRequestGenerator;
     private final ResultInterpreter resultInterpreter;
+    private final IdProvider idProvider;
     private Map<Class<?>, EntityMetadata> metadataMap;
 
     public EntityManager(DataSource dataSource,
@@ -38,12 +39,13 @@ public class EntityManager {
         this.dataSource = dataSource;
         this.sqlRequestGenerator = sqlRequestGenerator;
         initEntitiesMetadata(entityPackage);
+        this.idProvider = new IdProvider(metadataMap.keySet());
         this.resultInterpreter = resultInterpreter;
     }
 
     public <T extends Entity> boolean save(T entity) {
         EntityMetadata metadata = metadataMap.get(entity.getClass());
-        SqlRequest<T> request = sqlRequestGenerator.save(metadata);
+        SqlRequest<T> request = sqlRequestGenerator.save(metadata, idProvider);
         return perform(conn -> {
                     PreparedStatement preparedStatement =
                             conn.prepareStatement(request.getSql());

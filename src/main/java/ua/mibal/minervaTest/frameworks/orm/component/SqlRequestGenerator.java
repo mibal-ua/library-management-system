@@ -9,6 +9,7 @@ import ua.mibal.minervaTest.model.Entity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -42,17 +43,21 @@ public class SqlRequestGenerator {
         );
     }
 
-    public <T> SqlRequest<T> save(EntityMetadata entityMetadata) {
+    public <T> SqlRequest<T> save(EntityMetadata entityMetadata, IdProvider idProvider) {
         String sql = generateSaveSql(entityMetadata);
         List<Function<T, Object>> valuesInjections =
-                generateValuesSaveInjections(entityMetadata);
+                generateValuesSaveInjections(entityMetadata, idProvider);
         return new SqlRequest<>(sql, valuesInjections);
     }
 
-    private <T> List<Function<T, Object>> generateValuesSaveInjections(EntityMetadata entityMetadata) {
+    private <T> List<Function<T, Object>> generateValuesSaveInjections(EntityMetadata entityMetadata, IdProvider idProvider) {
         List<Function<T, Object>> valueInjectionProviders = new ArrayList<>();
         for (Column column : entityMetadata.getColumns()) {
-            if (column.isRelation()) {
+            if (column.isId()) {
+                valueInjectionProviders.add((T entity) ->
+                        Optional.ofNullable(column.getValue(entity))
+                            .orElseGet(() -> idProvider.getId(entity.getClass())));
+            } else if (column.isRelation()) {
                 valueInjectionProviders.add((T entity) -> {
                     Object relatedEntity = column.getValue(entity);
                     return getEntityId(relatedEntity);
