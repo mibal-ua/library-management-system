@@ -50,13 +50,14 @@ public class SqlRequestGenerator {
         return new SqlRequest<>(sql, valuesInjections);
     }
 
-    private <T> List<Function<T, Object>> generateValuesSaveInjections(EntityMetadata entityMetadata, IdProvider idProvider) {
+    private <T> List<Function<T, Object>> generateValuesSaveInjections(EntityMetadata entityMetadata,
+                                                                       IdProvider idProvider) {
         List<Function<T, Object>> valueInjectionProviders = new ArrayList<>();
         for (Column column : entityMetadata.getColumns()) {
             if (column.isId()) {
                 valueInjectionProviders.add((T entity) ->
                         Optional.ofNullable(column.getValue(entity))
-                            .orElseGet(() -> idProvider.getId(entity.getClass())));
+                            .orElseGet(() -> idProvider.getId(entityMetadata)));
             } else if (column.isRelation()) {
                 valueInjectionProviders.add((T entity) -> {
                     Object relatedEntity = column.getValue(entity);

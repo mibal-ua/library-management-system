@@ -35,11 +35,12 @@ public class EntityManager {
     public EntityManager(DataSource dataSource,
                          String entityPackage,
                          ResultInterpreter resultInterpreter,
+                         IdProvider idProvider,
                          SqlRequestGenerator sqlRequestGenerator) {
         this.dataSource = dataSource;
         this.sqlRequestGenerator = sqlRequestGenerator;
         initEntitiesMetadata(entityPackage);
-        this.idProvider = new IdProvider(metadataMap.keySet());
+        this.idProvider = idProvider;
         this.resultInterpreter = resultInterpreter;
     }
 
