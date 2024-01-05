@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static java.util.Collections.emptyList;
+
 /**
  * @author Mykhailo Balakhon
  * @link <a href="mailto:9mohapx9@gmail.com">9mohapx9@gmail.com</a>
@@ -56,6 +58,12 @@ public class SqlRequestGenerator {
         );
     }
 
+    private static String generateFindAllSql(EntityMetadata entityMetadata) {
+        return "select allWantedEntities from %s allWantedEntities".formatted(
+                entityMetadata.getTable()
+        );
+    }
+
     public <T> SqlRequest<T> save(EntityMetadata entityMetadata, IdProvider idProvider) {
         String sql = generateSaveSql(entityMetadata);
         List<Function<T, Object>> valuesInjections =
@@ -70,7 +78,7 @@ public class SqlRequestGenerator {
             if (column.isId()) {
                 valueInjectionProviders.add((T entity) ->
                         Optional.ofNullable(column.getValue(entity))
-                            .orElseGet(() -> idProvider.getId(entityMetadata)));
+                                .orElseGet(() -> idProvider.getId(entityMetadata)));
             } else if (column.isRelation()) {
                 valueInjectionProviders.add((T entity) -> {
                     Object relatedEntity = column.getValue(entity);
@@ -85,8 +93,8 @@ public class SqlRequestGenerator {
     }
 
     public <T> SqlRequest<T> findAll(EntityMetadata entityMetadata) {
-        // TODO
-        return null;
+        String sql = generateFindAllSql(entityMetadata);
+        return new SqlRequest<>(sql, emptyList());
     }
 
     public <T> SqlRequest<T> delete(EntityMetadata entityMetadata) {
