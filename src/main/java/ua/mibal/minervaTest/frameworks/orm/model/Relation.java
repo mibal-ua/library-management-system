@@ -1,5 +1,9 @@
 package ua.mibal.minervaTest.frameworks.orm.model;
 
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
@@ -23,5 +27,18 @@ public class Relation {
 
     public Annotation getRelationType() {
         return relationType;
+    }
+
+    public String getColumnName() {
+        if (relationType instanceof ManyToOne) {
+            return field.getAnnotation(JoinColumn.class)
+                    .name();
+        } else if (relationType instanceof OneToMany) {
+            return null;
+        } else {
+            throw new IllegalArgumentException(
+                    "Cannot define column name for relation field " + field
+            );
+        }
     }
 }

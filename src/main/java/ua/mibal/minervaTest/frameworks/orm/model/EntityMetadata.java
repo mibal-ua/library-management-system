@@ -1,14 +1,11 @@
 package ua.mibal.minervaTest.frameworks.orm.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * @author Mykhailo Balakhon
@@ -16,70 +13,65 @@ import java.util.Optional;
  */
 public class EntityMetadata {
 
-    private final List<Field> simpleFields;
-    private final List<Relation> relations;
-    private final List<String> columns;
     private final String table;
+    private final List<Column> columns;
+    private final Field id;
 
-    public EntityMetadata(List<Field> simpleFields, List<Relation> relations, String table) {
-        this.simpleFields = simpleFields;
-        this.relations = relations;
+    public EntityMetadata(List<Field> simpleFields,
+                          List<Relation> relationFields,
+                          String table) {
         this.table = table;
-        this.columns = initColumns();
+        this.columns = initAllColumns(simpleFields, relationFields);
+        this.id = initId(simpleFields);
     }
 
-    private List<String> initColumns() {
-        List<String> simpleColumns = simpleFields.stream()
-                .map(f -> Optional.ofNullable(f.getAnnotation(Column.class))
-                        .map(Column::name)
-                        .orElseGet(() -> {
-                            if (!f.isAnnotationPresent(Id.class)) {
-                                throw new IllegalArgumentException("Cannot define column name for field " + f);
-                            }
-                            return f.getName();
-                        }))
+    private List<Column> initAllColumns(List<Field> simpleFields,
+                                        List<Relation> relationFields) {
+        List<Column> simpleColumns = simpleFields.stream()
+                .map(field -> new Column(field, getColumnName(field), false))
                 .toList();
-        List<String> relationColumns = relations.stream()
-                .filter(rel -> rel.getRelationType().annotationType().equals(ManyToOne.class))
-                .map(rel -> rel.getField().getAnnotation(JoinColumn.class).name())
+        List<Column> relationColumns = relationFields.stream()
+                .map(relation -> new Column(relation.getField(), relation.getColumnName(), true))
+                .filter(column -> column.getName() != null)
                 .toList();
-        List<String> allColumns = new ArrayList<>(simpleColumns);
-        allColumns.addAll(relationColumns);
-        return allColumns;
+        List<Column> union = new ArrayList<>();
+        union.addAll(simpleColumns);
+        union.addAll(relationColumns);
+        return union;
     }
 
-    public List<String> getColumns() {
-        return columns;
-    }
-
-    public List<String> getValueColumns() {
-        String idField = simpleFields.stream()
+    private Field initId(List<Field> simpleFields) {
+        return simpleFields.stream()
                 .filter(f -> f.isAnnotationPresent(Id.class))
-                .map(Field::getName)
                 .findFirst()
                 .orElseThrow();
-        ArrayList<String> columnsWithoutId = new ArrayList<>(getColumns());
-        columnsWithoutId.remove(idField);
-        return columnsWithoutId;
     }
 
-    public List<Field> getSimpleFields() {
-        return simpleFields;
+    private String getColumnName(Field field) {
+        if (field.isAnnotationPresent(jakarta.persistence.Column.class)) {
+            return field.getAnnotation(jakarta.persistence.Column.class).name();
+        } else if (field.isAnnotationPresent(Id.class)) {
+            return field.getName();
+        } else {
+            throw new IllegalArgumentException(
+                    "Cannot define column name for field " + field +
+                    " at class " + field.getDeclaringClass()
+            );
+        }
     }
 
-    public List<Relation> getRelations() {
-        return relations;
+    public List<String> getColumnNames() {
+        return columns.stream()
+                .map(Column::getName)
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     public String getTable() {
         return table;
     }
 
-    public String getIdColumn() {
-        return simpleFields.stream()
-                .filter(f -> f.isAnnotationPresent(Id.class))
-                .map(Field::getName)
-                .findFirst()
-                .orElseThrow();
+    public List<Column> getColumns() {
+        return columns;
     }
 }
