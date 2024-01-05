@@ -11,16 +11,10 @@ public abstract class SeqTable {
 
     protected final String tableFormat;
     protected final String nextValColumn;
+
     protected SeqTable(String tableFormat, String nextValColumn) {
         this.tableFormat = tableFormat;
         this.nextValColumn = nextValColumn;
-    }
-
-    public static SeqTable getInstance(SQLType sqlType) {
-        return switch (sqlType) {
-            case MySql -> new MySqlSeqTable();
-            case Postgres -> new PostgresSeqTable();
-        };
     }
 
     protected String getSeqTable(String entityTable) {
@@ -30,7 +24,24 @@ public abstract class SeqTable {
     public abstract long getId(EntityMetadata entityClass, Connection connection) throws SQLException;
 
     public enum SQLType {
-        MySql,
-        Postgres
+
+        MySql("com.mysql.cj.jdbc.MysqlDataSource", new MySqlSeqTable()),
+        Postgres("org.postgresql.ds.PGSimpleDataSource", new PostgresSeqTable());
+
+        private final String driverFullName;
+        private final SeqTable seqTable;
+
+        SQLType(String driverFullName, SeqTable seqTable) {
+            this.driverFullName = driverFullName;
+            this.seqTable = seqTable;
+        }
+
+        public SeqTable getSeqTable() {
+            return seqTable;
+        }
+
+        public String getDriverFullName() {
+            return driverFullName;
+        }
     }
 }

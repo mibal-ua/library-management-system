@@ -8,6 +8,7 @@ import ua.mibal.minervaTest.frameworks.orm.model.SeqTable.SQLType;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 /**
  * Component used to provide Generated Id for annotated Entities
@@ -23,12 +24,24 @@ public class IdProvider {
 
     public IdProvider(DataSource dataSource) {
         this.dataSource = dataSource;
-        this.seqTable = SeqTable.getInstance(defineSqlType());
+        SQLType sqlType = defineSqlType();
+        this.seqTable = sqlType.getSeqTable();
     }
 
     private SQLType defineSqlType() {
-        // TODO
-        return SQLType.MySql;
+        return Arrays.stream(SQLType.values())
+                .filter(type -> existsDriverInClassPath(type.getDriverFullName()))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    private boolean existsDriverInClassPath(String driverFullName) {
+        try {
+            Class.forName(driverFullName);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
     public Object getId(EntityMetadata entityMetadata) {
