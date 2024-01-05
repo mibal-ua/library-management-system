@@ -15,14 +15,27 @@ public class EntityMetadata {
 
     private final String table;
     private final List<Column> columns;
-    private final Field id;
+    private final Column idColumn;
 
     public EntityMetadata(List<Field> simpleFields,
                           List<Relation> relationFields,
                           String table) {
         this.table = table;
         this.columns = initAllColumns(simpleFields, relationFields);
-        this.id = initId(simpleFields);
+        this.idColumn = initIdColumn(simpleFields);
+    }
+
+    private Column initIdColumn(List<Field> simpleFields) {
+        return simpleFields.stream()
+                .filter(f -> f.isAnnotationPresent(Id.class))
+                .map(field -> new Column(
+                        field,
+                        getColumnName(field),
+                        false,
+                        true
+                ))
+                .findFirst()
+                .orElseThrow();
     }
 
     private List<Column> initAllColumns(List<Field> simpleFields,
@@ -44,13 +57,6 @@ public class EntityMetadata {
         union.addAll(simpleColumns);
         union.addAll(relationColumns);
         return union;
-    }
-
-    private Field initId(List<Field> simpleFields) {
-        return simpleFields.stream()
-                .filter(f -> f.isAnnotationPresent(Id.class))
-                .findFirst()
-                .orElseThrow();
     }
 
     private String getColumnName(Field field) {
@@ -77,7 +83,15 @@ public class EntityMetadata {
         return table;
     }
 
+    public String getId() {
+        return idColumn.getName();
+    }
+
     public List<Column> getColumns() {
         return columns;
+    }
+
+    public Column getIdColumn() {
+        return idColumn;
     }
 }

@@ -43,6 +43,19 @@ public class SqlRequestGenerator {
         );
     }
 
+    private static <T> List<Function<T, Object>> generateValuesDeleteInjections(EntityMetadata entityMetadata) {
+        Column idColumn = entityMetadata.getIdColumn();
+        return List.of(idColumn::getValue);
+    }
+
+    private static String generateDeleteSql(EntityMetadata entityMetadata) {
+        return ("delete desiredEntityToDelete " +
+                "from %s desiredEntityToDelete " +
+                "where %s = ?").formatted(
+                entityMetadata.getTable(), entityMetadata.getId()
+        );
+    }
+
     public <T> SqlRequest<T> save(EntityMetadata entityMetadata, IdProvider idProvider) {
         String sql = generateSaveSql(entityMetadata);
         List<Function<T, Object>> valuesInjections =
@@ -71,17 +84,19 @@ public class SqlRequestGenerator {
 
     }
 
-    // TODO
-
     public <T> SqlRequest<T> findAll(EntityMetadata entityMetadata) {
+        // TODO
         return null;
     }
 
     public <T> SqlRequest<T> delete(EntityMetadata entityMetadata) {
-        return null;
+        String sql = generateDeleteSql(entityMetadata);
+        List<Function<T, Object>> valuesInjections = generateValuesDeleteInjections(entityMetadata);
+        return new SqlRequest<>(sql, valuesInjections);
     }
 
     public <T> SqlRequest<T> findById(EntityMetadata entityMetadata) {
+        // TODO
         return null;
     }
 }
