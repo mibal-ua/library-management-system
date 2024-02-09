@@ -1,4 +1,4 @@
-# The Book library
+# The Library management system
 
 I am pleased to present you my console application!
 
